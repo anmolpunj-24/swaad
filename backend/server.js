@@ -1,0 +1,36 @@
+require("dotenv").config();
+
+const express = require("express");
+const app = express();
+
+const db = require("./src/config/db");
+
+const errorHandlingMiddleware = require("./src/middlewares/globalErrorHandlingMiddleware");
+
+const server = async () => {
+  await db();
+
+  app.use(express.json());
+
+  const userRoutes = require("./src/routes/userRoutes");
+  app.use("/api/auth/user", userRoutes);
+
+  const authRoutes = require("./src/routes/authRoutes");
+  app.use("/api/auth", authRoutes);
+
+  const customerRoutes = require("./src/routes/customerRoutes")
+  app.use("/api/auth/customer", customerRoutes)
+
+  const customerAddressRoutes = require("./src/routes/customerAddressRoutes")
+  app.use("/api/auth/customer-address", customerAddressRoutes)
+
+  app.use(errorHandlingMiddleware);
+
+  PORT = process.env.PORT || 5000; 
+
+  app.listen(PORT, function () {
+    console.log(`Backend is running on port ${PORT}`);
+  });
+};
+
+server();

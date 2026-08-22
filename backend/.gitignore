@@ -1,0 +1,5 @@
+# Dependencies (Never commit these; they make the repo heavy)
+node_modules/
+
+# Environment variables / Secrets (Crucial to hide API keys and database credentials)
+.env
