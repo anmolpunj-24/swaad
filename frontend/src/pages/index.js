@@ -13,12 +13,12 @@ export default function Login() {
       <h1 className="text-center text-5xl font-[550] tracking-[-0.02rem] text-[#2A2622] pt-18">
         SWAAD Login
       </h1>
-      <div className="mx-auto mt-12 w-full max-w-[40%] rounded-[10px] border border-white/5 bg-black/[0.15] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-[3px]">
+      <div className="mx-auto mt-12 w-full max-w-[40%] rounded-[10px] border border-white/5 bg-black/[0.12] p-8 shadow-[0_8px_32px_rgba(0,0,0,0.12)] backdrop-blur-[5px]">
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-7">
           <div className="relative">
             <label
               htmlFor="email"
-              className="absolute -top-2 left-3 z-10 px-2 text-sm font-medium text-[#F7E6BA]"
+              className="absolute -top-2 left-3 z-10 px-2 text-[0.9rem] font-medium text-[#F7E6BA]"
             >
               Email
             </label>
@@ -27,11 +27,11 @@ export default function Login() {
               id="email"
               type="email"
               {...register("email", { required: "Email is required!" })}
-              className="w-full rounded-xl border border-white/15 bg-black/10 px-4 py-4 text-white outline-none transition-all placeholder:text-white/30 focus:border-[#2A2622]/50 focus:bg-black/15"
+              className="w-full rounded-xl border border-white/10 bg-black/10 px-4 py-4 text-white outline-none transition-all placeholder:text-white/30 focus:border-[#2A2622]/50 focus:bg-black/15"
             />
 
             {errors.email && (
-              <p className="mt-2 px-1 text-[12px] text-red-300">
+              <p className="mt-2 px-1 text-[12px] text-red-800">
                 {errors.email.message}
               </p>
             )}
@@ -40,7 +40,7 @@ export default function Login() {
           <div className="relative">
             <label
               htmlFor="password"
-              className="absolute -top-2 left-3 z-10 px-2 text-sm font-medium text-[#F7E6BA]"
+              className="absolute -top-2 left-3 z-10 px-2 text-[0.9rem] font-medium text-[#F7E6BA]"
             >
               Password
             </label>
@@ -51,11 +51,11 @@ export default function Login() {
               {...register("password", {
                 required: "Password is required!",
               })}
-              className="w-full rounded-xl border border-white/15 bg-black/10 px-4 py-4 text-white outline-none transition-all placeholder:text-white/30 focus:border-[#2A2622]/50 focus:bg-black/15"
+              className="w-full rounded-xl border border-white/10 bg-black/10 px-4 py-4 text-white outline-none transition-all placeholder:text-white/30 focus:border-[#2A2622]/50 focus:bg-black/15"
             />
 
             {errors.password && (
-              <p className="mt-2 px-1 text-[12px] text-red-300">
+              <p className="mt-2 px-1 text-[12px] text-red-800">
                 {errors.password.message}
               </p>
             )}
