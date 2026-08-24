@@ -1,11 +1,26 @@
 import "@/styles/globals.css";
-
-import Layout from "@/components/layout/layout";
+import BaseLayout from "@/components/layout/baseLayout";
+import { useRouter } from "next/router";
+import { Toaster } from "sonner";
+import GlobalLoader from "@/components/ui/globalLoader";
 
 export default function App({ Component, pageProps }) {
-  return (
-    <Layout>
+  const router = useRouter();
+
+  const isLogin = router.pathname === "/";
+
+  return isLogin ? (
+    <>
+      <Toaster />
       <Component {...pageProps} />
-    </Layout>
+    </>
+  ) : (
+    <>
+      {/* <GlobalLoader /> */}
+      <Toaster />
+      <BaseLayout>
+        <Component {...pageProps} />
+      </BaseLayout>
+    </>
   );
 }
