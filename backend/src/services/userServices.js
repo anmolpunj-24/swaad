@@ -22,7 +22,7 @@ const addUserService = async (userData) => {
     phone,
   });
 
-  const savedCustomer = await newCustomer.save();
+  await newCustomer.save();
 
   return savedUser;
 };
@@ -51,7 +51,7 @@ const updateUserService = async (id, userData) => {
 const deleteUserService = async (id) => {
   const deletedUser = await userModel.findByIdAndUpdate(
     id,
-    { deletedAt: new Date() },
+    { deletedAt: new Date(), isActive: false },
     { new: true },
   );
   return deletedUser;

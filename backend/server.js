@@ -13,20 +13,26 @@ const server = async () => {
   app.use(express.json());
 
   const userRoutes = require("./src/routes/userRoutes");
-  app.use("/api/auth/user", userRoutes);
+  app.use("/api/admin/user", userRoutes);
 
   const authRoutes = require("./src/routes/authRoutes");
   app.use("/api/auth", authRoutes);
 
-  const customerRoutes = require("./src/routes/customerRoutes")
-  app.use("/api/auth/customer", customerRoutes)
+  const customerRoutes = require("./src/routes/customerRoutes");
+  app.use("/api/auth/customer", customerRoutes);
 
-  const customerAddressRoutes = require("./src/routes/customerAddressRoutes")
-  app.use("/api/auth/customer-address", customerAddressRoutes)
+  const customerAddressRoutes = require("./src/routes/customerAddressRoutes");
+  app.use("/api/auth/customer-address", customerAddressRoutes);
+
+  const productRoutes = require("./src/routes/productRoutes");
+  app.use("/api/admin/product", productRoutes);
+
+  const categoryRoutes = require("./src/routes/categoryRoutes");
+  app.use("/api/admin/category", categoryRoutes);
 
   app.use(errorHandlingMiddleware);
 
-  PORT = process.env.PORT || 5000; 
+  PORT = process.env.PORT || 5000;
 
   app.listen(PORT, function () {
     console.log(`Backend is running on port ${PORT}`);

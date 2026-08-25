@@ -40,11 +40,11 @@ const updateCustomerAddress = async (req, res) => {
   const body = req.body;
 
   if (!customerId) {
-    return res.status(401).json({ message: "Customer not found!" });
+    return res.status(400).json({ message: "Customer not found!" });
   }
 
   if (!addressId) {
-    return res.status(401).json({ message: "No such address found!" });
+    return res.status(400).json({ message: "No such address found!" });
   }
 
   const updatedCustomer =
@@ -67,11 +67,11 @@ const deleteCustomerAddress = async (req, res) => {
   const addressId = req.params.id;
 
   if (!customerId) {
-    return res.status(401).json({ message: "Customer not found!" });
+    return res.status(400).json({ message: "Customer not found!" });
   }
 
   if (!addressId) {
-    return res.status(401).json({ message: "No such address found!" });
+    return res.status(400).json({ message: "No such address found!" });
   }
 
   const deletedCustomer =

@@ -1,13 +1,16 @@
 const customerModel = require("../models/customers");
 
 const getAllCustomersService = async () => {
-  const allCustomers = await customerModel.find();
+  const allCustomers = await customerModel.find({ deletedAt: null });
 
   return allCustomers;
 };
 
 const getOneCustomerService = async (id) => {
-  const customerData = await customerModel.findById(id);
+  const customerData = await customerModel.findById({
+    uuid: id,
+    deletedAt: null,
+  });
 
   return customerData;
 };
@@ -25,10 +28,10 @@ const updateCustomerService = async (id, customerData) => {
 const deleteCustomerService = async (id) => {
   const deletedUser = await customerModel.findByIdAndUpdate(
     id,
-    { deletedAt: new Date() },
+    { deletedAt: new Date(), isActive: false },
     { new: true },
   );
-  
+
   return deletedUser;
 };
 

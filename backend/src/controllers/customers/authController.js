@@ -131,7 +131,7 @@ const logout = async (req, res) => {
   const userId = req.user._id;
 
   if (!userId) {
-    return res.status(401).json({ message: "User not found!" });
+    return res.status(400).json({ message: "User not found!" });
   }
 
   const deletedSessionToken = await accessTokensModel.deleteOne({ _id: id });
@@ -144,7 +144,7 @@ const logout = async (req, res) => {
 //   const token = req.headers.authorization?.split(' ')[1];
 
 //   if (!token) {
-//     return res.status(401).json({ message: "No token provided!" });
+//     return res.status(400).json({ message: "No token provided!" });
 //   }
 
 //   // Delete the specific session matching this token

@@ -22,7 +22,7 @@ const updateCustomer = async (req, res) => {
   const customerId = req.params.uuid;
 
   if (!customerId) {
-    return res.status(401).json({ message: "Customer id not found!" });
+    return res.status(400).json({ message: "Customer id not found!" });
   }
 
   const updatedCustomer = await customerService.updateCustomerService(
@@ -39,7 +39,7 @@ const deleteCustomer = async (req, res) => {
   const customerId = req.params.uuid;
 
   if (!customerId) {
-    return res.status(401).json({ message: "Customer id not found!" });
+    return res.status(400).json({ message: "Customer id not found!" });
   }
 
   const deletedCustomer =
