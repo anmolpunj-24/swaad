@@ -2,7 +2,7 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL: "http://localhost:3000",
-  timeout: 20000000,
+  timeout: 7200000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -180,4 +180,85 @@ const customerAddressApi = {
   },
 };
 
-export { authApi, userApi, customerApi, customerAddressApi };
+const productApi = {
+  add: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  getAll: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  getOne: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  update: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  delete: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+};
+
+const categoryApi = {
+  add: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  getAll: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  getOne: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  update: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+
+  delete: async () => {
+    try {
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+};
+
+export {
+  authApi,
+  userApi,
+  customerApi,
+  customerAddressApi,
+  productApi,
+  categoryApi,
+};
