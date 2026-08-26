@@ -1,26 +1,29 @@
-const customerAddressModel = require("../models/customer_address");
+const customerAddressRepo = require("../repositories/customerAddressRepository");
 
 const getAllCustomersAddressService = async () => {
-  const allCustomerAddress = await customerAddressModel.find();
+  const allCustomerAddress =
+    await customerAddressRepo.getAllCustomersAddressRepo();
 
   return allCustomerAddress;
 };
 
 const getOneCustomerAddressService = async (id) => {
-  const oneCustomerAddress = await customerAddressModel.find({ userId: id });
+  const oneCustomerAddress =
+    await customerAddressRepo.getOneCustomersAddressRepo(id);
 
   return oneCustomerAddress;
 };
 
 const addCustomerAddressService = async (customerAddressData, customerId) => {
-  const customerAddressFromDb = await customerAddressModel.find({
-    userId: customerId,
-  });
+  const customerAddressFromDb =
+    await customerAddressRepo.findCustomerAddressFromDb(customerId);
 
   if (customerAddressFromDb.length >= 5) {
-    throw new Error(
-      "Address limit reached. You can only save up to 5 addresses!",
-    );
+    return {
+      success: false,
+      errorMessage:
+        "Address limit reached. You can only save up to 5 addresses!",
+    };
   }
 
   let isDefault = false;
@@ -33,66 +36,50 @@ const addCustomerAddressService = async (customerAddressData, customerId) => {
     );
 
     if (oldDefaultAddress) {
-      await customerAddressModel.updateOne(
-        { _id: oldDefaultAddress._id },
-        { $set: { isDefault: false } },
-      );
+      await customerAddressRepo.updateDefaultToFalse(oldDefaultAddress._id);
     }
   }
 
-  const newAddress = new customerAddressModel({
-    userId: customerId,
-    ...customerAddressData,
+  const savedAddress = await customerAddressRepo.addCustomerAddressRepo(
+    customerId,
+    customerAddressData,
     isDefault,
-  });
-
-  const savedAddress = await newAddress.save();
+  );
 
   return savedAddress;
 };
 
 const updateCustomerAddressService = async (customerId, addressId, body) => {
-  const findAddressWithDefaultTrue =
-    await customerAddressModel.findOneAndUpdate(
-      { userId: customerId },
-      { $set: { isDefault: false } },
-      { new: true },
-    );
+  await customerAddressRepo.checkIfThereIsAnAdressWithDefaultTrue(customerId);
 
-  const updatedCustomerAddress = await customerAddressModel.findOneAndUpdate(
-    { _id: addressId, userId: customerId },
-    {
-      $set: {
-        ...body,
-        isDefault: true,
-      },
-    },
-    { new: true },
-  );
+  const updatedCustomerAddress =
+    await customerAddressRepo.updatedCustomerAddressRepo(
+      customerId,
+      addressId,
+      body,
+    );
 
   return updatedCustomerAddress;
 };
 
 const deleteCustomerAddressService = async (customerId, addressId) => {
-  const addressToDelete = await customerAddressModel.findOne({
-    _id: addressId,
-    userId: customerId,
-  });
+  const addressToDelete = await customerAddressRepo.findTheAddressToDelete(
+    addressId,
+    customerId,
+  );
 
   if (!addressToDelete) {
     return null;
   }
 
-  await customerAddressModel.deleteOne({ _id: addressId });
+  await customerAddressRepo.deleteCustomerAddressRepo(addressId);
 
   if (addressToDelete.isDefault === true) {
-    const mostRecentAddress = await customerAddressModel
-      .findOne({ userId: customerId })
-      .sort({ createdAt: -1 });
+    const mostRecentAddress =
+      await customerAddressRepo.findMostRecentAddress(customerId);
 
     if (mostRecentAddress) {
-      mostRecentAddress.isDefault = true;
-      await mostRecentAddress.save();
+      await customerAddressRepo.makeAddressDefault(mostRecentAddress);
     }
   }
   return true;

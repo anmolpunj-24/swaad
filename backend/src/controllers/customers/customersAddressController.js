@@ -28,6 +28,12 @@ const addCustomerAddress = async (req, res) => {
   const customerAddressData =
     await customerAddressService.addCustomerAddressService(body, userId);
 
+  if (customerAddressData.success === false) {
+    return res.status(400).json({
+      message: customerAddressData.errorMessage,
+    });
+  }
+
   return res.status(201).json({
     message: "Address added succesfully!",
     customerAddress: customerAddressData,
@@ -54,12 +60,10 @@ const updateCustomerAddress = async (req, res) => {
       body,
     );
 
-  return res
-    .status(200)
-    .json({
-      message: "Address updated successfully!",
-      customer: updatedCustomer,
-    });
+  return res.status(200).json({
+    message: "Address updated successfully!",
+    customer: updatedCustomer,
+  });
 };
 
 const deleteCustomerAddress = async (req, res) => {
@@ -80,12 +84,10 @@ const deleteCustomerAddress = async (req, res) => {
       addressId,
     );
 
-  return res
-    .status(200)
-    .json({
-      message: "Address deleted successfully!",
-      customer: deletedCustomer,
-    });
+  return res.status(200).json({
+    message: "Address deleted successfully!",
+    customer: deletedCustomer,
+  });
 };
 
 module.exports = {
