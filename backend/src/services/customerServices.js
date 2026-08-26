@@ -1,37 +1,27 @@
-const customerModel = require("../models/customers");
+const customerRepo = require("../repositories/customerRepository");
 
 const getAllCustomersService = async () => {
-  const allCustomers = await customerModel.find({ deletedAt: null });
-
+  const allCustomers = await customerRepo.getAllCustomersRepo();
   return allCustomers;
 };
 
 const getOneCustomerService = async (id) => {
-  const customerData = await customerModel.findById({
-    uuid: id,
-    deletedAt: null,
-  });
+  const customerData = await customerRepo.getOneCustomerRepo(id);
 
   return customerData;
 };
 
 const updateCustomerService = async (id, customerData) => {
-  const updatedCustomer = await customerModel.findByIdAndUpdate(
+  const updatedCustomer = await customerRepo.updateCustomerRepo(
     id,
     customerData,
-    { returnDocument: "after", runValidators: true },
   );
 
   return updatedCustomer;
 };
 
 const deleteCustomerService = async (id) => {
-  const deletedUser = await customerModel.findByIdAndUpdate(
-    id,
-    { deletedAt: new Date(), isActive: false },
-    { new: true },
-  );
-
+  const deletedUser = await customerRepo.deleteCustomerRepo(id);
   return deletedUser;
 };
 
