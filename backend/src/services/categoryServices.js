@@ -1,25 +1,22 @@
-const categoryModel = require("../models/categories");
+const categoryRepo = require("../repositories/categoryRepository");
 
 const getAllCategoriesService = async () => {
-  const allCategories = await categoryModel.find({ deletedAt: null });
+  const allCategories = await categoryRepo.getAllCategoriesRepo();
 
   return allCategories;
 };
 
 const getOneCategoryService = async (id) => {
-  const categoryData = await categoryModel.findById({
-    _id: id,
-    deletedAt: null,
-  });
+  const categoryData = await categoryRepo.getOneCategoryRepo(id);
 
   return categoryData;
 };
 
 const addCategoryService = async (categoryData) => {
   if (categoryData.parentId) {
-    const parentCategoryExist = await categoryModel.findOne({
-      _id: categoryData.parentId,
-    });
+    const parentCategoryExist = await categoryRepo.checkIfParentCategoryExist(
+      categoryData.parentId,
+    );
 
     if (!parentCategoryExist) {
       return {
@@ -29,10 +26,10 @@ const addCategoryService = async (categoryData) => {
     }
   }
 
-  const existingCategory = await categoryModel.findOne({
-    name: categoryData.name,
-    parentId: categoryData.parentId,
-  });
+  const existingCategory = await categoryRepo.checkIfExistingCategory(
+    categoryData.name,
+    categoryData.parentId,
+  );
 
   if (existingCategory) {
     return {
@@ -41,18 +38,16 @@ const addCategoryService = async (categoryData) => {
     };
   }
 
-  const newCategory = new categoryModel(categoryData);
-
-  const savedCategory = await newCategory.save();
+  const savedCategory = await categoryRepo.addCategoryRepo(categoryData);
 
   return savedCategory;
 };
 
 const updateCategoryService = async (id, categoryData) => {
   if (categoryData.parentId) {
-    const parentCategoryExist = await categoryModel.findOne({
-      _id: categoryData.parentId,
-    });
+    const parentCategoryExist = await categoryRepo.checkIfParentCategoryExist(
+      categoryData.parentId,
+    );
 
     if (!parentCategoryExist) {
       return {
@@ -62,13 +57,14 @@ const updateCategoryService = async (id, categoryData) => {
     }
   }
 
-  const existingCategory = await categoryModel.findOne({
-    name: categoryData.name,
-    parentId: categoryData.parentId,
-    _id: { $ne: id },
-  });
+  const existingCategoryOtherThanTheOneBeingUpdated =
+    await categoryRepo.checkIfExistingCategoryForUpdate(
+      categoryData.name,
+      categoryData.parentId,
+      id,
+    );
 
-  if (existingCategory) {
+  if (existingCategoryOtherThanTheOneBeingUpdated) {
     return {
       success: false,
       errorMessage: "Category already exist!",
@@ -84,21 +80,16 @@ const updateCategoryService = async (id, categoryData) => {
 
   // So when changing parentId, you should verify that the new parent is not somewhere inside the category's own descendant tree.
 
-  const updatedProduct = await categoryModel.findByIdAndUpdate(
+  const updatedProduct = await categoryRepo.updateCategoryRepo(
     id,
     categoryData,
-    { returnDocument: "after", runValidators: true },
   );
 
   return updatedProduct;
 };
 
 const deleteCategoryService = async (id) => {
-  const deletedCategory = await categoryModel.findByIdAndUpdate(
-    id,
-    { deletedAt: new Date(), isActive: false },
-    { new: true },
-  );
+  const deletedCategory = await categoryRepo.deleteCategoryRepo(id);
 
   return deletedCategory;
 };
