@@ -31,7 +31,7 @@ const customerAddressSchema = new mongoose.Schema(
 );
 
 const customerAddress = mongoose.model(
-  "customerAddress",
+  "customer_address",
   customerAddressSchema,
 );
 module.exports = customerAddress;

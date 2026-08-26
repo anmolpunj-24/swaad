@@ -8,7 +8,7 @@ const addUserService = async (userData) => {
   const { name, email, password, gender, dob, phone } = userData;
 
   const newUser = new userModel({
-    name,
+    name, 
     email,
     password,
   });
@@ -43,7 +43,7 @@ const updateUserService = async (id, userData) => {
   const updatedUser = await userModel.findByIdAndUpdate(id, userData, {
     returnDocument: "after",
     runValidators: true,
-  });
+  }); 
 
   return updatedUser;
 };
@@ -62,7 +62,8 @@ const uploadProfileService = async (user, file) => {
     const oldImagePath = path.join(
       process.cwd(),
       "uploads",
-      user._id,
+      "users",
+      user.uuid,
       user.profile,
     );
     if (fs.existsSync(oldImagePath)) {

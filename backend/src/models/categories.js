@@ -5,19 +5,17 @@ const categorySchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "Name is required!"],
-      lowercase: true,
     },
 
     parentId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "category",
+      ref: "categories",
       default: null,
     },
 
     slug: {
       type: String,
       required: [true, "Slug is required!"],
-      unique: true,
       trim: true,
       lowercase: true,
     },
@@ -31,6 +29,8 @@ const categorySchema = new mongoose.Schema(
   },
   { timestamps: true },
 );
+
+categorySchema.index({ name: 1, parentId: 1 }, { unique: true });
 
 const categories = mongoose.model("categories", categorySchema);
 module.exports = categories;

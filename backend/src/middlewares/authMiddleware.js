@@ -5,7 +5,7 @@ const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader || !authHeader.startsWith("Bearer")) {
       return res.status(401).json({ message: "No token provided!" });
     }
 
@@ -29,10 +29,7 @@ const authenticateUser = async (req, res, next) => {
       return res.status(404).json({ message: "User not found in database!" });
     }
 
-    req.user = {
-      ...decodedToken,
-      ...dbUser.toObject(),
-    };
+    req.user = dbUser;
 
     next();
   } catch (err) {

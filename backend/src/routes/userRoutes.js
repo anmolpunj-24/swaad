@@ -20,8 +20,8 @@ routes.put("/update/:id", userController.updateUser);
 routes.delete("/delete/:id", userController.deleteUser);
 
 routes.post(
-  "/upload-profile/:id",
-  uploadMiddleware("image").single("image"),
+  "/upload-profile",
+  uploadMiddleware("image").single("profile"),
   userController.uploadProfile,
 );
 

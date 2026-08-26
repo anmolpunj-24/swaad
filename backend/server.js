@@ -7,16 +7,20 @@ const db = require("./src/config/db");
 
 const errorHandlingMiddleware = require("./src/middlewares/globalErrorHandlingMiddleware");
 
+const authenticateUserMiddleware = require("./src/middlewares/authMiddleware");
+
 const server = async () => {
   await db();
 
   app.use(express.json());
 
-  const userRoutes = require("./src/routes/userRoutes");
-  app.use("/api/admin/user", userRoutes);
-
   const authRoutes = require("./src/routes/authRoutes");
   app.use("/api/auth", authRoutes);
+
+  app.use(authenticateUserMiddleware);
+
+  const userRoutes = require("./src/routes/userRoutes");
+  app.use("/api/admin/user", userRoutes);
 
   const customerRoutes = require("./src/routes/customerRoutes");
   app.use("/api/auth/customer", customerRoutes);

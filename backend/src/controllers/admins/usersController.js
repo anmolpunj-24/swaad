@@ -50,7 +50,7 @@ const uploadProfile = async (req, res) => {
   const user = req.user;
   const file = req.file;
 
-  if (!user._id) {
+  if (!user.uuid) {
     return res.status(404).json({ message: "User not found!" });
   }
 

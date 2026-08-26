@@ -1,7 +1,13 @@
 const categoryService = require("../../services/categoryServices");
 
 const addCategory = async (req, res) => {
-  const newCategory = await categoryService.addCategoryService(req.body);
+  const body = req.body;
+
+  const newCategory = await categoryService.addCategoryService(body);
+
+  if (newCategory.success === false) {
+    return res.status(400).json({ message: newCategory.errorMessage });
+  }
 
   return res
     .status(201)
@@ -42,6 +48,10 @@ const updateCategory = async (req, res) => {
     categoryId,
     body,
   );
+
+  if (updatedCategory.success === false) {
+    return res.status(400).json({ message: updatedCategory.errorMessage });
+  }
 
   return res
     .status(200)

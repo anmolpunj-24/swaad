@@ -6,7 +6,6 @@ const userRegisterRules = require("../validations/userRegisterValidations");
 const passwordValidationRules = require("../validations/passwordValidations");
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
-const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
 const authController = require("../controllers/customers/authController");
 
@@ -14,7 +13,6 @@ routes.post(
   "/login",
   userLoginRules,
   validationMiddleware,
-  authenticateUserMiddleware,
   authController.userLogin,
 );
 
@@ -25,11 +23,7 @@ routes.post(
   authController.registerUser,
 );
 
-routes.post(
-  "/forgot-password",
-  authenticateUserMiddleware,
-  authController.forgetPassword,
-);
+routes.post("/forgot-password", authController.forgetPassword);
 
 routes.post("reset-password", authController.resetPassword);
 
@@ -37,10 +31,9 @@ routes.post(
   "/update-password",
   passwordValidationRules,
   validationMiddleware,
-  authenticateUserMiddleware,
   authController.updatePassword,
 );
 
-routes.post("/logout", authenticateUserMiddleware, authController.logout);
+routes.post("/logout", authController.logout);
 
 module.exports = routes;
