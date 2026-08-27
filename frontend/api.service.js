@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: "",
   timeout: 7200000,
   headers: {
     "Content-Type": "application/json",
@@ -10,12 +10,13 @@ const api = axios.create({
 
 const handlingExeptionError = async (error) => {
   if (axios.isAxiosError(error)) {
-    if (error.status === 401) {
-      if (typeof window !== "undefined") {
-        await logoutHandler();
-        window.location.href = "/";
-      }
+    if (error.response?.status === 401) {
+      // if (typeof window !== "undefined") {
+      //   await logoutHandler();
+      //   window.location.href = "/";
+      // }
     }
+
     return {
       data: { message: error.response?.data?.message ?? "An error occurred" },
       status: error.response.status,
@@ -32,8 +33,22 @@ api.interceptors.response.use(
   },
 );
 
-const authApi = {
-  login: async () => {
+const adminAuthApi = {
+  login: async (email, password) => {
+    try {
+      const response = await api.post(`/api/admin/login`, {
+        email,
+        password,
+      });
+      return response;
+    } catch (error) {
+      return handlingExeptionError(error);
+    }
+  },
+};
+
+const customerAuthApi = {
+  login: async (email, password) => {
     try {
     } catch (error) {
       return handlingExeptionError(error);
@@ -255,7 +270,8 @@ const categoryApi = {
 };
 
 export {
-  authApi,
+  adminAuthApi,
+  customerAuthApi,
   userApi,
   customerApi,
   customerAddressApi,

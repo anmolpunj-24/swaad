@@ -37,6 +37,6 @@ input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   -webkit-box-shadow: none inset !important;
-  -webkit-text-fill-color: white;
+  -webkit-text-fill-color: inherit;
   transition: background-color 5000s ease-in-out 0s !important;
 }

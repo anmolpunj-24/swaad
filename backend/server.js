@@ -17,6 +17,9 @@ const server = async () => {
   const authRoutes = require("./src/routes/authRoutes");
   app.use("/api/auth", authRoutes);
 
+  const adminAuthRoutes = require("./src/routes/adminAuthRoutes");
+  app.use("/api/admin", adminAuthRoutes);
+
   app.use(authenticateUserMiddleware);
 
   const userRoutes = require("./src/routes/userRoutes");
