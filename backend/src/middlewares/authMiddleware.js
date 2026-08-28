@@ -5,7 +5,7 @@ const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer")) {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ message: "No token provided!" });
     }
 
@@ -17,7 +17,7 @@ const authenticateUser = async (req, res, next) => {
         .json({ message: "Access denied. No valid token found!" });
     }
 
-    const decodedToken = jwt.decode(token);
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decodedToken || !decodedToken.email) {
       return res.status(400).json({ message: "Invalid token payload!" });

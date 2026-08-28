@@ -6,21 +6,36 @@ const userController = require("../controllers/admins/usersController");
 const addUserRules = require("../validations/addUserValidations");
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
+const uploadMiddleware = require("../middlewares/uploadMiddleware");
+const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
-const uploadMiddleware = require("../middlewares/uploadMiddleware")
+routes.get("/getAll", authenticateUserMiddleware, userController.getAllUsers);
 
-routes.get("/getAll", userController.getAllUsers);
+routes.get("/get/:id", authenticateUserMiddleware, userController.getOneUser);
 
-routes.get("/get/:id", userController.getOneUser);
+routes.post(
+  "/add",
+  authenticateUserMiddleware,
+  addUserRules,
+  validationMiddleware,
+  userController.addUser,
+);
 
-routes.post("/add", addUserRules, validationMiddleware, userController.addUser);
+routes.put(
+  "/update/:id",
+  authenticateUserMiddleware,
+  userController.updateUser,
+);
 
-routes.put("/update/:id", userController.updateUser);
-
-routes.delete("/delete/:id", userController.deleteUser);
+routes.delete(
+  "/delete/:id",
+  authenticateUserMiddleware,
+  userController.deleteUser,
+);
 
 routes.post(
   "/upload-profile",
+  authenticateUserMiddleware,
   uploadMiddleware("image").single("profile"),
   userController.uploadProfile,
 );

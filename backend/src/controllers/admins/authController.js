@@ -20,9 +20,15 @@ const userLogin = async (req, res) => {
     return res.status(401).json({ message: "Invalid password!" });
   }
 
-  const token = jwt.sign({ email: existingUser.email }, "", {
-    algorithm: "none",
-  });
+  const token = jwt.sign(
+    {
+      email: existingUser.email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   return res.status(200).json({
     message: "Login succesfull!",
@@ -120,6 +126,13 @@ const logout = async (req, res) => {
   return res.status(200).json({ message: "Logout successfull!" });
 };
 
+const getCurrentUser = async (req, res) => {
+  return res.status(200).json({
+    message: "User authenticated!",
+    user: req.user,
+  });
+};
+
 module.exports = {
   userLogin,
   registerUser,
@@ -127,4 +140,5 @@ module.exports = {
   resetPassword,
   updatePassword,
   logout,
+  getCurrentUser,
 };

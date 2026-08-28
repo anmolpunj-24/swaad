@@ -6,6 +6,7 @@ const passwordValidationRules = require("../validations/passwordValidations");
 const userRegisterRules = require("../validations/userRegisterValidations");
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
+const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
 const adminAuthController = require("../controllers/admins/authController");
 
@@ -18,22 +19,38 @@ routes.post(
 
 routes.post(
   "/register",
+  authenticateUserMiddleware,
   userRegisterRules,
   validationMiddleware,
   adminAuthController.registerUser,
 );
 
-routes.post("/forgot-password", adminAuthController.forgetPassword);
+routes.post(
+  "/forgot-password",
+  authenticateUserMiddleware,
+  adminAuthController.forgetPassword,
+);
 
-routes.post("reset-password", adminAuthController.resetPassword);
+routes.post(
+  "/reset-password",
+  authenticateUserMiddleware,
+  adminAuthController.resetPassword,
+);
 
 routes.post(
   "/update-password",
+  authenticateUserMiddleware,
   passwordValidationRules,
   validationMiddleware,
   adminAuthController.updatePassword,
 );
 
-routes.post("/logout", adminAuthController.logout);
+routes.post("/logout", authenticateUserMiddleware, adminAuthController.logout);
+
+routes.get(
+  "/me",
+  authenticateUserMiddleware,
+  adminAuthController.getCurrentUser,
+);
 
 module.exports = routes;

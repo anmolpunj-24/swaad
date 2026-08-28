@@ -11,7 +11,7 @@ export default function App({ Component, pageProps }) {
 
   return isLogin ? (
     <>
-      <Toaster position="top-right" duration={3000}/>
+      <Toaster />
       <Component {...pageProps} />
     </>
   ) : (

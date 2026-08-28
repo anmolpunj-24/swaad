@@ -4,22 +4,40 @@ const routes = express.Router();
 const customerAddressController = require("../controllers/customers/customersAddressController");
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
+const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
 const addCustomerAddressRules = require("../validations/addCustomerAddressValidations");
 
-routes.get("/getAll", customerAddressController.getAllCustomersAddress);
+routes.get(
+  "/getAll",
+  authenticateUserMiddleware,
+  customerAddressController.getAllCustomersAddress,
+);
 
-routes.get("/get/:id", customerAddressController.getOneCustomerAddress);
+routes.get(
+  "/get/:id",
+  authenticateUserMiddleware,
+  customerAddressController.getOneCustomerAddress,
+);
 
 routes.post(
   "/add",
+  authenticateUserMiddleware,
   addCustomerAddressRules,
   validationMiddleware,
   customerAddressController.addCustomerAddress,
 );
 
-routes.put("/update/:id", customerAddressController.updateCustomerAddress);
+routes.put(
+  "/update/:id",
+  authenticateUserMiddleware,
+  customerAddressController.updateCustomerAddress,
+);
 
-routes.delete("/delete/:id", customerAddressController.deleteCustomerAddress);
+routes.delete(
+  "/delete/:id",
+  authenticateUserMiddleware,
+  customerAddressController.deleteCustomerAddress,
+);
 
 module.exports = routes;

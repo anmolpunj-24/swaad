@@ -20,9 +20,15 @@ const userLogin = async (req, res) => {
     return res.status(401).json({ message: "Invalid email or password!" });
   }
 
-  const token = jwt.sign({ email: existingUser.email }, "", {
-    algorithm: "none",
-  });
+  const token = jwt.sign(
+    {
+      email: existingUser.email,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: "1d",
+    },
+  );
 
   return res.status(200).json({
     message: "Login succesfull!",
@@ -38,9 +44,9 @@ const registerUser = async (req, res) => {
       name: name,
       email: email,
     },
-    "",
+    process.env.JWT_SECRET,
     {
-      algorithm: "none",
+      expiresIn: "1d",
     },
   );
 

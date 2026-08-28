@@ -7,8 +7,6 @@ const db = require("./src/config/db");
 
 const errorHandlingMiddleware = require("./src/middlewares/globalErrorHandlingMiddleware");
 
-const authenticateUserMiddleware = require("./src/middlewares/authMiddleware");
-
 const server = async () => {
   await db();
 
@@ -19,8 +17,6 @@ const server = async () => {
 
   const adminAuthRoutes = require("./src/routes/adminAuthRoutes");
   app.use("/api/admin", adminAuthRoutes);
-
-  app.use(authenticateUserMiddleware);
 
   const userRoutes = require("./src/routes/userRoutes");
   app.use("/api/admin/user", userRoutes);

@@ -3,27 +3,35 @@ import axios from "axios";
 const api = axios.create({
   baseURL: "",
   timeout: 7200000,
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 const handlingExeptionError = async (error) => {
-  if (axios.isAxiosError(error)) {
-    if (error.response?.status === 401) {
-      // if (typeof window !== "undefined") {
-      //   await logoutHandler();
-      //   window.location.href = "/";
-      // }
-    }
-
+  if (!axios.isAxiosError(error)) {
     return {
-      data: { message: error.response?.data?.message ?? "An error occurred" },
-      status: error.response.status,
+      data: { message: "API Request Failed!" },
     };
-  } else {
-    return { data: { message: "API Request Failed!" } };
   }
+
+  const status = error.response?.status;
+  const requestUrl = error.config?.url;
+
+  if (
+    status === 401 &&
+    (requestUrl !== "/api/admin/login" || requestUrl !== "/api/admin/logout")
+  ) {
+    // if (typeof window !== "undefined") {
+    //   localStorage.removeItem("accessToken");
+    //   await logoutHandler();
+    //   window.location.href = "/";
+    // }
+  }
+
+  return {
+    data: {
+      message: error.response?.data?.message ?? "An error occurred",
+    },
+    status,
+  };
 };
 
 api.interceptors.response.use(
@@ -33,240 +41,101 @@ api.interceptors.response.use(
   },
 );
 
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+
+  if (token) {
+    config.headers.authorization = `Bearer ${token}`;
+  }
+
+  return config;
+});
+
 const adminAuthApi = {
   login: async (email, password) => {
-    try {
-      const response = await api.post(`/api/admin/login`, {
-        email,
-        password,
-      });
-      return response;
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
+    const response = await api.post(`/api/admin/login`, {
+      email,
+      password,
+    });
+    return response;
+  },
+
+  me: async () => {
+    const response = await api.get("/api/admin/me");
+    return response;
   },
 };
 
 const customerAuthApi = {
-  login: async (email, password) => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  login: async () => {},
 
-  logout: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  logout: async () => {},
 
-  resetPassword: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  resetPassword: async () => {},
 
-  forgotPassword: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  forgotPassword: async () => {},
 
-  updatePassword: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  updatePassword: async () => {},
 };
 
 const userApi = {
-  add: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  add: async () => {},
 
-  getAll: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getAll: async () => {},
 
-  getOne: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getOne: async () => {},
 
-  update: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  update: async () => {},
 
-  delete: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  delete: async () => {},
 
-  uploadProfile: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  uploadProfile: async () => {},
 };
 
 const customerApi = {
-  getAll: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getAll: async () => {},
 
-  getOne: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getOne: async () => {},
 
-  update: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  update: async () => {},
 
-  delete: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  delete: async () => {},
 };
 
 const customerAddressApi = {
-  add: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  add: async () => {},
 
-  getAll: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getAll: async () => {},
 
-  getOne: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getOne: async () => {},
 
-  update: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  update: async () => {},
 
-  delete: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  delete: async () => {},
 };
 
 const productApi = {
-  add: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  add: async () => {},
 
-  getAll: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getAll: async () => {},
 
-  getOne: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getOne: async () => {},
 
-  update: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  update: async () => {},
 
-  delete: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  delete: async () => {},
 };
 
 const categoryApi = {
-  add: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  add: async () => {},
 
-  getAll: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getAll: async () => {},
 
-  getOne: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  getOne: async () => {},
 
-  update: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  update: async () => {},
 
-  delete: async () => {
-    try {
-    } catch (error) {
-      return handlingExeptionError(error);
-    }
-  },
+  delete: async () => {},
 };
 
 export {

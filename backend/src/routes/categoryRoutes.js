@@ -3,14 +3,32 @@ const routes = express.Router();
 
 const categoryController = require("../controllers/admins/categoryController");
 
-routes.get("/getAll", categoryController.getAllCategories);
+const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
-routes.get("/get/:id", categoryController.getOneCategory);
+routes.get(
+  "/getAll",
+  authenticateUserMiddleware,
+  categoryController.getAllCategories,
+);
 
-routes.post("/add", categoryController.addCategory);
+routes.get(
+  "/get/:id",
+  authenticateUserMiddleware,
+  categoryController.getOneCategory,
+);
 
-routes.put("/update/:id", categoryController.updateCategory);
+routes.post("/add", authenticateUserMiddleware, categoryController.addCategory);
 
-routes.delete("/delete/:id", categoryController.deleteCategory);
+routes.put(
+  "/update/:id",
+  authenticateUserMiddleware,
+  categoryController.updateCategory,
+);
+
+routes.delete(
+  "/delete/:id",
+  authenticateUserMiddleware,
+  categoryController.deleteCategory,
+);
 
 module.exports = routes;
