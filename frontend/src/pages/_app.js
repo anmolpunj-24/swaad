@@ -7,9 +7,12 @@ import GlobalLoader from "@/components/ui/globalLoader";
 export default function App({ Component, pageProps }) {
   const router = useRouter();
 
-  const isLogin = router.pathname === "/";
+  const pagesToNotShowHeaderFooterSidebar =
+    router.pathname === "/" ||
+    router.pathname === "/404" ||
+    router.pathname === "/500";
 
-  return isLogin ? (
+  return pagesToNotShowHeaderFooterSidebar ? (
     <>
       <Toaster />
       <Component {...pageProps} />
