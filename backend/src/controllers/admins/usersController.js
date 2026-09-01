@@ -60,9 +60,11 @@ const uploadProfile = async (req, res) => {
 
   const updatedUserProfile = await userService.uploadProfileService(user, file);
 
-  return res.status(201).json({
+  const profileUrl = `${req.protocol}://${req.get("host")}/uploads/users/${user.uuid}/${updatedUserProfile.profile}`;
+
+  return res.status(200).json({
     message: "Profile picture updated!",
-    profile: updatedUserProfile,
+    profile: profileUrl,
   });
 };
 

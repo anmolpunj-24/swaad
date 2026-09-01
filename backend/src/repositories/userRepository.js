@@ -36,8 +36,8 @@ const deleteUserRepo = async (id) => {
   );
 };
 
-const uploadProfileRepo = async (user, file) => {
-  user.profile = file.filename;
+const uploadProfileRepo = async (user, fileName) => {
+  user.profile = fileName;
 
   const updatedUserProfile = await user.save();
 

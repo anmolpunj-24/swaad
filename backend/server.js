@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 
 const express = require("express");
 const app = express();
@@ -11,6 +12,8 @@ const server = async () => {
   await db();
 
   app.use(express.json());
+
+  app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
   const authRoutes = require("./src/routes/authRoutes");
   app.use("/api/auth", authRoutes);

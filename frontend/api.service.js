@@ -72,6 +72,16 @@ const adminAuthApi = {
     const response = await api.get("/api/admin/currentUser");
     return response;
   },
+
+  uploadProfile: async (file) => {
+    const formData = new FormData();
+
+    formData.append("profile", file);
+
+    const response = await api.post("/api/admin/user/upload-profile", formData);
+
+    return response;
+  },
 };
 
 const customerAuthApi = {

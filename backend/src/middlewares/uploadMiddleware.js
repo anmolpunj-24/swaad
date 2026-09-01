@@ -2,24 +2,26 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const userId = req.user.uuid;
+// const storage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     const userId = req.user.uuid;
 
-    const dir = path.join(process.cwd(), "uploads", "users", userId);
+//     const dir = path.join(process.cwd(), "uploads", "users", userId);
 
-    fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const uniqueFileName = Date.now() + "-" + file.originalname;
-    cb(null, uniqueFileName);
-  },
-});
+//     fs.mkdirSync(dir, { recursive: true });
+//     cb(null, dir);
+//   },
+//   filename: (req, file, cb) => {
+//     const uniqueFileName = Date.now() + "-" + file.originalname;
+//     cb(null, uniqueFileName);
+//   },
+// });
+
+const storage = multer.memoryStorage();
 
 const types = {
   image: {
-    fileSize: 10 * 1024, // 10 KB
+    fileSize: 10 * 1024 * 1024, // 10 MB
     fileTypes: /jpeg|jpg|png/,
     mimeType: ["image/jpeg", "image/png"],
     errorMessage: "Only images are allowed!",
@@ -37,7 +39,7 @@ const upload = (fileType) => {
   const getFileType = types[fileType];
 
   return multer({
-    storage: storage,
+    storage,
     limits: { fileSize: getFileType.fileSize },
     fileFilter: (req, file, cb) => {
       const extname = getFileType.fileTypes.test(

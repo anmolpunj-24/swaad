@@ -160,9 +160,26 @@ const logOutOfAllDevices = async (req, res) => {
 };
 
 const getCurrentUser = async (req, res) => {
+  const user = req.user;
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Unauthorized!",
+    });
+  }
+
+  const profileUrl = user.profile
+    ? `${process.env.BASE_URL}/uploads/users/${user.uuid}/${user.profile}`
+    : null;
+
   return res.status(200).json({
-    message: "User authenticated!",
-    user: req.user,
+    user: {
+      uuid: user.uuid,
+      name: user.name,
+      email: user.email,
+      profile: profileUrl,
+      isActive: user.isActive,
+    },
   });
 };
 

@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema(
 
     profile: {
       type: String,
-      default: "/assets/dummy-profile.jpg",
+      default: null,
     },
 
     isActive: { type: Boolean, default: true },
