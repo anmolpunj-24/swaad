@@ -32,7 +32,7 @@ const userLogin = async (req, res) => {
 
   return res.status(200).json({
     message: "Login succesfull!",
-    token: token,
+    token,
   });
 };
 
@@ -60,7 +60,9 @@ const registerUser = async (req, res) => {
 
   const newSessionToken = new accessTokensModel({
     userId: registeredUser?._id,
-    token: token,
+    token,
+    ipAddress: req.ip,
+    userAgent: req.get("User-Agent"),
   });
 
   const savedSessionToken = await newSessionToken.save();
@@ -133,54 +135,43 @@ const updatePassword = async (req, res) => {
   return res.status(200).json({ message: "Password updated successfully!" });
 };
 
-const logout = async (req, res) => {
-  const userId = req.user._id;
+const logOutOfCurrentDevice = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
 
-  if (!userId) {
-    return res.status(400).json({ message: "User not found!" });
+  if (!token) {
+    return res.status(401).json({ message: "No token provided!" });
   }
 
-  const deletedSessionToken = await accessTokensModel.deleteOne({ _id: id });
+  const deletedSession = await accessTokensModel.findOneAndDelete({
+    token,
+  });
 
-  return res.status(200).json({ message: "Logout successfull!" });
+  if (!deletedSession) {
+    return res.status(404).json({ message: "Session already invalid!" });
+  }
+
+  return res.status(200).json({
+    message: "Logged out successfully!",
+  });
 };
 
-// const logout = async (req, res) => {
-//   // Extract token from 'Bearer <token>'
-//   const token = req.headers.authorization?.split(' ')[1];
+const logOutOfAllDevices = async (req, res) => {
+  const userId = req.user._id;
 
-//   if (!token) {
-//     return res.status(400).json({ message: "No token provided!" });
-//   }
+  await accessTokensModel.deleteMany({
+    userId,
+  });
 
-//   // Delete the specific session matching this token
-//   const deletedSession = await sessionModel.findOneAndDelete({ token: token });
-
-//   if (!deletedSession) {
-//     return res.status(404).json({ message: "Session already invalid!" });
-//   }
-
-//   return res.status(200).json({ message: "Logout successful!" });
-// };
-
-// const logout = async (req, res) => {
-//   const userId = req.user._id;
-
-//   if (!userId) {
-//     return res.status(400).json({ message: "User ID is required!" });
-//   }
-
-//   // This clears out every single session document matching this userId
-//   await sessionModel.deleteMany({ userId: userId });
-
-//   return res.status(200).json({ message: "Logged out from all devices successfully!" });
-// };
-
+  return res.status(200).json({
+    message: "Logged out from all devices successfully!",
+  });
+};
 module.exports = {
   userLogin,
   registerUser,
   forgetPassword,
   resetPassword,
   updatePassword,
-  logout,
+  logOutOfCurrentDevice,
+  logOutOfAllDevices,
 };

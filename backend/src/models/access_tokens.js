@@ -7,11 +7,24 @@ const accessTokenSchema = new mongoose.Schema(
       ref: "users",
       required: true,
     },
-    
+
     token: {
       type: String,
       required: true,
       unique: true,
+    },
+
+    ipAddress: {
+      type: String,
+    },
+
+    userAgent: {
+      type: String,
+    },
+
+    lastUsedAt: {
+      type: Date,
+      default: Date.now,
     },
   },
   { timestamps: true },

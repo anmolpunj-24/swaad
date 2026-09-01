@@ -45,10 +45,20 @@ routes.post(
   adminAuthController.updatePassword,
 );
 
-routes.post("/logout", authenticateUserMiddleware, adminAuthController.logout);
+routes.post(
+  "/logout-current-device",
+  authenticateUserMiddleware,
+  adminAuthController.logOutOfCurrentDevice,
+);
+
+routes.post(
+  "/logout-all-devices",
+  authenticateUserMiddleware,
+  adminAuthController.logOutOfAllDevices,
+);
 
 routes.get(
-  "/me",
+  "/currentUser",
   authenticateUserMiddleware,
   adminAuthController.getCurrentUser,
 );

@@ -8,7 +8,7 @@ export default function BaseLayout({ children }) {
   const { loading, authenticated } = useAuth(true);
 
   if (loading) {
-    return <GlobalLoader />;
+    return <GlobalLoader />; 
   }
 
   if (!authenticated) {

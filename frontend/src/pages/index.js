@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 
 export default function Login() {
-  const { loading, authenticated } = useAuth(false);
+  const { loading } = useAuth(false);
   const router = useRouter();
   const {
     register,
@@ -44,10 +44,6 @@ export default function Login() {
 
   if (loading) {
     return <GlobalLoader />;
-  }
-
-  if (authenticated) {
-    return null;
   }
 
   return (
@@ -127,6 +123,16 @@ export default function Login() {
                       {errors.password.message}
                     </p>
                   )}
+
+                  <div className="mt-2 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => router.push("/forgot-password")}
+                      className="text-sm font-medium text-[#6B5135] transition-colors hover:text-[#463421] hover:cursor-pointer"
+                    >
+                      Forgot password?
+                    </button>
+                  </div>
                 </div>
 
                 <button

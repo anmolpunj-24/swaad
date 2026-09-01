@@ -45,6 +45,15 @@ routes.post(
   authController.updatePassword,
 );
 
-routes.post("/logout", authenticateUserMiddleware, authController.logout);
+routes.post(
+  "/logout-current-device",
+  authenticateUserMiddleware,
+  authController.logOutOfCurrentDevice,
+);
+routes.post(
+  "/logout-all-devices",
+  authenticateUserMiddleware,
+  authController.logOutOfAllDevices,
+);
 
 module.exports = routes;

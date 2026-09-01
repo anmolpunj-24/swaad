@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const user = require("../models/users");
+const accessTokensModel = require("../models/access_tokens");
 
 const authenticateUser = async (req, res, next) => {
   try {
@@ -21,6 +22,14 @@ const authenticateUser = async (req, res, next) => {
 
     if (!decodedToken || !decodedToken.email) {
       return res.status(400).json({ message: "Invalid token payload!" });
+    }
+
+    const storedToken = await accessTokensModel.findOne({ token });
+
+    if (!storedToken) {
+      return res.status(401).json({
+        message: "Invalid or expired session!",
+      });
     }
 
     const dbUser = await user.findOne({ email: decodedToken.email });

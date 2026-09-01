@@ -25,8 +25,15 @@ const useAuth = (requireAuth = false) => {
         return;
       }
 
+      if (!requireAuth) {
+        setAuthenticated(true);
+        setLoading(false);
+        router.replace("/dashboard");
+        return;
+      }
+
       try {
-        const response = await adminAuthApi.me();
+        const response = await adminAuthApi.currentUser();
 
         if (response?.status === 200) {
           setAuthenticated(true);

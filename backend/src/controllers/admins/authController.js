@@ -30,9 +30,18 @@ const userLogin = async (req, res) => {
     },
   );
 
+  const newSessionToken = new accessTokensModel({
+    userId: existingUser?._id,
+    token,
+    ipAddress: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
+  await newSessionToken.save();
+
   return res.status(200).json({
     message: "Login succesfull!",
-    token: token,
+    token,
   });
 };
 
@@ -114,16 +123,40 @@ const updatePassword = async (req, res) => {
   return res.status(200).json({ message: "Password updated successfully!" });
 };
 
-const logout = async (req, res) => {
-  const userId = req.user._id;
+const logOutOfCurrentDevice = async (req, res) => {
+  const token = req.headers.authorization?.split(" ")[1];
 
-  if (!userId) {
-    return res.status(400).json({ message: "User not found!" });
+  if (!token) {
+    return res.status(401).json({ message: "No token provided!" });
   }
 
-  const deletedSessionToken = await accessTokensModel.deleteOne({ _id: id });
+  const deletedSession = await accessTokensModel.findOneAndDelete({
+    token,
+  });
 
-  return res.status(200).json({ message: "Logout successfull!" });
+  if (!deletedSession) {
+    return res.status(404).json({ message: "Session already invalid!" });
+  }
+
+  return res.status(200).json({
+    message: "Logged out successfully!",
+  });
+};
+
+const logOutOfAllDevices = async (req, res) => {
+  if (!req.user || !req.user._id) {
+    return res.status(401).json({ message: "Unauthorized profile request!" });
+  }
+
+  const userId = req.user._id;
+
+  await accessTokensModel.deleteMany({
+    userId,
+  });
+
+  return res.status(200).json({
+    message: "Logged out from all devices successfully!",
+  });
 };
 
 const getCurrentUser = async (req, res) => {
@@ -139,6 +172,7 @@ module.exports = {
   forgetPassword,
   resetPassword,
   updatePassword,
-  logout,
+  logOutOfCurrentDevice,
+  logOutOfAllDevices,
   getCurrentUser,
 };
