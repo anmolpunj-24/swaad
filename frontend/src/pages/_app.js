@@ -10,7 +10,8 @@ export default function App({ Component, pageProps }) {
   const pagesToNotShowHeaderFooterSidebar =
     router.pathname === "/" ||
     router.pathname === "/404" ||
-    router.pathname === "/500";
+    router.pathname === "/500" ||
+    router.pathname === "/reset-password";
 
   return pagesToNotShowHeaderFooterSidebar ? (
     <>

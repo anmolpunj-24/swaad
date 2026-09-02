@@ -75,11 +75,27 @@ const adminAuthApi = {
 
   uploadProfile: async (file) => {
     const formData = new FormData();
-
     formData.append("profile", file);
-
     const response = await api.post("/api/admin/user/upload-profile", formData);
+    return response;
+  },
 
+  updatePassword: async (currentPassword, newPassword) => {
+    const response = await api.post(
+      "/api/admin/update-password",
+      currentPassword,
+      newPassword,
+    );
+    return response;
+  },
+
+  forgotPassword: async (email) => {
+    const response = await api.post("/api/admin/forgot-password", email);
+    return response;
+  },
+
+  resetPassword: async (newPassword) => {
+    const response = await api.post("/api/admin/reset-password", newPassword);
     return response;
   },
 };

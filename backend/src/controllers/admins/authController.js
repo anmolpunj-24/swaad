@@ -73,38 +73,26 @@ const forgetPassword = async (req, res) => {
 };
 
 const resetPassword = async (req, res) => {
-  const { newPassword, confirmNewPassword } = req.body;
+  const { newPassword } = req.body;
   const user = req.user;
 
-  if (!newPassword || !confirmNewPassword) {
-    return res.status(400).json({ message: "All fields are required!" });
-  }
-
-  if (newPassword != confirmNewPassword) {
-    return res
-      .status(422)
-      .json({ message: "New password and confirm password does not match!" });
+  if (!newPassword) {
+    return res.status(400).json({ message: "New password is required!" });
   }
 
   user.password = newPassword;
 
-  const updatedPassword = await user.save();
+  await user.save();
 
   return res.status(200).json({ message: "Password reset successfully!" });
 };
 
 const updatePassword = async (req, res) => {
-  const { currentPassword, newPassword, confirmNewPassword } = req.body;
+  const { currentPassword, newPassword } = req.body;
   const user = req.user;
 
-  if (!currentPassword || !newPassword || !confirmNewPassword) {
+  if (!currentPassword || !newPassword) {
     return res.status(400).json({ message: "All fields are required!" });
-  }
-
-  if (newPassword != confirmNewPassword) {
-    return res
-      .status(422)
-      .json({ message: "New password and confirm password does not match!" });
   }
 
   const validCurrentPassword = await bcrypt.compare(
@@ -117,8 +105,7 @@ const updatePassword = async (req, res) => {
   }
 
   user.password = newPassword;
-
-  const updatedPassword = await user.save();
+  await user.save();
 
   return res.status(200).json({ message: "Password updated successfully!" });
 };

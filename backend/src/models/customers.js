@@ -18,7 +18,7 @@ const customerSchema = new mongoose.Schema(
 
     gender: { type: String },
 
-    dob: { type: String },
+    dob: { type: Date },
 
     phone: {
       type: String,

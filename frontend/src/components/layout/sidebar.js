@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export default function Sidebar() {
   return (
-    <aside className="bg-[#2A2622] text-[#F7F4EC] min-w-[14rem] min-h-full p-4">
+    <aside className="bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] min-h-full p-4">
       <nav className="flex flex-col gap-1.5">
 
         <Link
