@@ -4,23 +4,28 @@ const getAllCustomersRepo = async () => {
   return await customerModel.find({ deletedAt: null });
 };
 
-const getOneCustomerRepo = async (id) => {
-  return await customerModel.findById({
-    uuid: id,
+const getOneCustomerRepo = async (uuid) => {
+  return await customerModel.findOne({
+    uuid,
     deletedAt: null,
   });
 };
 
-const updateCustomerRepo = async (id, customerData) => {
-  return await customerModel.findByIdAndUpdate(id, customerData, {
-    returnDocument: "after",
-    runValidators: true,
-  });
+const updateCustomerRepo = async (uuid, customerData) => {
+  return await customerModel.findOneAndUpdate(
+    { uuid, customerData },
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
 };
 
-const deleteCustomerRepo = async (id) => {
-  return await customerModel.findByIdAndUpdate(
-    id,
+const deleteCustomerRepo = async (uuid) => {
+  return await customerModel.findOneAndUpdate(
+    {
+      uuid,
+    },
     { deletedAt: new Date(), isActive: false },
     { new: true },
   );

@@ -21,16 +21,19 @@ const getOneUserRepo = async (uuid) => {
   return await userModel.findOne({ uuid });
 };
 
-const updateUserRepo = async (id, userData) => {
-  return await userModel.findByIdAndUpdate(id, userData, {
-    returnDocument: "after",
-    runValidators: true,
-  });
+const updateUserRepo = async (uuid, userData) => {
+  return await userModel.findOneAndUpdate(
+    { uuid, userData },
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
 };
 
-const deleteUserRepo = async (id) => {
-  return await userModel.findByIdAndUpdate(
-    id,
+const deleteUserRepo = async (uuid) => {
+  return await userModel.findOneAndUpdate(
+    { uuid },
     { deletedAt: new Date(), isActive: false },
     { new: true },
   );

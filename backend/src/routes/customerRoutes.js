@@ -12,19 +12,19 @@ routes.get(
 );
 
 routes.get(
-  "/get/:id",
+  "/get/:uuid",
   authenticateUserMiddleware,
   customerController.getOneCustomer,
 );
 
 routes.put(
-  "/update/:id",
+  "/update/:uuid",
   authenticateUserMiddleware,
   customerController.updateCustomer,
 );
 
 routes.delete(
-  "/delete/:id",
+  "/delete/:uuid",
   authenticateUserMiddleware,
   customerController.deleteCustomer,
 );

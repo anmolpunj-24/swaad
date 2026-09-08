@@ -5,23 +5,23 @@ const getAllCustomersService = async () => {
   return allCustomers;
 };
 
-const getOneCustomerService = async (id) => {
-  const customerData = await customerRepo.getOneCustomerRepo(id);
+const getOneCustomerService = async (uuid) => {
+  const customerData = await customerRepo.getOneCustomerRepo(uuid);
 
   return customerData;
 };
 
-const updateCustomerService = async (id, customerData) => {
+const updateCustomerService = async (uuid, customerData) => {
   const updatedCustomer = await customerRepo.updateCustomerRepo(
-    id,
+    uuid,
     customerData,
   );
 
   return updatedCustomer;
 };
 
-const deleteCustomerService = async (id) => {
-  const deletedUser = await customerRepo.deleteCustomerRepo(id);
+const deleteCustomerService = async (uuid) => {
+  const deletedUser = await customerRepo.deleteCustomerRepo(uuid);
   return deletedUser;
 };
 

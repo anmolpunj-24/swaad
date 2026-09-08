@@ -25,20 +25,20 @@ const getAllUsersService = async () => {
   return allUsers;
 };
 
-const getOneUserService = async (id) => {
-  const userData = await userRepo.getOneUserRepo(id);
+const getOneUserService = async (uuid) => {
+  const userData = await userRepo.getOneUserRepo(uuid);
 
   return userData;
 };
 
-const updateUserService = async (id, userData) => {
-  const updatedUser = await userRepo.updateUserRepo(id, userData);
+const updateUserService = async (uuid, userData) => {
+  const updatedUser = await userRepo.updateUserRepo(uuid, userData);
 
   return updatedUser;
 };
 
-const deleteUserService = async (id) => {
-  const deletedUser = await userRepo.deleteUserRepo(id);
+const deleteUserService = async (uuid) => {
+  const deletedUser = await userRepo.deleteUserRepo(uuid);
   return deletedUser;
 };
 
