@@ -17,8 +17,8 @@ const getAllUsersRepo = async () => {
   return await userModel.find();
 };
 
-const getOneUserRepo = async (id) => {
-  return await userModel.findById(id);
+const getOneUserRepo = async (uuid) => {
+  return await userModel.findOne({ uuid });
 };
 
 const updateUserRepo = async (id, userData) => {

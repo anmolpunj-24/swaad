@@ -11,7 +11,7 @@ const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
 routes.get("/getAll", authenticateUserMiddleware, userController.getAllUsers);
 
-routes.get("/get/:id", authenticateUserMiddleware, userController.getOneUser);
+routes.get("/get/:uuid", authenticateUserMiddleware, userController.getOneUser);
 
 routes.post(
   "/add",

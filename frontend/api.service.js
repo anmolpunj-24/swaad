@@ -120,9 +120,15 @@ const userApi = {
     return response;
   },
 
-  getAll: async () => {},
+  getAll: async () => {
+    const response = await api.get("/api/admin/user/getAll");
+    return response;
+  },
 
-  getOne: async () => {},
+  getOne: async (uuid) => {
+    const response = await api.get(`/api/admin/user/get/${uuid}`);
+    return response;
+  },
 
   update: async () => {},
 
@@ -140,8 +146,11 @@ const customerApi = {
 };
 
 const customerAddressApi = {
-   add: async (addressData) => {
-    const response = await api.post("/api/auth/customer-address/add", addressData);
+  add: async (addressData) => {
+    const response = await api.post(
+      "/api/auth/customer-address/add",
+      addressData,
+    );
     return response;
   },
 

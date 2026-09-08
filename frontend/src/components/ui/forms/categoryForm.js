@@ -81,11 +81,10 @@ export default function CategoryForm({
           <input
             id="slug"
             type="text"
-            readOnly
             {...register("slug", {
               required: "Slug is required!",
             })}
-            className="w-full cursor-not-allowed rounded-xl bg-[#F3E8D0]/50 px-4 py-4 text-[#806C52] outline-none transition-all duration-300"
+            className="w-full rounded-xl bg-[#F3E8D0]/50 px-4 py-4 text-[#806C52] outline-none transition-all duration-300 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
           />
         </div>
         <p className="mt-1 text-[0.5rem] text-black/60 text-right">
