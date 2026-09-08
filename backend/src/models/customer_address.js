@@ -21,11 +21,6 @@ const customerAddressSchema = new mongoose.Schema(
     city: { type: String, required: true },
 
     isDefault: { type: Boolean },
-
-    // isActive: {
-    //   type: Boolean,
-    //   default: true,
-    // },
   },
   { timestamps: true },
 );

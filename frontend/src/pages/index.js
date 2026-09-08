@@ -24,9 +24,14 @@ export default function Login() {
   };
 
   const onSubmit = async (data) => {
+    const loginData = {
+      email: data.email,
+      password: data.password,
+    };
+
     setMainLoading(true);
     try {
-      const res = await adminAuthApi.login(data.email, data.password);
+      const res = await adminAuthApi.login(loginData);
 
       if (res?.status === 200) {
         localStorage.setItem("accessToken", res.data.token);

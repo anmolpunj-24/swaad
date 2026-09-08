@@ -50,11 +50,8 @@ api.interceptors.request.use((config) => {
 });
 
 const adminAuthApi = {
-  login: async (email, password) => {
-    const response = await api.post(`/api/admin/login`, {
-      email,
-      password,
-    });
+  login: async (loginData) => {
+    const response = await api.post(`/api/admin/login`, loginData);
     return response;
   },
 
@@ -69,7 +66,7 @@ const adminAuthApi = {
   },
 
   currentUser: async () => {
-    const response = await api.get("/api/admin/currentUser");
+    const response = await api.get("/api/admin/current-user");
     return response;
   },
 
@@ -80,12 +77,8 @@ const adminAuthApi = {
     return response;
   },
 
-  updatePassword: async (currentPassword, newPassword) => {
-    const response = await api.post(
-      "/api/admin/update-password",
-      currentPassword,
-      newPassword,
-    );
+  updatePassword: async (passwordData) => {
+    const response = await api.post("/api/admin/update-password", passwordData);
     return response;
   },
 
@@ -98,6 +91,13 @@ const adminAuthApi = {
     const response = await api.post("/api/admin/reset-password", newPassword);
     return response;
   },
+};
+
+const getInfoOnTheBasisOfPincode = async (postalCode) => {
+  const response = await axios.get(
+    `https://api.postalpincode.in/pincode/${postalCode}`,
+  );
+  return response;
 };
 
 const customerAuthApi = {
@@ -115,7 +115,10 @@ const customerAuthApi = {
 };
 
 const userApi = {
-  add: async () => {},
+  add: async (userData) => {
+    const response = await api.post("/api/admin/user/add", userData);
+    return response;
+  },
 
   getAll: async () => {},
 
@@ -124,8 +127,6 @@ const userApi = {
   update: async () => {},
 
   delete: async () => {},
-
-  uploadProfile: async () => {},
 };
 
 const customerApi = {
@@ -139,7 +140,10 @@ const customerApi = {
 };
 
 const customerAddressApi = {
-  add: async () => {},
+   add: async (addressData) => {
+    const response = await api.post("/api/auth/customer-address/add", addressData);
+    return response;
+  },
 
   getAll: async () => {},
 
@@ -163,9 +167,15 @@ const productApi = {
 };
 
 const categoryApi = {
-  add: async () => {},
+  add: async (categoryData) => {
+    const response = await api.post("/api/admin/category/add", categoryData);
+    return response;
+  },
 
-  getAll: async () => {},
+  getAll: async () => {
+    const response = await api.get("/api/admin/category/getAll");
+    return response;
+  },
 
   getOne: async () => {},
 
@@ -176,6 +186,7 @@ const categoryApi = {
 
 export {
   adminAuthApi,
+  getInfoOnTheBasisOfPincode,
   customerAuthApi,
   userApi,
   customerApi,

@@ -138,11 +138,11 @@ export default function Header() {
       type: "password",
       validation: {
         pattern: {
-        value:
-          /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-        message:
-          "Password must contain 8+ characters, uppercase, lowercase, number, and special character!",
-      },
+          value:
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+          message:
+            "Password must contain 8+ characters, uppercase, lowercase, number, and special character!",
+        },
       },
     },
     {
@@ -150,14 +150,18 @@ export default function Header() {
       label: "Confirm New Password",
       type: "password",
       validation: {
-      validate: (value, getValues) =>
-        value === getValues("newPassword") ||
-        "Passwords do not match!",
-    },
+        validate: (value, getValues) =>
+          value === getValues("newPassword") || "Passwords do not match!",
+      },
     },
   ];
 
   const handleUpdatePassword = async (data) => {
+    const passwordData = {
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    };
+
     if (data.newPassword !== data.confirmPassword) {
       toast.error("New passwords do not match!");
       return;
@@ -166,11 +170,7 @@ export default function Header() {
     setUpdatePasswordLoading(true);
 
     try {
-      const res = await adminAuthApi.updatePassword({
-        currentPassword: data.currentPassword,
-        newPassword: data.newPassword,
-        confirmPassword: data.confirmPassword,
-      });5
+      const res = await adminAuthApi.updatePassword(passwordData);
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Password updated successfully!");

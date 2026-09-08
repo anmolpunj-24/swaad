@@ -11,10 +11,12 @@
   "dependencies": {
     "@tanstack/react-table": "^9.1.2",
     "axios": "^1.19.0",
+    "flatpickr": "^4.6.13",
     "lucide-react": "^1.33.0",
     "next": "16.3.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
+    "react-flatpickr": "^4.0.11",
     "react-hook-form": "^7.86.0",
     "sonner": "^2.0.8"
   },

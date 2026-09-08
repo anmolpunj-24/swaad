@@ -19,7 +19,6 @@ routes.post(
 
 routes.post(
   "/register",
-  authenticateUserMiddleware,
   userRegisterRules,
   validationMiddleware,
   adminAuthController.registerUser,
@@ -58,7 +57,7 @@ routes.post(
 );
 
 routes.get(
-  "/currentUser",
+  "/current-user",
   authenticateUserMiddleware,
   adminAuthController.getCurrentUser,
 );

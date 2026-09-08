@@ -30,9 +30,18 @@ const userLogin = async (req, res) => {
     },
   );
 
+  const newSessionToken = new accessTokensModel({
+    userId: existingUser?._id,
+    token,
+    ipAddress: req.ip,
+    userAgent: req.get("User-Agent"),
+  });
+
+  const savedSessionToken = await newSessionToken.save();
+
   return res.status(200).json({
     message: "Login succesfull!",
-    token,
+    token: savedSessionToken,
   });
 };
 
@@ -58,19 +67,10 @@ const registerUser = async (req, res) => {
 
   const registeredUser = await newUser.save();
 
-  const newSessionToken = new accessTokensModel({
-    userId: registeredUser?._id,
-    token,
-    ipAddress: req.ip,
-    userAgent: req.get("User-Agent"),
-  });
-
-  const savedSessionToken = await newSessionToken.save();
-
   return res.status(201).json({
     message: "Registration succesfull!",
     user: registeredUser,
-    token: savedSessionToken,
+    token,
   });
 };
 
