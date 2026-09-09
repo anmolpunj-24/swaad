@@ -2,13 +2,14 @@ import { useForm, Controller } from "react-hook-form";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { useEffect } from "react";
 
 export default function CategoryForm({
   defaultValues = {
     name: "",
     parentId: "",
     slug: "",
-    isActive: true,
+    isActive: false,
   },
   categories = [],
   onSubmit,
@@ -23,10 +24,21 @@ export default function CategoryForm({
     control,
     watch,
     setValue,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [
+    reset,
+    defaultValues.name,
+    defaultValues.parentId,
+    defaultValues.slug,
+    defaultValues.isActive,
+  ]);
 
   const router = useRouter();
 

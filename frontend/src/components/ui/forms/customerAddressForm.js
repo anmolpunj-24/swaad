@@ -2,6 +2,8 @@ import { useForm, Controller } from "react-hook-form";
 import { getInfoOnTheBasisOfPincode } from "../../../../api.service";
 import { useEffect, useState } from "react";
 import { LoaderCircle } from "lucide-react";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function CustomerAddressForm({
   defaultValues = {
@@ -24,10 +26,26 @@ export default function CustomerAddressForm({
     control,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [
+    reset,
+    defaultValues.addressLine_1,
+    defaultValues.addressLine_2,
+    defaultValues.country,
+    defaultValues.state,
+    defaultValues.city,
+    defaultValues.postalCode,
+    defaultValues.isDefault,
+  ]);
+
+  const router = useRouter();
 
   const postalCode = watch("postalCode");
   const [isLoadingLocation, setIsLoadingLocation] = useState(false);
@@ -326,7 +344,7 @@ export default function CustomerAddressForm({
         <button
           type="button"
           disabled={loading}
-          onClick={() => window.history.back()}
+          onClick={() => router.back()}
           className="rounded-full border border-[#9B7A43] px-7 py-3 font-medium tracking-wide text-[#4B3927] transition-all duration-200 hover:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
         >
           Back

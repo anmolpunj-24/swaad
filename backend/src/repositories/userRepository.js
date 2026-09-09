@@ -22,13 +22,10 @@ const getOneUserRepo = async (uuid) => {
 };
 
 const updateUserRepo = async (uuid, userData) => {
-  return await userModel.findOneAndUpdate(
-    { uuid, userData },
-    {
-      returnDocument: "after",
-      runValidators: true,
-    },
-  );
+  return await userModel.findOneAndUpdate({ uuid }, userData, {
+    returnDocument: "after",
+    runValidators: true,
+  });
 };
 
 const deleteUserRepo = async (uuid) => {

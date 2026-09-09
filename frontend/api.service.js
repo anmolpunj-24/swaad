@@ -136,11 +136,23 @@ const userApi = {
 };
 
 const customerApi = {
-  getAll: async () => {},
+  getAll: async () => {
+    const response = await api.get("/api/auth/customer/getAll");
+    return response;
+  },
 
-  getOne: async () => {},
+  getOne: async (uuid) => {
+    const response = await api.get(`/api/auth/customer/get/${uuid}`);
+    return response;
+  },
 
-  update: async () => {},
+  update: async (uuid, updateCustomerData) => {
+    const response = await api.put(
+      `/api/auth/customer/update/${uuid}`,
+      updateCustomerData,
+    );
+    return response;
+  },
 
   delete: async () => {},
 };
@@ -186,9 +198,18 @@ const categoryApi = {
     return response;
   },
 
-  getOne: async () => {},
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/category/get/${id}`);
+    return response;
+  },
 
-  update: async () => {},
+  update: async (id, updateCategoryData) => {
+    const response = await api.put(
+      `/api/admin/category/update/${id}`,
+      updateCategoryData,
+    );
+    return response;
+  },
 
   delete: async () => {},
 };

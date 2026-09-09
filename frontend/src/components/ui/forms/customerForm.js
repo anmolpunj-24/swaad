@@ -3,13 +3,14 @@ import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/confetti.css";
 import { ChevronDown } from "lucide-react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function CustomerForm({
   defaultValues = {
     gender: "",
-    dob: "",
+    dob: null,
     phone: "",
-    isActive: true,
+    isActive: false,
   },
   onSubmit,
   buttonText,
@@ -20,10 +21,21 @@ export default function CustomerForm({
     register,
     handleSubmit,
     control,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues,
   });
+
+  useEffect(() => {
+    reset(defaultValues);
+  }, [
+    reset,
+    defaultValues.gender,
+    defaultValues.dob,
+    defaultValues.phone,
+    defaultValues.isActive,
+  ]);
 
   const router = useRouter();
 
@@ -86,7 +98,7 @@ export default function CustomerForm({
             name="dob"
             control={control}
             rules={{
-              required: "Date of birth is required!",
+              required: "DOB is required!",
             }}
             render={({ field }) => (
               <Flatpickr

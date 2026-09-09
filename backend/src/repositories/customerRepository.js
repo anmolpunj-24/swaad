@@ -12,20 +12,15 @@ const getOneCustomerRepo = async (uuid) => {
 };
 
 const updateCustomerRepo = async (uuid, customerData) => {
-  return await customerModel.findOneAndUpdate(
-    { uuid, customerData },
-    {
-      returnDocument: "after",
-      runValidators: true,
-    },
-  );
+  return await customerModel.findOneAndUpdate({ uuid }, customerData, {
+    returnDocument: "after",
+    runValidators: true,
+  });
 };
 
 const deleteCustomerRepo = async (uuid) => {
   return await customerModel.findOneAndUpdate(
-    {
-      uuid,
-    },
+    { uuid },
     { deletedAt: new Date(), isActive: false },
     { new: true },
   );

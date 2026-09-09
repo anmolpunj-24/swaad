@@ -8,7 +8,7 @@ export default function AddUser() {
 
   const handleAddUser = async (data) => {
     const userData = {
-      name: data.name,
+      name: data.name,  
       email: data.email,
       password: data.password,
       gender: data.gender,
