@@ -46,7 +46,6 @@ export default function CategoryForm({
   ]);
 
   const router = useRouter();
-  console.log(categories, "cat");
 
   return (
     <form
@@ -188,7 +187,6 @@ export default function CategoryForm({
                     : false,
 
                   onChange: (e) => {
-                    console.log(e.target.value, "val");
                     const selectedCategory = categories.find(
                       (category) => category._id === e.target.value,
                     );
