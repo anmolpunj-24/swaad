@@ -13,9 +13,14 @@ const getOneCategoryService = async (id) => {
 };
 
 const addCategoryService = async (categoryData) => {
-  if (categoryData.parentId) {
+  const normalizedCategoryData = {
+    ...categoryData,
+    parentId: categoryData.parentId || null,
+  };
+
+  if (normalizedCategoryData.parentId) {
     const parentCategoryExist = await categoryRepo.checkIfParentCategoryExist(
-      categoryData.parentId,
+      normalizedCategoryData.parentId,
     );
 
     if (!parentCategoryExist) {
@@ -27,8 +32,8 @@ const addCategoryService = async (categoryData) => {
   }
 
   const existingCategory = await categoryRepo.checkIfExistingCategory(
-    categoryData.name,
-    categoryData.parentId,
+    normalizedCategoryData.name,
+    normalizedCategoryData.parentId,
   );
 
   if (existingCategory) {
@@ -38,7 +43,9 @@ const addCategoryService = async (categoryData) => {
     };
   }
 
-  const savedCategory = await categoryRepo.addCategoryRepo(categoryData);
+  const savedCategory = await categoryRepo.addCategoryRepo(
+    normalizedCategoryData,
+  );
 
   return savedCategory;
 };

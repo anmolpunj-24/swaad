@@ -10,7 +10,8 @@ export default function AddCategory() {
   const handleAddCategory = async (data) => {
     const categoryData = {
       name: data.name,
-      parentId: data.parentId,
+      parentId: data.parentId || null,
+      parentName: data.parentName,
       slug: data.slug,
       isActive: data.isActive,
     };
@@ -49,12 +50,8 @@ export default function AddCategory() {
     }
   };
 
-  const handleCategoryTypeChange = (isParent) => {
-    if (!isParent) {
-      getAllCategories();
-    } else {
-      setCategories([]);
-    }
+  const handleCategoryDropdownOpen = () => {
+    getAllCategories();
   };
 
   return (
@@ -72,7 +69,7 @@ export default function AddCategory() {
           loadingButtonText="Adding Category..."
           loading={addingCategory}
           categories={categories}
-          onCategoryTypeChange={handleCategoryTypeChange}
+          handleCategoryDropdownOpen={handleCategoryDropdownOpen}
         />
       </div>
     </>

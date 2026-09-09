@@ -20,10 +20,20 @@ export default function EditCategory() {
     const oneCategoryData = async () => {
       try {
         const res = await categoryApi.getOne(id);
-        console.log(res.data);
 
         if (res?.status === 200) {
-          setCategory(res.data.category);
+          const categoryData = res.data.category;
+
+          setCategory(categoryData);
+
+          if (categoryData.parentId) {
+            setCategories([
+              {
+                _id: categoryData.parentId,
+                name: categoryData.parentName,
+              },
+            ]);
+          }
         }
       } catch (error) {
         toast.error(
@@ -40,7 +50,8 @@ export default function EditCategory() {
   const handleCategoryUpdate = async (data) => {
     const updateCategoryData = {
       name: data.name,
-      parentId: data.parentId,
+      parentId: data.parentId || null,
+      parentName: data.parentName,
       slug: data.slug,
       isActive: data.isActive,
     };
@@ -80,22 +91,26 @@ export default function EditCategory() {
     }
   };
 
-  const handleCategoryTypeChange = (isParent) => {
-    if (!isParent) {
-      getAllCategories();
-    } else {
-      setCategories([]);
-    }
+  const handleCategoryDropdownOpen = () => {
+    getAllCategories();
   };
 
   const categoryDefaultValues = useMemo(
     () => ({
       name: category?.name || "",
-      parentId: category?.parentId ? category?.parentId : "",
+      parentId: category?.parentId ? category?.parentId : null,
+      parentName: category?.parentName || "",
       slug: category?.slug || "",
+      isParent: !category?.parentId,
       isActive: category?.isActive ?? false,
     }),
-    [category?.name, category?.parentId, category?.slug, category?.isActive],
+    [
+      category?.name,
+      category?.parentId,
+      category?.parentName,
+      category?.slug,
+      category?.isActive,
+    ],
   );
 
   return (
@@ -118,7 +133,8 @@ export default function EditCategory() {
           loading={updateLoading}
           defaultValues={categoryDefaultValues}
           categories={categories}
-          onCategoryTypeChange={handleCategoryTypeChange}
+          handleCategoryDropdownOpen={handleCategoryDropdownOpen}
+          currentCategoryId={category?._id}
         />
       </div>
     </>

@@ -13,6 +13,10 @@ const categorySchema = new mongoose.Schema(
       default: null,
     },
 
+    parentName: {
+      type: String,
+    },
+
     slug: {
       type: String,
       required: [true, "Slug is required!"],

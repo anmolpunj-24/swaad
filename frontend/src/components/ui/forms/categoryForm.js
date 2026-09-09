@@ -7,8 +7,10 @@ import { useEffect } from "react";
 export default function CategoryForm({
   defaultValues = {
     name: "",
-    parentId: "",
+    parentId: null,
+    parentName: "",
     slug: "",
+    isParent: false,
     isActive: false,
   },
   categories = [],
@@ -16,7 +18,8 @@ export default function CategoryForm({
   buttonText,
   loading = false,
   loadingButtonText,
-  onCategoryTypeChange,
+  handleCategoryDropdownOpen,
+  currentCategoryId = "",
 }) {
   const {
     register,
@@ -36,11 +39,14 @@ export default function CategoryForm({
     reset,
     defaultValues.name,
     defaultValues.parentId,
+    defaultValues.parentName,
     defaultValues.slug,
     defaultValues.isActive,
+    defaultValues.isParent,
   ]);
 
   const router = useRouter();
+  console.log(categories, "cat");
 
   return (
     <form
@@ -122,7 +128,6 @@ export default function CategoryForm({
           <Controller
             name="isParent"
             control={control}
-            defaultValue={!defaultValues.parentId}
             render={({ field }) => (
               <button
                 type="button"
@@ -135,9 +140,8 @@ export default function CategoryForm({
 
                   if (newValue) {
                     setValue("parentId", null);
+                    setValue("parentName", "");
                   }
-
-                  onCategoryTypeChange?.(newValue);
                 }}
                 className={`flex w-full items-center justify-between rounded-xl px-4 py-4 outline-none transition-all duration-300 ${
                   field.value ? "bg-[#F3E8D0]" : "bg-[#F3E8D0]/50"
@@ -182,18 +186,30 @@ export default function CategoryForm({
                   required: !watch("isParent")
                     ? "Parent category is required!"
                     : false,
+
+                  onChange: (e) => {
+                    console.log(e.target.value, "val");
+                    const selectedCategory = categories.find(
+                      (category) => category._id === e.target.value,
+                    );
+
+                    setValue("parentName", selectedCategory?.name || "");
+                  },
                 })}
+                onFocus={handleCategoryDropdownOpen}
                 className="w-full appearance-none rounded-xl bg-[#F3E8D0]/50 px-4 py-4 pr-12 text-[#3E3021] outline-none transition-all duration-300 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <option value="" disabled>
                   Select parent category
                 </option>
 
-                {categories.map((category) => (
-                  <option key={category._id} value={category._id}>
-                    {category.name}
-                  </option>
-                ))}
+                {categories
+                  ?.filter((item) => item._id !== currentCategoryId)
+                  .map((item) => (
+                    <option key={item._id} value={item._id}>
+                      {item.name}
+                    </option>
+                  ))}
               </select>
 
               <ChevronDown
