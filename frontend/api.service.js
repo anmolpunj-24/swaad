@@ -93,13 +93,6 @@ const adminAuthApi = {
   },
 };
 
-const getInfoOnTheBasisOfPincode = async (postalCode) => {
-  const response = await axios.get(
-    `https://api.postalpincode.in/pincode/${postalCode}`,
-  );
-  return response;
-};
-
 const customerAuthApi = {
   login: async () => {},
 
@@ -158,21 +151,7 @@ const customerApi = {
 };
 
 const customerAddressApi = {
-  add: async (addressData) => {
-    const response = await api.post(
-      "/api/auth/customer-address/add",
-      addressData,
-    );
-    return response;
-  },
-
   getAll: async () => {},
-
-  getOne: async () => {},
-
-  update: async () => {},
-
-  delete: async () => {},
 };
 
 const productApi = {
@@ -216,7 +195,6 @@ const categoryApi = {
 
 export {
   adminAuthApi,
-  getInfoOnTheBasisOfPincode,
   customerAuthApi,
   userApi,
   customerApi,
