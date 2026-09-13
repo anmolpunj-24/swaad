@@ -188,7 +188,7 @@ export default function Header() {
 
   return (
     <>
-      <header className="relative flex min-h-[3.5rem] items-center justify-between border-b border-[#E7E0D4] bg-[#FFFDF8] px-5 text-[#2A2622]">
+      <header className="shrink-0 relative flex min-h-[3.5rem] items-center justify-between border-b border-[#E7E0D4] bg-[#FFFDF8] px-5 text-[#2A2622]">
         <div className="flex items-baseline gap-2">
           <h1 className="text-[2rem] font-[550] tracking-[-0.04em]">SWAAD</h1>
 

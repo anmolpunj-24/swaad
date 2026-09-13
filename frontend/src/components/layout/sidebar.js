@@ -6,7 +6,7 @@ export default function Sidebar() {
   const [customersOpen, setCustomersOpen] = useState(false);
 
   return (
-    <aside className="bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] min-h-full p-4">
+    <aside className="shrink-0 bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] min-h-full p-4">
       <nav className="flex flex-col gap-1.5">
         <Link
           href="#"
@@ -42,7 +42,7 @@ export default function Sidebar() {
           <span className="text-sm font-medium">Users</span>
         </Link>
 
-        <div>
+        {/* <div>
           <button
             onClick={() => setCustomersOpen((prev) => !prev)}
             aria-expanded={customersOpen}
@@ -90,25 +90,9 @@ export default function Sidebar() {
 
                 <span>All Customers</span>
               </Link>
-
-              <Link
-                href="#"
-                className="group flex items-center gap-3 px-3 py-2 rounded-md
-              text-sm text-[#AFA69A]
-              transition-all duration-200
-              hover:bg-[#37312C]
-              hover:text-[#FFFDF8]"
-              >
-                <MapPin
-                  size={16}
-                  className="transition-transform duration-200 group-hover:translate-x-0.5"
-                />
-
-                <span>Addresses</span>
-              </Link>
             </div>
           )}
-        </div>
+        </div> */}
       </nav>
     </aside>
   );

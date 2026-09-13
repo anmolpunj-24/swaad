@@ -8,7 +8,7 @@ export default function BaseLayout({ children }) {
   const { loading, authenticated } = useAuth(true);
 
   if (loading) {
-    return <GlobalLoader />; 
+    return <GlobalLoader />;
   }
 
   if (!authenticated) {
@@ -16,13 +16,13 @@ export default function BaseLayout({ children }) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col h-screen overflow-hidden">
       <Header />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 min-h-0">
         <Sidebar />
 
-        <main className="flex-1 bg-[#F7F4EC] p-6">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto bg-[#F7F4EC] p-6">{children}</main>
       </div>
 
       <Footer />
