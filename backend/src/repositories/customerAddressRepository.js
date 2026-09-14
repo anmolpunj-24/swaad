@@ -1,46 +1,38 @@
 const customerAddressModel = require("../models/customer_address");
 
-const getAllCustomersAddressRepo = async () => {
-  return await customerAddressModel.find();
+const getAllCustomerAddressesRepo = async (customerUuid) => {
+  return await customerAddressModel
+    .find({ customerUuid })
+    .select(
+      "addressLine_1 addressLine_2 country state postalCode city isDefault createdAt",
+    )
+    .sort({ createdAt: -1 })
+    .lean();
 };
 
-const getOneCustomersAddressRepo = async (id) => {
-  return await customerAddressModel.find({ userId: id });
+const getOneCustomerAddressRepo = async (customerUuid, addressId) => {
+  return await customerAddressModel
+    .findOne({
+      _id: addressId,
+      customerUuid,
+    })
+    .select(
+      "addressLine_1 addressLine_2 country state postalCode city isDefault createdAt",
+    )
+    .lean();
 };
 
-const findCustomerAddressFromDb = async (customerId) => {
-  return await customerAddressModel.find({
-    userId: customerId,
-  });
+const findCustomerAddressesRepo = async (customerUuid) => {
+  return await customerAddressModel
+    .find({ customerUuid })
+    .select("_id isDefault")
+    .lean();
 };
 
-const updateDefaultToFalse = async (id) => {
-  return await customerAddressModel.updateOne(
-    { _id: id },
-    { $set: { isDefault: false } },
-  );
-};
-
-const addCustomerAddressRepo = async (
-  customerId,
-  customerAddressData,
-  isDefault,
-) => {
-  const newAddress = new customerAddressModel({
-    userId: customerId,
-    ...customerAddressData,
-    isDefault,
-  });
-
-  const savedAddress = await newAddress.save();
-
-  return savedAddress;
-};
-
-const checkIfThereIsAnAdressWithDefaultTrue = async (customerId) => {
-  return await customerAddressModel.findOneAndUpdate(
+const removeDefaultAddressRepo = async (customerUuid) => {
+  return await customerAddressModel.updateMany(
     {
-      userId: customerId,
+      customerUuid,
       isDefault: true,
     },
     {
@@ -51,15 +43,72 @@ const checkIfThereIsAnAdressWithDefaultTrue = async (customerId) => {
   );
 };
 
-const updatedCustomerAddressRepo = async (addressId, customerId, body) => {
+const addCustomerAddressRepo = async (
+  customerUuid,
+  customerAddressData,
+  isDefault,
+) => {
+  const newAddress = new customerAddressModel({
+    customerUuid,
+    ...customerAddressData,
+    isDefault,
+  });
+
+  const savedAddress = await newAddress.save();
+
+  return savedAddress;
+};
+
+const updatedCustomerAddressRepo = async (
+  customerUuid,
+  addressId,
+  customerAddressData,
+) => {
   return await customerAddressModel.findOneAndUpdate(
     {
       _id: addressId,
-      userId: customerId,
+      customerUuid,
     },
     {
       $set: {
-        ...body,
+        ...customerAddressData,
+      },
+    },
+    {
+      new: true,
+      runValidators: true,
+    },
+  );
+};
+
+const findTheAddressToDelete = async (customerUuid, addressId) => {
+  return await customerAddressModel.findOne({
+    _id: addressId,
+    customerUuid,
+  });
+};
+
+const deleteCustomerAddressRepo = async (customerUuid, addressId) => {
+  return await customerAddressModel.findOneAndDelete({
+    _id: addressId,
+    customerUuid,
+  });
+};
+
+const findMostRecentAddress = async (customerUuid) => {
+  return await customerAddressModel
+    .findOne({ customerUuid })
+    .sort({ createdAt: -1 });
+};
+
+const makeAddressDefault = async (customerUuid, addressId) => {
+  return await customerAddressModel.findOneAndUpdate(
+    {
+      _id: addressId,
+      customerUuid,
+    },
+    {
+      $set: {
         isDefault: true,
       },
     },
@@ -69,35 +118,12 @@ const updatedCustomerAddressRepo = async (addressId, customerId, body) => {
   );
 };
 
-const findTheAddressToDelete = async (addressId, customerId) => {
-  return await customerAddressModel.findOne({
-    _id: addressId,
-    userId: customerId,
-  });
-};
-
-const deleteCustomerAddressRepo = async (addressId) => {
-  return await customerAddressModel.deleteOne({ _id: addressId });
-};
-
-const findMostRecentAddress = async (customerId) => {
-  return await customerAddressModel
-    .findOne({ userId: customerId })
-    .sort({ createdAt: -1 });
-};
-
-const makeAddressDefault = async (address) => {
-  address.isDefault = true;
-  return await address.save();
-};
-
 module.exports = {
-  getAllCustomersAddressRepo,
-  getOneCustomersAddressRepo,
-  findCustomerAddressFromDb,
-  updateDefaultToFalse,
+  getAllCustomerAddressesRepo,
+  getOneCustomerAddressRepo,
+  findCustomerAddressesRepo,
+  removeDefaultAddressRepo,
   addCustomerAddressRepo,
-  checkIfThereIsAnAdressWithDefaultTrue,
   updatedCustomerAddressRepo,
   findTheAddressToDelete,
   deleteCustomerAddressRepo,

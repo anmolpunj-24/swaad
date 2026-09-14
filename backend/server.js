@@ -28,7 +28,7 @@ const server = async () => {
   app.use("/api/auth/customer", customerRoutes);
 
   const customerAddressRoutes = require("./src/routes/customerAddressRoutes");
-  app.use("/api/auth/customer-address", customerAddressRoutes);
+  app.use("/api/auth/customer/:uuid/address", customerAddressRoutes);
 
   const productRoutes = require("./src/routes/productRoutes");
   app.use("/api/admin/product", productRoutes);

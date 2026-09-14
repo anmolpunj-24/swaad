@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const customerAddressSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
+    customerUuid: {
+      type: String,
       required: true,
+      index: true,
     },
 
     addressLine_1: { type: String, required: true },
@@ -20,7 +20,7 @@ const customerAddressSchema = new mongoose.Schema(
 
     city: { type: String, required: true },
 
-    isDefault: { type: Boolean },
+    isDefault: { type: Boolean, default: false },
   },
   { timestamps: true },
 );

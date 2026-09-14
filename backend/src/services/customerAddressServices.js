@@ -1,24 +1,25 @@
 const customerAddressRepo = require("../repositories/customerAddressRepository");
 
-const getAllCustomersAddressService = async () => {
+const getAllCustomerAddressesService = async (customerUuid) => {
   const allCustomerAddress =
-    await customerAddressRepo.getAllCustomersAddressRepo();
-
+    await customerAddressRepo.getAllCustomerAddressesRepo(customerUuid);
   return allCustomerAddress;
 };
 
-const getOneCustomerAddressService = async (id) => {
+const getOneCustomerAddressService = async (customerUuid, addressId) => {
   const oneCustomerAddress =
-    await customerAddressRepo.getOneCustomersAddressRepo(id);
-
+    await customerAddressRepo.getOneCustomerAddressRepo(
+      customerUuid,
+      addressId,
+    );
   return oneCustomerAddress;
 };
 
-const addCustomerAddressService = async (customerAddressData, customerId) => {
-  const customerAddressFromDb =
-    await customerAddressRepo.findCustomerAddressFromDb(customerId);
+const addCustomerAddressService = async (customerAddressData, customerUuid) => {
+  const customerAddresses =
+    await customerAddressRepo.findCustomerAddressesRepo(customerUuid);
 
-  if (customerAddressFromDb.length >= 5) {
+  if (customerAddresses.length >= 5) {
     return {
       success: false,
       errorMessage:
@@ -26,22 +27,10 @@ const addCustomerAddressService = async (customerAddressData, customerId) => {
     };
   }
 
-  let isDefault = false;
-
-  if (customerAddressFromDb.length === 0) {
-    isDefault = true;
-  } else {
-    const oldDefaultAddress = customerAddressFromDb.find(
-      (addr) => addr.isDefault === true,
-    );
-
-    if (oldDefaultAddress) {
-      await customerAddressRepo.updateDefaultToFalse(oldDefaultAddress._id);
-    }
-  }
+  const isDefault = customerAddresses.length === 0;
 
   const savedAddress = await customerAddressRepo.addCustomerAddressRepo(
-    customerId,
+    customerUuid,
     customerAddressData,
     isDefault,
   );
@@ -49,12 +38,23 @@ const addCustomerAddressService = async (customerAddressData, customerId) => {
   return savedAddress;
 };
 
-const updateCustomerAddressService = async (customerId, addressId, body) => {
-  await customerAddressRepo.checkIfThereIsAnAdressWithDefaultTrue(customerId);
+const updateCustomerAddressService = async (customerUuid, addressId, body) => {
+  const existingAddress = await customerAddressRepo.getOneCustomerAddressRepo(
+    customerUuid,
+    addressId,
+  );
+
+  if (!existingAddress) {
+    return null;
+  }
+
+  if (body.isDefault === true) {
+    await customerAddressRepo.removeDefaultAddressRepo(customerUuid);
+  }
 
   const updatedCustomerAddress =
     await customerAddressRepo.updatedCustomerAddressRepo(
-      customerId,
+      customerUuid,
       addressId,
       body,
     );
@@ -62,31 +62,34 @@ const updateCustomerAddressService = async (customerId, addressId, body) => {
   return updatedCustomerAddress;
 };
 
-const deleteCustomerAddressService = async (customerId, addressId) => {
+const deleteCustomerAddressService = async (customerUuid, addressId) => {
   const addressToDelete = await customerAddressRepo.findTheAddressToDelete(
+    customerUuid,
     addressId,
-    customerId,
   );
 
   if (!addressToDelete) {
     return null;
   }
 
-  await customerAddressRepo.deleteCustomerAddressRepo(addressId);
+  await customerAddressRepo.deleteCustomerAddressRepo(customerUuid, addressId);
 
   if (addressToDelete.isDefault === true) {
     const mostRecentAddress =
-      await customerAddressRepo.findMostRecentAddress(customerId);
+      await customerAddressRepo.findMostRecentAddress(customerUuid);
 
     if (mostRecentAddress) {
-      await customerAddressRepo.makeAddressDefault(mostRecentAddress);
+      await customerAddressRepo.makeAddressDefault(
+        customerUuid,
+        mostRecentAddress._id,
+      );
     }
   }
   return true;
 };
 
 module.exports = {
-  getAllCustomersAddressService,
+  getAllCustomerAddressesService,
   getOneCustomerAddressService,
   addCustomerAddressService,
   updateCustomerAddressService,

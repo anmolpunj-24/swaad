@@ -1,32 +1,39 @@
 const customerAddressService = require("../../services/customerAddressServices");
 
-const getAllCustomersAddress = async (req, res) => {
+const getAllCustomerAddresses = async (req, res) => {
+  const customerUuid = req.params.uuid;
+
   const allCustomerAddress =
-    await customerAddressService.getAllCustomersAddressService();
+    await customerAddressService.getAllCustomerAddressesService(customerUuid);
 
   return res.status(200).json({
     message: "All customers address fetched!",
-    customersAddress: allCustomerAddress,
+    customerAddresses: allCustomerAddress,
   });
 };
 
 const getOneCustomerAddress = async (req, res) => {
-  const customerId = req.user._id;
+  const customerUuid = req.params.uuid;
+  const addressId = req.params.id;
 
-  const customerData =
-    await customerAddressService.getOneCustomerAddressService(customerId);
+  const customerAddressData =
+    await customerAddressService.getOneCustomerAddressService(
+      customerUuid,
+      addressId,
+    );
 
-  return res
-    .status(200)
-    .json({ message: "Customer address fetched!", customer: customerData });
+  return res.status(200).json({
+    message: "Customer address fetched!",
+    customerAddress: customerAddressData,
+  });
 };
 
 const addCustomerAddress = async (req, res) => {
   const body = req.body;
-  const userId = req.user._id;
+  const customerUuid = req.params.uuid;
 
   const customerAddressData =
-    await customerAddressService.addCustomerAddressService(body, userId);
+    await customerAddressService.addCustomerAddressService(body, customerUuid);
 
   if (customerAddressData.success === false) {
     return res.status(400).json({
@@ -41,57 +48,41 @@ const addCustomerAddress = async (req, res) => {
 };
 
 const updateCustomerAddress = async (req, res) => {
-  const customerId = req.user._id;
+  const customerUuid = req.params.uuid;
   const addressId = req.params.id;
-  const body = req.body;
+  const body = req.body; 
 
-  if (!customerId) {
-    return res.status(400).json({ message: "Customer not found!" });
-  }
-
-  if (!addressId) {
-    return res.status(400).json({ message: "No such address found!" });
-  }
-
-  const updatedCustomer =
+  const updatedCustomerAddress =
     await customerAddressService.updateCustomerAddressService(
-      customerId,
+      customerUuid,
       addressId,
       body,
     );
 
   return res.status(200).json({
     message: "Address updated successfully!",
-    customer: updatedCustomer,
+    customerAddress: updatedCustomerAddress,
   });
 };
 
 const deleteCustomerAddress = async (req, res) => {
-  const customerId = req.user._id;
+  const customerUuid = req.params.uuid;
   const addressId = req.params.id;
 
-  if (!customerId) {
-    return res.status(400).json({ message: "Customer not found!" });
-  }
-
-  if (!addressId) {
-    return res.status(400).json({ message: "No such address found!" });
-  }
-
-  const deletedCustomer =
+  const deletedCustomerAddress =
     await customerAddressService.deleteCustomerAddressService(
-      customerId,
+      customerUuid,
       addressId,
     );
 
   return res.status(200).json({
     message: "Address deleted successfully!",
-    customer: deletedCustomer,
+    customerAddress: deletedCustomerAddress,
   });
 };
 
 module.exports = {
-  getAllCustomersAddress,
+  getAllCustomerAddresses,
   getOneCustomerAddress,
   addCustomerAddress,
   updateCustomerAddress,

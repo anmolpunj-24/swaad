@@ -1,5 +1,5 @@
 const express = require("express");
-const routes = express.Router();
+const routes = express.Router({ mergeParams: true });
 
 const customerAddressController = require("../controllers/customers/customersAddressController");
 
@@ -11,7 +11,7 @@ const addCustomerAddressRules = require("../validations/addCustomerAddressValida
 routes.get(
   "/getAll",
   authenticateUserMiddleware,
-  customerAddressController.getAllCustomersAddress,
+  customerAddressController.getAllCustomerAddresses,
 );
 
 routes.get(
