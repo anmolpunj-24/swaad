@@ -4,7 +4,7 @@ const getAllCategoriesRepo = async () => {
   return await categoryModel
     .find({ deletedAt: null })
     .select("name parentId parentName slug isActive createdAt")
-    .sort({ createdAt: -1 })
+    .sort("-createdAt")
     .lean();
 };
 

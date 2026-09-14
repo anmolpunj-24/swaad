@@ -6,7 +6,7 @@ const getAllCustomerAddressesRepo = async (customerUuid) => {
     .select(
       "addressLine_1 addressLine_2 country state postalCode city isDefault createdAt",
     )
-    .sort({ createdAt: -1 })
+    .sort("-createdAt")
     .lean();
 };
 
@@ -98,7 +98,7 @@ const deleteCustomerAddressRepo = async (customerUuid, addressId) => {
 const findMostRecentAddress = async (customerUuid) => {
   return await customerAddressModel
     .findOne({ customerUuid })
-    .sort({ createdAt: -1 });
+    .sort("-createdAt");
 };
 
 const makeAddressDefault = async (customerUuid, addressId) => {
@@ -130,3 +130,5 @@ module.exports = {
   findMostRecentAddress,
   makeAddressDefault,
 };
+
+

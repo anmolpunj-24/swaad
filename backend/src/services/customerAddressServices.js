@@ -27,12 +27,14 @@ const addCustomerAddressService = async (customerAddressData, customerUuid) => {
     };
   }
 
-  const isDefault = customerAddresses.length === 0;
+  if (customerAddresses.length > 0) {
+    await customerAddressRepo.removeDefaultAddressRepo(customerUuid);
+  }
 
   const savedAddress = await customerAddressRepo.addCustomerAddressRepo(
     customerUuid,
     customerAddressData,
-    isDefault,
+    true,
   );
 
   return savedAddress;

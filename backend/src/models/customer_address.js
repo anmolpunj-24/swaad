@@ -8,6 +8,11 @@ const customerAddressSchema = new mongoose.Schema(
       index: true,
     },
 
+    customerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "customers",
+    },
+
     addressLine_1: { type: String, required: true },
 
     addressLine_2: { type: String },

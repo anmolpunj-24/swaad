@@ -77,7 +77,6 @@ const deleteCustomerAddress = async (req, res) => {
 
   return res.status(200).json({
     message: "Address deleted successfully!",
-    customerAddress: deletedCustomerAddress,
   });
 };
 

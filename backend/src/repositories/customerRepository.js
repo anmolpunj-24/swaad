@@ -1,21 +1,38 @@
 const customerModel = require("../models/customers");
+const customerAddressModel = require("../models/customer_address");
 
 const getAllCustomersRepo = async () => {
   return await customerModel
     .find({ deletedAt: null })
     .select("-_id gender dob phone isActive uuid createdAt")
-    .sort({ createdAt: -1 })
+    .sort("-createdAt")
     .lean();
 };
 
 const getOneCustomerRepo = async (uuid) => {
-  return await customerModel
+  const customer = await customerModel
     .findOne({
       uuid,
       deletedAt: null,
     })
     .select("-_id gender dob phone isActive uuid")
     .lean();
+
+  if (!customer) {
+    return null;
+  }
+
+  const addresses = await customerAddressModel
+    .find({
+      customerUuid: uuid,
+    })
+    .select("-_id -customerUuid").sort("-createdAt")
+    .lean();
+
+  return {
+    ...customer,
+    addresses,
+  };
 };
 
 const updateCustomerRepo = async (uuid, customerData) => {

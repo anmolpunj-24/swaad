@@ -17,7 +17,7 @@ const getAllUsersRepo = async () => {
   return await userModel
     .find({ deletedAt: null })
     .select("-_id name email profile isActive uuid createdAt")
-    .sort({ createdAt: -1 })
+    .sort("-createdAt")
     .lean();
 };
 
