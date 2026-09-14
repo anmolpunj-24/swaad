@@ -8,10 +8,7 @@ const addCustomerAddressValidations = [
     .isLength({ min: 2, max: 150 })
     .withMessage("Address Line 1 must be between 2 and 150 characters!"),
 
-  body("addressLine_2")
-    .trim()
-    .isLength({ min: 2, max: 100 })
-    .withMessage("Address Line 2 must be between 2 and 100 characters!"),
+  body("addressLine_2").trim(),
 
   body("country")
     .trim()

@@ -14,15 +14,22 @@ const addCustomerRepo = async (customerData) => {
 };
 
 const getAllUsersRepo = async () => {
-  return await userModel.find();
+  return await userModel
+    .find({ deletedAt: null })
+    .select("-_id name email profile isActive uuid createdAt")
+    .sort({ createdAt: -1 })
+    .lean();
 };
 
 const getOneUserRepo = async (uuid) => {
-  return await userModel.findOne({ uuid });
+  return await userModel
+    .findOne({ uuid, deletedAt: null })
+    .select("-_id name email profile isActive uuid")
+    .lean();
 };
 
 const updateUserRepo = async (uuid, userData) => {
-  return await userModel.findOneAndUpdate({ uuid }, userData, {
+  return await userModel.findOneAndUpdate({ uuid, deletedAt: null }, userData, {
     returnDocument: "after",
     runValidators: true,
   });
@@ -30,7 +37,7 @@ const updateUserRepo = async (uuid, userData) => {
 
 const deleteUserRepo = async (uuid) => {
   return await userModel.findOneAndUpdate(
-    { uuid },
+    { uuid, deletedAt: null },
     { deletedAt: new Date(), isActive: false },
     { new: true },
   );

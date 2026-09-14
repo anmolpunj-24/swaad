@@ -6,8 +6,11 @@ const accessTokensModel = require("../../models/access_tokens");
 
 const userLogin = async (req, res) => {
   const { email, password } = req.body;
+
   const existingUser = await user.findOne({
     email: email.toLowerCase(),
+    deletedAt: null,
+    isActive: true,
   });
 
   if (!existingUser) {
@@ -17,13 +20,11 @@ const userLogin = async (req, res) => {
   const isPasswordValid = await bcrypt.compare(password, existingUser.password);
 
   if (!isPasswordValid) {
-    return res.status(401).json({ message: "Invalid password!" });
+    return res.status(401).json({ message: "Invalid email or password!" });
   }
 
   const token = jwt.sign(
-    {
-      email: existingUser.email,
-    },
+    { uuid: existingUser.uuid, email: existingUser.email },
     process.env.JWT_SECRET,
     {
       expiresIn: "1d",
@@ -50,7 +51,7 @@ const registerUser = async (req, res) => {
 
   const newUser = new user({
     name,
-    email,
+    email: email.toLowerCase(),
     password,
   });
 
@@ -58,7 +59,11 @@ const registerUser = async (req, res) => {
 
   return res.status(201).json({
     message: "Registration succesfull!",
-    user: registeredUser,
+    user: {
+      uuid: registeredUser.uuid,
+      name: registeredUser.name,
+      email: registeredUser.email,
+    },
   });
 };
 
