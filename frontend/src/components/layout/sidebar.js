@@ -9,7 +9,7 @@ export default function Sidebar() {
     <aside className="shrink-0 bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] min-h-full p-4">
       <nav className="flex flex-col gap-1.5">
         <Link
-          href="#"
+          href="/dashboard"
           className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
           text-[#D8D0C4]
           border border-transparent
@@ -26,7 +26,7 @@ export default function Sidebar() {
         </Link>
 
         <Link
-          href="#"
+          href="/users"
           className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
           text-[#D8D0C4]
           border border-transparent
@@ -40,6 +40,23 @@ export default function Sidebar() {
             className="transition-transform duration-200 group-hover:scale-105"
           />
           <span className="text-sm font-medium">Users</span>
+        </Link>
+
+        <Link
+          href="/customers"
+          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
+          text-[#D8D0C4]
+          border border-transparent
+          transition-all duration-200
+          hover:bg-[#37312C]
+          hover:border-[#51483F]
+          hover:text-[#FFFDF8]"
+        >
+          <Users
+            size={19}
+            className="transition-transform duration-200 group-hover:scale-105"
+          />
+          <span className="text-sm font-medium">Customers</span>
         </Link>
 
         {/* <div>

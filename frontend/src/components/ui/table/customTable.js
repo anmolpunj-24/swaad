@@ -26,6 +26,10 @@ export default function CustomTable({
       type: "delete",
       label: "Delete",
     },
+    {
+      type: "info",
+      label: "Info",
+    },
   ];
 
   return (
@@ -64,10 +68,7 @@ export default function CustomTable({
             columns={columns}
             data={data}
             actions={dummyActions}
-            onAction={(action, row) => {
-              console.log("Action:", action);
-              console.log("Row:", row);
-            }}
+            onAction={(action, row) => {}}
           />
         </table>
       </div>

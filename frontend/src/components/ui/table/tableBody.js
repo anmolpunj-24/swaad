@@ -30,7 +30,7 @@ export default function TableBody({
               </td>
             )}
           </tr>
-        )) 
+        ))
       ) : (
         <tr>
           <td

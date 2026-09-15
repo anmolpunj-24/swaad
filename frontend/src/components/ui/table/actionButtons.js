@@ -1,14 +1,15 @@
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { Eye, Pencil, Trash2, Info } from "lucide-react";
 
 const actionIcons = {
   view: Eye,
   edit: Pencil,
   delete: Trash2,
+  info: Info,
 };
 
 export default function ActionButtons({ actions = [], row, onAction }) {
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center">
       {actions.map((action) => {
         const Icon = actionIcons[action.type];
 

@@ -6,6 +6,10 @@ const getAllCustomersRepo = async () => {
     .find({ deletedAt: null })
     .select("-_id gender dob phone isActive uuid createdAt")
     .sort("-createdAt")
+    .populate({
+      path: "userId",
+      select: "name email profile",
+    })
     .lean();
 };
 
@@ -15,7 +19,11 @@ const getOneCustomerRepo = async (uuid) => {
       uuid,
       deletedAt: null,
     })
-    .select("-_id gender dob phone isActive uuid")
+    .select("-_id gender dob phone isActive uuid createdAt")
+    .populate({
+      path: "userId",
+      select: "name email profile",
+    })
     .lean();
 
   if (!customer) {
@@ -26,7 +34,8 @@ const getOneCustomerRepo = async (uuid) => {
     .find({
       customerUuid: uuid,
     })
-    .select("-_id -customerUuid").sort("-createdAt")
+    .select("-_id -customerUuid")
+    .sort("-createdAt")
     .lean();
 
   return {

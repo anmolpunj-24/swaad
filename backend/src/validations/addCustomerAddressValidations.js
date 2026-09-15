@@ -37,6 +37,11 @@ const addCustomerAddressValidations = [
     .withMessage("City is required!")
     .isLength({ min: 2, max: 100 })
     .withMessage("City must be between 2 and 100 characters!"),
+
+  body("addressType")
+    .trim()
+    .notEmpty()
+    .withMessage("Address type is required!"),
 ];
 
 module.exports = addCustomerAddressValidations;

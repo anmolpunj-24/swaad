@@ -37,10 +37,6 @@ const useAuth = (requireAuth = false) => {
 
         if (response?.status === 200) {
           setAuthenticated(true);
-
-          if (!requireAuth) {
-            router.replace("/dashboard");
-          }
         } else {
           setAuthenticated(false);
           localStorage.removeItem("accessToken");
@@ -54,7 +50,9 @@ const useAuth = (requireAuth = false) => {
         localStorage.removeItem("accessToken");
 
         if (requireAuth) {
-          toast.error("Your session has expired. Please login again.");
+          toast.error("Your session has expired. Please login again.", {
+            id: "session-expired",
+          });
           router.replace("/");
         }
       } finally {

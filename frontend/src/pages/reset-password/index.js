@@ -15,9 +15,7 @@ export default function ResetPassword() {
 
   const newPassword = watch("newPassword");
 
-  const onSubmit = (data) => {
-    console.log(data);
-  };
+  const onSubmit = (data) => {};
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#F7F4EC] px-4">

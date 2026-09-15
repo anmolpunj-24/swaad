@@ -4,7 +4,7 @@ const getAllCustomerAddressesRepo = async (customerUuid) => {
   return await customerAddressModel
     .find({ customerUuid })
     .select(
-      "addressLine_1 addressLine_2 country state postalCode city isDefault createdAt",
+      "addressLine_1 addressLine_2 country state postalCode city addressType isDefault createdAt",
     )
     .sort("-createdAt")
     .lean();
@@ -17,7 +17,7 @@ const getOneCustomerAddressRepo = async (customerUuid, addressId) => {
       customerUuid,
     })
     .select(
-      "addressLine_1 addressLine_2 country state postalCode city isDefault createdAt",
+      "addressLine_1 addressLine_2 country state postalCode addressType city isDefault createdAt",
     )
     .lean();
 };

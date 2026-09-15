@@ -24,7 +24,7 @@ export default function GlobalLoader() {
     <div className="fixed inset-0 z-[1000] flex items-center justify-center bg-[#2A2622]/45 backdrop-blur-[2px]">
       <div className="flex flex-col items-center">
         <div key={index} className="animate-loader-switch text-[#765A38]">
-          <Icon size={42} strokeWidth={1.6} />
+          <Icon size={45} strokeWidth={1.5} />
         </div>
       </div>
 

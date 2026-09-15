@@ -56,7 +56,7 @@ export default function Login() {
   }
 
   return (
-    <div className="relative flex h-screen items-center justify-center overflow-hidden bg-[#F7E9C8] px-5 py-10">
+    <div className="relative flex h-screen items-center justify-center overflow-hidden bg-[#F0E0BB] px-5 py-10">
       <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-[#9B7A43]/10 blur-3xl" />
       <div className="pointer-events-none absolute -bottom-40 -right-32 h-96 w-96 rounded-full bg-[#463421]/10 blur-3xl" />
       <div className="relative grid w-full max-w-[900px] items-center gap-10 md:grid-cols-2 md:gap-16">
