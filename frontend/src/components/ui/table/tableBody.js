@@ -16,7 +16,13 @@ export default function TableBody({
           >
             {columns.map((column) => (
               <td key={column.key} className="px-5 py-4 text-sm text-[#3E3021]">
-                {column.render ? column.render(row) : (row[column.key] ?? "-")}
+                {column.render
+                  ? column.render(row)
+                  : row[column.key] === "" ||
+                      row[column.key] === null ||
+                      row[column.key] === undefined
+                    ? "-"
+                    : row[column.key]}{" "}
               </td>
             ))}
 
