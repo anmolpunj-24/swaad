@@ -19,6 +19,9 @@ import { useEffect, useState } from "react";
 import { customerApi } from "../../../api.service";
 import { dateHandler } from "@/utils/dateHandler";
 import { toast } from "sonner";
+import InfoItem from "@/components/ui/customer/infoItem";
+import EmptyState from "@/components/ui/customer/emptyState";
+import SectionHeader from "@/components/ui/customer/sectionHeader";
 
 export default function CustomerInfo() {
   const router = useRouter();
@@ -118,6 +121,7 @@ export default function CustomerInfo() {
           </div>
         </div>
       </div>
+
       <section className="relative overflow-hidden rounded-[22px] border border-[#E5DED1] bg-white">
         <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#F3E8D0]/50 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-40 h-32 w-32 rounded-full bg-[#F7F4EC] blur-2xl" />
@@ -183,13 +187,13 @@ export default function CustomerInfo() {
             <InfoItem
               icon={UserRound}
               label="Gender"
-              value={customer?.gender}
+              value={customer?.gender ?? "-"}
             />
 
             <InfoItem
               icon={CalendarDays}
               label="Date of Birth"
-              value={customer?.dob}
+              value={customer?.dob ?? "-"}
             />
 
             <InfoItem
@@ -203,7 +207,7 @@ export default function CustomerInfo() {
             <InfoItem
               icon={CalendarDays}
               label="Customer Since"
-              value={dateHandler(customer?.createdAt)}
+              value={dateHandler(customer?.createdAt) ?? "-"}
             />
           </div>
         </div>
@@ -235,10 +239,10 @@ export default function CustomerInfo() {
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-center gap-2">
                           <h3 className="text-sm font-bold text-[#332E29]">
-                            {address.addressType}
+                            {address?.addressType}
                           </h3>
 
-                          {address.isDefault && (
+                          {address?.isDefault && (
                             <span className="rounded-full bg-[#F3E8D0] px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-[#87652F]">
                               Default
                             </span>
@@ -246,13 +250,14 @@ export default function CustomerInfo() {
                         </div>
 
                         <p className="mt-1.5 text-sm leading-6 text-[#746B61]">
-                          {address.addressLine_1}
-                          {address.addressLine_2 &&
-                            `, ${address.addressLine_2}`}
+                          {address?.addressLine_1}
+                          {address?.addressLine_2 &&
+                            `, ${address?.addressLine_2}`}
                           <br />
-                          {address.city}, {address.state} - {address.postalCode}
+                          {address?.city}, {address?.state} -{" "}
+                          {address?.postalCode}
                           <br />
-                          {address.country}
+                          {address?.country}
                         </p>
                       </div>
                     </div>
@@ -295,17 +300,17 @@ export default function CustomerInfo() {
 
                         <div className="min-w-0">
                           <p className="truncate text-sm font-bold text-[#38312B]">
-                            {item.name}
+                            {item?.name}
                           </p>
 
                           <p className="mt-0.5 text-xs text-[#93887D]">
-                            {item.variant} · Qty {item.quantity}
+                            {item?.variant} · Qty {item?.quantity}
                           </p>
                         </div>
                       </div>
 
                       <p className="shrink-0 text-sm font-bold text-[#3A332D]">
-                        {formatPrice(item.price * item.quantity)}
+                        {formatPrice(item?.price * item?.quantity)}
                       </p>
                     </div>
                   ))}
@@ -379,12 +384,12 @@ export default function CustomerInfo() {
                     >
                       <td className="px-6 py-4">
                         <span className="font-mono text-sm font-bold tracking-wide text-[#4C443C]">
-                          #{order.id}
+                          #{order?.id}
                         </span>
                       </td>
 
                       <td className="px-6 py-4 text-sm text-[#766D64]">
-                        {order.date}
+                        {order?.date}
                       </td>
 
                       <td className="px-6 py-4">
@@ -392,12 +397,12 @@ export default function CustomerInfo() {
                           className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold ${status.className}`}
                         >
                           <StatusIcon size={13} />
-                          {order.status}
+                          {order?.status}
                         </span>
                       </td>
 
                       <td className="px-6 py-4 text-right text-sm font-extrabold text-[#38312B]">
-                        {formatPrice(order.amount)}
+                        {formatPrice(order?.amount)}
                       </td>
 
                       <td className="px-6 py-4">
@@ -444,69 +449,5 @@ export default function CustomerInfo() {
         )}
       </section>
     </>
-  );
-}
-
-function InfoItem({ icon: Icon, label, value }) {
-  return (
-    <div className="flex items-center gap-3 rounded-2xl bg-[#FCFAF5] px-4 py-3">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#F3E8D0] text-[#92703A]">
-        <Icon size={15} strokeWidth={1.8} />
-      </div>
-
-      <div className="min-w-0">
-        <p className="text-[9px] font-extrabold uppercase tracking-[0.13em] text-[#A0968C]">
-          {label}
-        </p>
-
-        <p className="mt-0.5 truncate text-xs font-bold text-[#4A423A]">
-          {value}
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function SectionHeader({ icon: Icon, title, subtitle, light = false }) {
-  return (
-    <div
-      className={`flex items-center justify-between px-5 py-5 ${
-        light ? "border-b border-[#EEE8DE]" : ""
-      }`}
-    >
-      <div className="flex items-center gap-3">
-        <div
-          className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-            light
-              ? "bg-[#F7F4EC] text-[#96733B]"
-              : "bg-[#F3E8D0] text-[#8B6B38]"
-          }`}
-        >
-          <Icon size={18} strokeWidth={1.8} />
-        </div>
-
-        <div>
-          <h2 className="text-sm font-extrabold tracking-wide text-[#39322C]">
-            {title}
-          </h2>
-
-          <p className="mt-0.5 text-xs text-[#93887D]">{subtitle}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EmptyState({ icon: Icon, title, text }) {
-  return (
-    <div className="flex flex-col items-center justify-center px-6 py-10 text-center">
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F7F4EC] text-[#A38A61]">
-        <Icon size={21} strokeWidth={1.7} />
-      </div>
-
-      <p className="mt-3 text-sm font-bold text-[#554C44]">{title}</p>
-
-      <p className="mt-1 max-w-xs text-xs leading-5 text-[#988E84]">{text}</p>
-    </div>
   );
 }
