@@ -1,5 +1,24 @@
 const customerAddressService = require("../../services/customerAddressServices");
 
+const addCustomerAddress = async (req, res) => {
+  const body = req.body;
+  const customerUuid = req.params.uuid;
+
+  const customerAddressData =
+    await customerAddressService.addCustomerAddressService(body, customerUuid);
+
+  if (customerAddressData.success === false) {
+    return res.status(400).json({
+      message: customerAddressData.errorMessage,
+    });
+  }
+
+  return res.status(201).json({
+    message: "Address added succesfully!",
+    customerAddress: customerAddressData,
+  });
+};
+
 const getAllCustomerAddresses = async (req, res) => {
   const customerUuid = req.params.uuid;
 
@@ -28,29 +47,10 @@ const getOneCustomerAddress = async (req, res) => {
   });
 };
 
-const addCustomerAddress = async (req, res) => {
-  const body = req.body;
-  const customerUuid = req.params.uuid;
-
-  const customerAddressData =
-    await customerAddressService.addCustomerAddressService(body, customerUuid);
-
-  if (customerAddressData.success === false) {
-    return res.status(400).json({
-      message: customerAddressData.errorMessage,
-    });
-  }
-
-  return res.status(201).json({
-    message: "Address added succesfully!",
-    customerAddress: customerAddressData,
-  });
-};
-
 const updateCustomerAddress = async (req, res) => {
   const customerUuid = req.params.uuid;
   const addressId = req.params.id;
-  const body = req.body; 
+  const body = req.body;
 
   const updatedCustomerAddress =
     await customerAddressService.updateCustomerAddressService(
@@ -69,11 +69,10 @@ const deleteCustomerAddress = async (req, res) => {
   const customerUuid = req.params.uuid;
   const addressId = req.params.id;
 
-  const deletedCustomerAddress =
-    await customerAddressService.deleteCustomerAddressService(
-      customerUuid,
-      addressId,
-    );
+  await customerAddressService.deleteCustomerAddressService(
+    customerUuid,
+    addressId,
+  );
 
   return res.status(200).json({
     message: "Address deleted successfully!",

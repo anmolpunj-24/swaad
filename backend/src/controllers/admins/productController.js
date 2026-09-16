@@ -1,7 +1,8 @@
 const productService = require("../../services/productServices");
 
 const addProduct = async (req, res) => {
-  const newProduct = await productService.addProductService(req.body);
+  const body = req.body
+  const newProduct = await productService.addProductService(body);
 
   return res
     .status(201)
@@ -19,10 +20,6 @@ const getAllProducts = async (req, res) => {
 const getOneProduct = async (req, res) => {
   const productId = req.params.id;
 
-  if (!productId) {
-    return res.status(400).json({ message: "Product id not found!" });
-  }
-
   const productData = await productService.getOneProductService(productId);
 
   return res
@@ -33,10 +30,6 @@ const getOneProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const productId = req.params.id;
   const body = req.body;
-
-  if (!productId) {
-    return res.status(400).json({ message: "Product id not found!" });
-  }
 
   const updatedProduct = await productService.updateProductService(
     productId,
@@ -50,10 +43,6 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   const productId = req.params.id;
-
-  if (!productId) {
-    return res.status(400).json({ message: "Product id not found!" });
-  }
 
   const deletedProduct = await productService.deleteProductService(productId);
 
