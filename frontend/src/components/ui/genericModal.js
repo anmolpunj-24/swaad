@@ -68,7 +68,7 @@ export default function GenericModal({
       onMouseDown={handleBackdropClick}
     >
       <div
-        className="w-full max-w-lg overflow-hidden rounded-3xl border border-[#E9DFCD] bg-white shadow-[0_24px_80px_rgba(42,38,34,0.18)]"
+        className="w-full max-w-lg overflow-hidden rounded-xl border border-[#E9DFCD] bg-white shadow-[0_24px_80px_rgba(42,38,34,0.18)]"
         onMouseDown={(event) => event.stopPropagation()}
       >
         <div className="border-b border-[#EEE7DA] bg-[#FCFAF6] px-6 py-5">

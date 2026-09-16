@@ -95,28 +95,29 @@ export default function CustomerInfo() {
   };
 
   return (
-    <div className="min-h-full bg-[#FCFAF5] px-6 py-6 text-[#2A2622]">
+    <>
       <div className="mb-6 flex items-center justify-between">
-        <button
-          type="button"
-          onClick={() => router.back()}
-          className="group flex items-center gap-2 text-sm font-semibold text-[#70665B] transition hover:text-[#2A2622]"
-        >
-          <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#E5DED1] bg-white transition group-hover:border-[#C9A15F] group-hover:bg-[#F7F4EC]">
-            <ArrowLeft size={17} />
-          </span>
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex h-10 w-10 items-center justify-center rounded-3xl border border-[#E7DDCA] bg-white text-[#6B5841] transition hover:border-[#C9A96A] hover:bg-[#FBF7EE] hover:cursor-pointer"
+          >
+            <ArrowLeft size={18} />
+          </button>
 
-          <span>Back to Customers</span>
-        </button>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#33281F]">
+              Customer detail
+            </h1>
 
-        <div className="flex items-center gap-2 rounded-full border border-[#E4DCCF] bg-white px-4 py-2">
-          <span className="h-2 w-2 rounded-full bg-[#7BAE83]" />
-          <span className="text-xs font-bold tracking-wide text-[#5E564D]">
-            CUSTOMER PROFILE
-          </span>
+            <p className="mt-1 text-sm text-[#88765E]">
+              Review customer details, saved addresses, cart activity, and
+              complete order history.
+            </p>
+          </div>
         </div>
       </div>
-
       <section className="relative overflow-hidden rounded-[22px] border border-[#E5DED1] bg-white">
         <div className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-[#F3E8D0]/50 blur-3xl" />
         <div className="pointer-events-none absolute bottom-0 right-40 h-32 w-32 rounded-full bg-[#F7F4EC] blur-2xl" />
@@ -194,7 +195,7 @@ export default function CustomerInfo() {
             <InfoItem
               icon={MapPin}
               label="Saved Addresses"
-              value={`${customer?.addresses?.length} ${
+              value={`${customer?.addresses?.length || 0} ${
                 customer?.addresses?.length === 1 ? "Address" : "Addresses"
               }`}
             />
@@ -213,7 +214,7 @@ export default function CustomerInfo() {
           <SectionHeader
             icon={MapPin}
             title="Addresses"
-            subtitle={`${customer?.addresses?.length} saved ${
+            subtitle={`${customer?.addresses?.length || 0} saved ${
               customer?.addresses?.length === 1 ? "address" : "addresses"
             }`}
           />
@@ -442,7 +443,7 @@ export default function CustomerInfo() {
           </div>
         )}
       </section>
-    </div>
+    </>
   );
 }
 

@@ -35,7 +35,7 @@ export default function Users() {
       label: "Status",
       render: (row) => (
         <span
-          className={`rounded-full px-3 py-1 text-xs font-semibold ${
+          className={`rounded-xl px-3 py-1 text-xs font-semibold ${
             row.isActive
               ? "bg-[#9B7A43]/15 text-[#806C52]"
               : "bg-[#963F32]/10 text-[#963F32]"

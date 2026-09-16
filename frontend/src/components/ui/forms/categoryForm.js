@@ -373,7 +373,7 @@ export default function CategoryForm({
         <button
           type="submit"
           disabled={loading}
-          className="flex items-center gap-2 rounded-xl bg-[#463421] px-7 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#59432C] disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
+          className="flex items-center gap-2 rounded-3xl bg-[#463421] px-7 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#59432C] disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
         >
           {loading ? (
             <>

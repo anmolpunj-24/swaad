@@ -3,8 +3,10 @@ import { userApi } from "../../../api.service";
 import { useState } from "react";
 import { toast } from "sonner";
 import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/router";
 
 export default function AddUser() {
+  const router = useRouter();
   const [addingUser, setAddingUser] = useState(false);
 
   const handleAddUser = async (data) => {
@@ -41,7 +43,7 @@ export default function AddUser() {
           <button
             type="button"
             onClick={() => router.back()}
-            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E7DDCA] bg-white text-[#6B5841] transition hover:border-[#C9A96A] hover:bg-[#FBF7EE] hover:cursor-pointer"
+            className="flex h-10 w-10 items-center justify-center rounded-3xl border border-[#E7DDCA] bg-white text-[#6B5841] transition hover:border-[#C9A96A] hover:bg-[#FBF7EE] hover:cursor-pointer"
           >
             <ArrowLeft size={18} />
           </button>

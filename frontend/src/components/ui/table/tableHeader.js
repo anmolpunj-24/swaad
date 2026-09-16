@@ -1,4 +1,4 @@
-import { Plus, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 export default function TableHeader({
   title = "",
@@ -6,7 +6,7 @@ export default function TableHeader({
   searchValue = "",
   onSearch,
   onAdd,
-  addButtonText = "Add", 
+  addButtonText = "Add",
 }) {
   return (
     <div className="bg-[#FFF8E7]">
@@ -40,7 +40,6 @@ export default function TableHeader({
             onClick={onAdd}
             className="flex items-center justify-center gap-2 rounded-full bg-[#463421] px-5 py-2.5 text-sm font-medium tracking-wide text-[#FFF8E7] transition-all duration-200 hover:bg-[#59432C] hover:cursor-pointer"
           >
-            <Plus size={17} />
             {addButtonText}
           </button>
         </div>
