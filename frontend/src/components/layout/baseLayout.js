@@ -22,7 +22,9 @@ export default function BaseLayout({ children }) {
       <div className="flex flex-1 min-h-0">
         <Sidebar />
 
-        <main className="min-h-0 flex-1 overflow-y-auto bg-[#F7F4EC] p-6">{children}</main>
+        <main className="min-h-0 flex-1 overflow-y-auto bg-[#F8F5ED] p-8">
+          {children}
+        </main>
       </div>
 
       <Footer />

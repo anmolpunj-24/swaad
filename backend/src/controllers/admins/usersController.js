@@ -24,22 +24,15 @@ const getOneUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const userId = req.params.uuid;
+  const body = req.body;
 
-  if (!userId) {
-    return res.status(400).json({ message: "User id not found!" });
-  }
-
-  const updatedUser = await userService.updateUserService(userId, req.body);
+  const updatedUser = await userService.updateUserService(userId, body);
 
   return res.status(200).json({ message: "User updated!", user: updatedUser });
 };
 
 const deleteUser = async (req, res) => {
   const userId = req.params.uuid;
-
-  if (!userId) {
-    return res.status(400).json({ message: "User id not found!" });
-  }
 
   const deletedUser = await userService.deleteUserService(userId);
 

@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { User, ChevronDown, KeyRound, LogOut, Loader2 } from "lucide-react";
+import {
+  User,
+  ChevronDown,
+  KeyRound,
+  LogOut,
+  Loader2,
+  Camera,
+} from "lucide-react";
 import { adminAuthApi } from "../../../api.service";
 import { toast } from "sonner";
 import capitaliseFirstLetter from "@/utils/capitaliseFirstLetter";
@@ -233,89 +240,140 @@ export default function Header() {
           </button>
 
           {open && (
-            <div className="absolute right-0 top-[calc(100%+1rem)] z-50 w-[270px] overflow-hidden rounded-2xl border border-[#E7E0D4] bg-[#FFFDF8] shadow-[0_12px_35px_rgba(74,54,28,0.14)]">
-              <div className="flex items-center gap-5 border-b border-[#E7E0D4] px-4 py-4">
-                <label className="relative block h-15 w-15 cursor-pointer">
-                  <div className="flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-[#E5D3AD] text-[#463421]">
-                    {profileLoading ? (
-                      <div className="flex h-full w-full items-center justify-center">
-                        <Loader2
-                          size={20}
-                          className="animate-spin text-[#463421]"
-                        />
+            <div className="absolute right-0 top-[calc(100%+0.75rem)] z-50 w-[290px] overflow-hidden rounded-2xl border border-[#E5DDCF] bg-white shadow-[0_18px_50px_rgba(74,54,28,0.16)]">
+              <div className="bg-[#FCFAF6] px-4 py-4">
+                <div className="flex items-center gap-3.5">
+                  <label className="group relative block h-14 w-14 shrink-0 cursor-pointer">
+                    <div className="h-full w-full rounded-full bg-[#F3E6CC] p-[2px] shadow-sm">
+                      <div className="relative flex h-full w-full items-center justify-center overflow-hidden rounded-full bg-[#E5D3AD] text-[#463421]">
+                        {profileLoading ? (
+                          <div className="flex h-full w-full items-center justify-center">
+                            <Loader2
+                              size={19}
+                              className="animate-spin text-[#8F6C36]"
+                            />
+                          </div>
+                        ) : user?.profile ? (
+                          <Image
+                            src={user.profile}
+                            alt="Profile"
+                            width={56}
+                            height={56}
+                            className="h-full w-full object-cover"
+                            unoptimized
+                          />
+                        ) : (
+                          <User size={25} />
+                        )}
+
+                        {!profileLoading && (
+                          <div className="absolute inset-0 flex items-center justify-center rounded-full bg-[#2A2622]/55 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                            <Camera size={17} className="text-white" />
+                          </div>
+                        )}
                       </div>
-                    ) : user?.profile ? (
-                      <Image
-                        src={user.profile}
-                        alt="Profile"
-                        width={40}
-                        height={40}
-                        className="h-full w-full object-cover"
-                        unoptimized
-                      />
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center text-[#463421]">
-                        <User size={28} />
-                      </div>
-                    )}
+                    </div>
+
+                    <span
+                      className={`absolute bottom-0.5 right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ${
+                        user?.isActive ? "bg-[#8DAA72]" : "bg-[#B9B0A3]"
+                      }`}
+                    />
+
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png"
+                      className="hidden"
+                      onChange={handleProfileUpload}
+                      disabled={profileLoading}
+                    />
+                  </label>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate text-sm font-bold text-[#33281F]">
+                      {capitaliseFirstLetter(user?.name) || "User"}
+                    </p>
+
+                    <p className="mt-0.5 truncate text-[11px] text-[#8A7B68]">
+                      {user?.email || ""}
+                    </p>
                   </div>
-
-                  <input
-                    type="file"
-                    accept="image/jpeg,image/png"
-                    className="hidden"
-                    onChange={handleProfileUpload}
-                    disabled={profileLoading}
-                  />
-                </label>
-
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-semibold text-[#2A2622]">
-                    {capitaliseFirstLetter(user?.name) || "User"}
-                  </p>
-
-                  <p className="truncate text-xs text-[#8A7B68]">
-                    {user?.email || ""}
-                  </p>
                 </div>
               </div>
 
-              <div className="p-2">
+              <div className="border-t border-[#EEE7DA] p-2">
                 <button
-                  onClick={() => setIsPasswordModalOpen(true)}
                   type="button"
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[#463421] transition-colors hover:bg-[#F7F4EC] hover:cursor-pointer"
+                  onClick={() => setIsPasswordModalOpen(true)}
+                  className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-200 hover:bg-[#FCF8EF] hover:cursor-pointer"
                 >
-                  <KeyRound size={17} />
-                  <span>Update Password</span>
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F5EBD8] text-[#9B783E] transition-colors group-hover:bg-[#F0E1C3]">
+                    <KeyRound size={16} />
+                  </span>
+
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-[#4B3929]">
+                      Update Password
+                    </p>
+
+                    <p className="mt-0.5 text-[10px] text-[#9A8B77]">
+                      Change your account password
+                    </p>
+                  </div>
                 </button>
               </div>
 
-              <div className="border-t border-[#E7E0D4] p-2">
+              <div className="border-t border-[#EEE7DA] p-2">
                 <button
                   type="button"
                   onClick={handleCurrentDeviceLogout}
                   disabled={logoutLoading || logoutAllLoading}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[#463421] transition-colors hover:bg-[#F7F4EC] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                  className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-200 hover:bg-[#F7F4EC] disabled:cursor-not-allowed disabled:opacity-50 hover:cursor-pointer"
                 >
-                  <LogOut size={17} />
-                  <span>
-                    {logoutLoading ? "Logging out..." : "Logout"}
-                  </span>{" "}
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F3F0EA] text-[#746653] transition-colors group-hover:bg-[#ECE7DE]">
+                    {logoutLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <LogOut size={16} />
+                    )}
+                  </span>
+
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-[#4B3929]">
+                      {logoutLoading ? "Logging out..." : "Logout"}
+                    </p>
+
+                    <p className="mt-0.5 text-[10px] text-[#9A8B77]">
+                      Sign out from this device
+                    </p>
+                  </div>
                 </button>
 
                 <button
                   type="button"
                   onClick={handleAllDevicesLogout}
                   disabled={logoutLoading || logoutAllLoading}
-                  className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm text-[#8B4035] transition-colors hover:bg-[#FBEDEA] hover:cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
+                  className="group mt-1 flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-200 hover:bg-[#FBEDEA] disabled:cursor-not-allowed disabled:opacity-50 hover:cursor-pointer"
                 >
-                  <LogOut size={17} />
-                  <span>
-                    {logoutAllLoading
-                      ? "Logging out..."
-                      : "Logout from all devices"}
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#F9E9E5] text-[#9A493D] transition-colors group-hover:bg-[#F5DEDA]">
+                    {logoutAllLoading ? (
+                      <Loader2 size={16} className="animate-spin" />
+                    ) : (
+                      <LogOut size={16} />
+                    )}
                   </span>
+
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold text-[#8B4035]">
+                      {logoutAllLoading
+                        ? "Logging out..."
+                        : "Logout from all devices"}
+                    </p>
+
+                    <p className="mt-0.5 text-[10px] text-[#A56B62]">
+                      End all active sessions
+                    </p>
+                  </div>
                 </button>
               </div>
             </div>

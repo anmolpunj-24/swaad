@@ -4,6 +4,7 @@ import { customerApi } from "../../../../api.service";
 import CustomerForm from "@/components/ui/forms/customerForm";
 import GlobalLoader from "@/components/ui/globalLoader";
 import { toast } from "sonner";
+import { ArrowLeft } from "lucide-react";
 
 export default function EditCustomer() {
   const router = useRouter();
@@ -36,11 +37,12 @@ export default function EditCustomer() {
   }, [router.isReady, uuid]);
 
   const handleCustomerUpdate = async (data) => {
-      const formattedDob = data.dob
-    ? `${data.dob.getFullYear()}-${String(
-        data.dob.getMonth() + 1,
-      ).padStart(2, "0")}-${String(data.dob.getDate()).padStart(2, "0")}`
-    : "";
+    const formattedDob = data.dob
+      ? `${data.dob.getFullYear()}-${String(data.dob.getMonth() + 1).padStart(
+          2,
+          "0",
+        )}-${String(data.dob.getDate()).padStart(2, "0")}`
+      : "";
 
     const updateCustomerData = {
       gender: data.gender,
@@ -80,23 +82,35 @@ export default function EditCustomer() {
     <>
       {fetchLoading && <GlobalLoader />}
 
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-[#2A2622]">Edit Customer</h1>
+      <div className="mb-6 flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            onClick={() => router.back()}
+            className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#E7DDCA] bg-white text-[#6B5841] transition hover:border-[#C9A96A] hover:bg-[#FBF7EE] hover:cursor-pointer"
+          >
+            <ArrowLeft size={18} />
+          </button>
 
-        <p className="mt-1 text-sm text-[#6f665d]">
-          Edit an existing customer.
-        </p>
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-[#33281F]">
+              Edit Customer
+            </h1>
+
+            <p className="mt-1 text-sm text-[#88765E]">
+              Edit an existing customer.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div className="max-w-full rounded-2xl bg-[#F7F4EC] p-6 shadow-[0_8px_30px_rgba(42,38,34,0.08)]">
-        <CustomerForm
-          onSubmit={handleCustomerUpdate}
-          buttonText="Update Customer"
-          loadingButtonText="Updating Customer..."
-          loading={updateLoading}
-          defaultValues={customerDefaultValues}
-        />
-      </div>
+      <CustomerForm
+        onSubmit={handleCustomerUpdate}
+        buttonText="Update Customer"
+        loadingButtonText="Updating Customer..."
+        loading={updateLoading}
+        defaultValues={customerDefaultValues}
+      />
     </>
   );
 }

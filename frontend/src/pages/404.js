@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Custom404() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#F7F4EC] px-6">
+    <div className="flex min-h-screen items-center justify-center bg-[#F8F5ED] px-6">
       <div className="text-center">
         <p className="text-8xl font-semibold tracking-tight text-[#463421]">
           404

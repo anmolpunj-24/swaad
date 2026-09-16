@@ -1,9 +1,16 @@
 import { useForm, Controller } from "react-hook-form";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/themes/confetti.css";
-import { ChevronDown } from "lucide-react";
-import { useRouter } from "next/router";
+import {
+  CalendarDays,
+  Check,
+  Phone,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import { useEffect } from "react";
+import GenericInput from "../genericInput";
+import GenericSelect from "../genericSelect";
 
 export default function CustomerForm({
   defaultValues = {
@@ -37,109 +44,39 @@ export default function CustomerForm({
     defaultValues.isActive,
   ]);
 
-  const router = useRouter();
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 gap-7 md:grid-cols-2"
       noValidate
+      className="space-y-8 rounded-2xl border border-[#E6DDCD] bg-white p-7 shadow-[0_12px_40px_rgba(78,57,28,0.07)]"
     >
       <div>
-        <div className="relative">
-          <label
-            htmlFor="gender"
-            className="absolute -top-2.5 left-3 z-10 px-2 text-[0.9rem] font-bold tracking-wide text-[#4B3927]"
-          >
-            Gender
-          </label>
+        <div className="mb-6 flex items-start gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E6CC] text-[#9B783E]">
+            <UserRound size={18} />
+          </div>
 
-          <div className="relative">
-            <select
-              id="gender"
-              disabled={loading}
-              {...register("gender", {
-                required: "Gender is required!",
-              })}
-              className="w-full appearance-none rounded-xl bg-[#F3E8D0]/50 px-4 py-4 pr-12 text-[#3E3021] outline-none transition-all duration-300 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
-            >
-              <option value="" disabled>
-                Select gender
-              </option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-              <option value="other">Other</option>
-            </select>
+          <div>
+            <h2 className="text-lg font-bold text-[#463525]">
+              Customer Information
+            </h2>
 
-            <ChevronDown
-              size={20}
-              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52]"
-            />
+            <p className="mt-1 text-xs leading-5 text-[#95846D]">
+              Update the personal information associated with this customer.
+            </p>
           </div>
         </div>
 
-        {errors.gender && (
-          <p className="mt-2 px-1 text-[12px] text-[#963F32]">
-            {errors.gender.message}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <div className="relative">
-          <label
-            htmlFor="dob"
-            className="absolute -top-2.5 left-3 z-10 px-2 text-[0.9rem] font-bold tracking-wide text-[#4B3927]"
-          >
-            Date of Birth
-          </label>
-
-          <Controller
-            name="dob"
-            control={control}
-            rules={{
-              required: "DOB is required!",
-            }}
-            render={({ field }) => (
-              <Flatpickr
-                value={field.value}
-                onChange={(dates) => {
-                  field.onChange(dates[0] || null);
-                }}
-                options={{
-                  dateFormat: "Y-m-d",
-                  altInput: true,
-                  altFormat: "F j, Y",
-                  maxDate: "today",
-                  minDate: "1900-01-01",
-                }}
-                disabled={loading}
-                className="w-full rounded-xl bg-[#F3E8D0]/50 px-4 py-4 text-[#3E3021] outline-none transition-all duration-300 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            )}
-          />
-        </div>
-
-        {errors.dob && (
-          <p className="mt-2 px-1 text-[12px] text-[#963F32]">
-            {errors.dob.message}
-          </p>
-        )}
-      </div>
-
-      <div>
-        <div className="relative">
-          <label
-            htmlFor="phone"
-            className="absolute -top-2.5 left-3 z-10 px-2 text-[0.9rem] font-bold tracking-wide text-[#4B3927]"
-          >
-            Phone
-          </label>
-
-          <input
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <GenericInput
             id="phone"
+            label="Phone"
             type="tel"
+            required
             disabled={loading}
+            error={errors.phone?.message}
+            icon={Phone}
+            maxLength={10}
             {...register("phone", {
               required: "Phone is required!",
               pattern: {
@@ -147,76 +84,176 @@ export default function CustomerForm({
                 message: "Phone number must contain 10 digits!",
               },
             })}
-            className="w-full rounded-xl bg-[#F3E8D0]/50 px-4 py-4 text-[#3E3021] outline-none transition-all duration-300 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
           />
-        </div>
 
-        {errors.phone && (
-          <p className="mt-2 px-1 text-[12px] text-[#963F32]">
-            {errors.phone.message}
-          </p>
-        )}
+          <GenericSelect
+            id="gender"
+            label="Gender"
+            required
+            disabled={loading}
+            error={errors.gender?.message}
+            icon={UserRound}
+            {...register("gender", {
+              required: "Gender is required!",
+            })}
+          >
+            <option value="" disabled>
+              Select gender
+            </option>
+
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </GenericSelect>
+
+          <div className="min-w-0">
+            <div className="relative w-full">
+              <label
+                htmlFor="dob"
+                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
+              >
+                Date of Birth <span className="text-[#B28B4C]">*</span>
+              </label>
+
+              <div className="relative w-full">
+                <CalendarDays
+                  size={17}
+                  className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[#9B7A43]"
+                />
+
+                <Controller
+                  name="dob"
+                  control={control}
+                  rules={{
+                    required: "Date of birth is required!",
+                  }}
+                  render={({ field }) => (
+                    <Flatpickr
+                      value={field.value}
+                      onChange={(dates) => {
+                        field.onChange(dates[0] || null);
+                      }}
+                      options={{
+                        dateFormat: "Y-m-d",
+                        altInput: true,
+                        altFormat: "F j, Y",
+                        maxDate: "today",
+                        minDate: "1900-01-01",
+                        static: true,
+                      }}
+                      disabled={loading}
+                      className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white pl-11 pr-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
+                    />
+                  )}
+                />
+              </div>
+            </div>
+
+            {errors.dob && (
+              <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
+                {errors.dob.message}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
 
-      <div>
-        <div className="relative">
-          <label
-            htmlFor="isActive"
-            className="absolute -top-2.5 left-3 z-10 px-2 text-[0.9rem] font-bold tracking-wide text-[#4B3927]"
-          >
-            Customer Status
-          </label>
+      <div className="border-t border-[#ECE4D6] pt-8">
+        <div className="mb-6 flex items-start gap-4">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E6CC] text-[#9B783E]">
+            <ShieldCheck size={18} />
+          </div>
 
-          <Controller
-            name="isActive"
-            control={control}
-            render={({ field }) => (
-              <button
-                type="button"
-                id="isActive"
-                disabled={loading}
-                onClick={() => field.onChange(!field.value)}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-4 outline-none transition-all duration-300 ${
-                  field.value ? "bg-[#F3E8D0]" : "bg-[#F3E8D0]/50"
-                } disabled:cursor-not-allowed disabled:opacity-60`}
-              >
-                <span className="text-[#3E3021]">
-                  {field.value ? "Active" : "Inactive"}
-                </span>
+          <div>
+            <h2 className="text-lg font-bold text-[#463525]">
+              Customer Status
+            </h2>
 
-                <span
-                  className={`relative h-6 w-11 rounded-full transition-colors duration-300 ${
-                    field.value ? "bg-[#9B7A43]" : "bg-[#806C52]/40"
+            <p className="mt-1 text-xs leading-5 text-[#95846D]">
+              Control whether this customer account is currently active.
+            </p>
+          </div>
+        </div>
+
+        <Controller
+          name="isActive"
+          control={control}
+          render={({ field }) => (
+            <button
+              type="button"
+              disabled={loading}
+              onClick={() => field.onChange(!field.value)}
+              className={`flex w-full items-center justify-between rounded-2xl border p-5 text-left transition-all duration-300 ${
+                field.value
+                  ? "border-[#DCC9A5] bg-[#FCF8EF]"
+                  : "border-[#E5DDD0] bg-[#FCFBF8]"
+              } disabled:cursor-not-allowed disabled:opacity-60`}
+            >
+              <div className="flex items-center gap-4">
+                <div
+                  className={`flex h-11 w-11 items-center justify-center rounded-xl transition ${
+                    field.value
+                      ? "bg-[#F1E1C2] text-[#9B783E]"
+                      : "bg-[#ECE8E1] text-[#948878]"
                   }`}
                 >
-                  <span
-                    className={`absolute top-1 h-4 w-4 rounded-full bg-[#FFF8E7] shadow-sm transition-transform duration-300 ${
-                      field.value ? "translate-x-[3px]" : "-translate-x-[18px]"
-                    }`}
-                  />
-                </span>
-              </button>
-            )}
-          />
-        </div>
+                  <ShieldCheck size={19} />
+                </div>
+
+                <div>
+                  <p className="text-sm font-bold text-[#4B3929]">
+                    {field.value
+                      ? "Customer is active"
+                      : "Customer is inactive"}
+                  </p>
+
+                  <p className="mt-1 text-xs text-[#95846D]">
+                    {field.value
+                      ? "This customer can use the platform."
+                      : "This customer will not be able to use the platform."}
+                  </p>
+                </div>
+              </div>
+
+              <span
+                className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-300 ${
+                  field.value ? "bg-[#B18A4D]" : "bg-[#CFC7B9]"
+                }`}
+              >
+                <span
+                  className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
+                    field.value ? "translate-x-6" : "translate-x-1"
+                  }`}
+                />
+              </span>
+            </button>
+          )}
+        />
       </div>
 
-      <div className="flex items-center justify-end gap-3 md:col-span-2">
-        <button
-          type="button"
-          disabled={loading}
-          onClick={() => router.back()}
-          className="rounded-full border border-[#9B7A43] px-7 py-3 font-medium tracking-wide text-[#4B3927] transition-all duration-200 hover:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
-        >
-          Back
-        </button>
+      <div className="flex flex-col-reverse gap-4 border-t border-[#ECE4D6] pt-7 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex items-center gap-2 text-xs text-[#95846C]">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[#F0E5D1] text-[#9B783E]">
+            <Check size={13} />
+          </span>
+
+          <span>Review the changes before updating the customer.</span>
+        </div>
 
         <button
           type="submit"
           disabled={loading}
-          className="rounded-full bg-[#463421] px-8 py-3 font-medium tracking-wide text-[#FFF8E7] transition-all duration-200 hover:bg-[#59432C] disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
+          className="flex items-center gap-2 rounded-xl bg-[#463421] px-7 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#59432C] disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {loading ? loadingButtonText : buttonText}
+          {loading ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+
+              {loadingButtonText}
+            </>
+          ) : (
+            buttonText
+          )}
         </button>
       </div>
     </form>
