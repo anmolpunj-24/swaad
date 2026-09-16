@@ -1,43 +1,43 @@
 const express = require("express");
-const routes = express.Router();
+const routes = express.Router({ mergeParams: true });
 
-const productController = require("../controllers/admins/productController");
+const productReviewsController = require("../controllers/admins/productReviewsController");
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
-const addProductRules = require("../validations/addProductValidations");
+const addProductReviewRules = require("../validations/addProductReviewValidations");
 
 routes.get(
   "/getAll",
   authenticateUserMiddleware,
-  productController.getAllProducts,
+  productReviewsController.getAllProductReviews,
 );
 
 routes.get(
   "/get/:id",
   authenticateUserMiddleware,
-  productController.getOneProduct,
+  productReviewsController.getOneProductReview,
 );
 
 routes.post(
   "/add",
   authenticateUserMiddleware,
-  addProductRules,
+  addProductReviewRules,
   validationMiddleware,
-  productController.addProduct,
+  productReviewsController.addProductReview,
 );
 
 routes.put(
   "/update/:id",
   authenticateUserMiddleware,
-  productController.updateProduct,
+  productReviewsController.updateProductReview,
 );
 
 routes.delete(
   "/delete/:id",
   authenticateUserMiddleware,
-  productController.deleteProduct,
+  productReviewsController.deleteProductReview,
 );
 
 module.exports = routes;

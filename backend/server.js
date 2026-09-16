@@ -33,6 +33,15 @@ const server = async () => {
   const productRoutes = require("./src/routes/productRoutes");
   app.use("/api/admin/product", productRoutes);
 
+  const productVariantRoutes = require("./src/routes/productVariantRoutes");
+  app.use("/api/admin/product/:productId/variant", productVariantRoutes);
+
+  const productImageRoutes = require("./src/routes/productImagesRoutes");
+  app.use("/api/admin/product/:productId/image", productImageRoutes);
+
+  const productReviewRoutes = require("./src/routes/productReviewsRoutes");
+  app.use("/api/admin/product/:productId/review", productReviewRoutes);
+
   const categoryRoutes = require("./src/routes/categoryRoutes");
   app.use("/api/admin/category", categoryRoutes);
 

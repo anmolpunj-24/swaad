@@ -40,11 +40,6 @@ const productVariantSchema = new mongoose.Schema(
       min: 0,
     },
 
-    featuredImage: {
-      url: String,
-      alt: String,
-    },
-
     isActive: {
       type: Boolean,
       default: true,

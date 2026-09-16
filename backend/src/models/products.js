@@ -14,12 +14,9 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
-    shortDescription: {
+    tagLine: {
       type: String,
-    },
-
-    description: {
-      type: String,
+      required: true,
     },
 
     categoryId: {
@@ -28,10 +25,20 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
 
-    sellingPrice: {
+    categoryName: {
+      type: String,
+      required: true,
+    },
+
+    price: {
       type: Number,
       required: true,
       min: 0,
+    },
+
+    description: {
+      type: String,
+      required: true,
     },
 
     stock: {
@@ -40,21 +47,26 @@ const productSchema = new mongoose.Schema(
       min: 0,
     },
 
-    thumbnail: {
-      url: String,
-      alt: String,
-    },
-
-    images: [
-      {
-        url: String,
-        alt: String,
-      },
-    ],
-
-    isFeatured: {
+    hasVariants: {
       type: Boolean,
       default: false,
+    },
+
+    seo: {
+      metaTitle: {
+        type: String,
+        trim: true,
+      },
+
+      metaDescription: {
+        type: String,
+        trim: true,
+      },
+
+      metaKeywords: {
+        type: [String],
+        default: [],
+      },
     },
 
     isActive: {

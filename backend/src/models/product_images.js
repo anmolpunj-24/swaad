@@ -13,6 +13,11 @@ const productImagesSchema = new mongoose.Schema(
       default: null,
     },
 
+    isPrimary: {
+      type: String,
+      default: false,
+    },
+
     alt: {
       type: String,
       default: "Product image",
