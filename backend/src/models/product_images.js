@@ -14,7 +14,7 @@ const productImagesSchema = new mongoose.Schema(
     },
 
     isPrimary: {
-      type: String,
+      type: Boolean,
       default: false,
     },
 
