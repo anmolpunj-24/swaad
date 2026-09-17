@@ -2,7 +2,7 @@ const categoryModel = require("../models/categories");
 
 const getAllCategoriesRepo = async () => {
   return await categoryModel
-    .find({ deletedAt: null })
+    .find({ deletedAt: null, isActive: true })
     .select("name parentId parentName slug isActive createdAt")
     .sort("-createdAt")
     .lean();
@@ -13,6 +13,7 @@ const getOneCategoryRepo = async (id) => {
     .findOne({
       _id: id,
       deletedAt: null,
+      isActive: true,
     })
     .select("name parentId parentName slug isActive")
     .lean();
@@ -23,6 +24,7 @@ const checkIfParentCategoryExist = async (parentId) => {
     .findOne({
       _id: parentId,
       deletedAt: null,
+      isActive: true,
     })
     .select("_id")
     .lean();
@@ -34,6 +36,7 @@ const checkIfExistingCategory = async (name, parentId) => {
       name,
       parentId,
       deletedAt: null,
+      isActive: true,
     })
     .select("_id")
     .lean();
@@ -52,6 +55,7 @@ const checkIfExistingCategoryForUpdate = async (name, parentId, id) => {
       parentId,
       _id: { $ne: id },
       deletedAt: null,
+      isActive: true,
     })
     .select("_id")
     .lean();
@@ -62,6 +66,7 @@ const updateCategoryRepo = async (id, categoryData) => {
     {
       _id: id,
       deletedAt: null,
+      isActive: true,
     },
     categoryData,
     {
@@ -76,6 +81,7 @@ const deleteCategoryRepo = async (id) => {
     {
       _id: id,
       deletedAt: null,
+      isActive: true,
     },
     {
       deletedAt: new Date(),

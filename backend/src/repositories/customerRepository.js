@@ -3,7 +3,7 @@ const customerAddressModel = require("../models/customer_address");
 
 const getAllCustomersRepo = async () => {
   return await customerModel
-    .find({ deletedAt: null })
+    .find({ deletedAt: null, isActive: true })
     .select("-_id gender dob phone isActive uuid createdAt")
     .sort("-createdAt")
     .populate({
@@ -18,6 +18,7 @@ const getOneCustomerRepo = async (uuid) => {
     .findOne({
       uuid,
       deletedAt: null,
+      isActive: true,
     })
     .select("-_id gender dob phone isActive uuid createdAt")
     .populate({
@@ -46,7 +47,7 @@ const getOneCustomerRepo = async (uuid) => {
 
 const updateCustomerRepo = async (uuid, customerData) => {
   return await customerModel.findOneAndUpdate(
-    { uuid, deletedAt: null },
+    { uuid, deletedAt: null, isActive: true },
     customerData,
     {
       returnDocument: "after",
@@ -57,7 +58,7 @@ const updateCustomerRepo = async (uuid, customerData) => {
 
 const deleteCustomerRepo = async (uuid) => {
   return await customerModel.findOneAndUpdate(
-    { uuid, deletedAt: null },
+    { uuid, deletedAt: null, isActive: true },
     { deletedAt: new Date(), isActive: false },
     { new: true },
   );

@@ -1,20 +1,5 @@
 const customerAddressRepo = require("../repositories/customerAddressRepository");
 
-const getAllCustomerAddressesService = async (customerUuid) => {
-  const allCustomerAddress =
-    await customerAddressRepo.getAllCustomerAddressesRepo(customerUuid);
-  return allCustomerAddress;
-};
-
-const getOneCustomerAddressService = async (customerUuid, addressId) => {
-  const oneCustomerAddress =
-    await customerAddressRepo.getOneCustomerAddressRepo(
-      customerUuid,
-      addressId,
-    );
-  return oneCustomerAddress;
-};
-
 const addCustomerAddressService = async (customerAddressData, customerUuid) => {
   const customerAddresses =
     await customerAddressRepo.findCustomerAddressesRepo(customerUuid);
@@ -38,6 +23,21 @@ const addCustomerAddressService = async (customerAddressData, customerUuid) => {
   );
 
   return savedAddress;
+};
+
+const getAllCustomerAddressesService = async (customerUuid) => {
+  const allCustomerAddress =
+    await customerAddressRepo.getAllCustomerAddressesRepo(customerUuid);
+  return allCustomerAddress;
+};
+
+const getOneCustomerAddressService = async (customerUuid, addressId) => {
+  const oneCustomerAddress =
+    await customerAddressRepo.getOneCustomerAddressRepo(
+      customerUuid,
+      addressId,
+    );
+  return oneCustomerAddress;
 };
 
 const updateCustomerAddressService = async (customerUuid, addressId, body) => {
@@ -91,9 +91,9 @@ const deleteCustomerAddressService = async (customerUuid, addressId) => {
 };
 
 module.exports = {
+  addCustomerAddressService,
   getAllCustomerAddressesService,
   getOneCustomerAddressService,
-  addCustomerAddressService,
   updateCustomerAddressService,
   deleteCustomerAddressService,
 };

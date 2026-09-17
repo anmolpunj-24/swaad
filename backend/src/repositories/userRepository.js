@@ -15,7 +15,7 @@ const addCustomerRepo = async (customerData) => {
 
 const getAllUsersRepo = async () => {
   return await userModel
-    .find({ deletedAt: null })
+    .find({ deletedAt: null, isActive: true })
     .select("-_id name email profile isActive uuid createdAt")
     .sort("-createdAt")
     .lean();
@@ -23,21 +23,25 @@ const getAllUsersRepo = async () => {
 
 const getOneUserRepo = async (uuid) => {
   return await userModel
-    .findOne({ uuid, deletedAt: null })
+    .findOne({ uuid, deletedAt: null, isActive: true })
     .select("-_id name email profile isActive uuid")
     .lean();
 };
 
 const updateUserRepo = async (uuid, userData) => {
-  return await userModel.findOneAndUpdate({ uuid, deletedAt: null }, userData, {
-    returnDocument: "after",
-    runValidators: true,
-  });
+  return await userModel.findOneAndUpdate(
+    { uuid, deletedAt: null, isActive: true },
+    userData,
+    {
+      returnDocument: "after",
+      runValidators: true,
+    },
+  );
 };
 
 const deleteUserRepo = async (uuid) => {
   return await userModel.findOneAndUpdate(
-    { uuid, deletedAt: null },
+    { uuid, deletedAt: null, isActive: true },
     { deletedAt: new Date(), isActive: false },
     { new: true },
   );
