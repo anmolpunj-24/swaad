@@ -212,7 +212,7 @@ export default function AddProducts() {
 
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="rounded-2xl border border-[#E6DDCD] bg-white shadow-[0_12px_40px_rgba(78,57,28,0.07)]"
+        className="overflow-hidden rounded-2xl border border-[#E6DDCD] bg-white shadow-[0_12px_40px_rgba(78,57,28,0.07)]"
       >
         <div className="border-b border-[#ECE4D6] bg-[#FCFAF6] px-5 pt-5">
           <div className="flex gap-2 overflow-x-auto">
@@ -613,22 +613,6 @@ export default function AddProducts() {
                     </div>
                   </div>
                 ))}
-              </div>
-
-              <div className="flex items-start gap-3 rounded-xl border border-[#E9DFC9] bg-[#FCF8EF] p-4">
-                <Package size={17} className="mt-0.5 shrink-0 text-[#A47E43]" />
-
-                <div>
-                  <p className="text-xs font-bold text-[#5A4630]">
-                    Variant pricing
-                  </p>
-
-                  <p className="mt-1 text-xs leading-5 text-[#8B795F]">
-                    Each variant maintains its own SKU, price and inventory.
-                    This keeps your product catalog flexible as your store
-                    grows.
-                  </p>
-                </div>
               </div>
             </div>
           )}

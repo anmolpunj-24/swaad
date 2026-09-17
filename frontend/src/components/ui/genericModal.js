@@ -96,7 +96,7 @@ export default function GenericModal({
               onClick={handleClose}
               aria-label="Close modal"
               disabled={loading}
-              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-[#E3DACB] bg-white text-[#806C52] transition-all duration-200 hover:border-[#C9A96A] hover:bg-[#FCF8EF] hover:text-[#463421] disabled:cursor-not-allowed disabled:opacity-50 hover:cursor-pointer"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-3xl border border-[#E3DACB] bg-white text-[#806C52] transition-all duration-200 hover:border-[#C9A96A] hover:bg-[#FCF8EF] hover:text-[#463421] disabled:cursor-not-allowed disabled:opacity-50 hover:cursor-pointer"
             >
               <X size={17} />
             </button>
@@ -201,7 +201,7 @@ export default function GenericModal({
               <button
                 type="submit"
                 disabled={loading}
-                className="flex min-w-[120px] items-center justify-center gap-2 rounded-xl bg-[#463421] px-6 py-3 text-xs font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#59432C] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
+                className="flex min-w-[120px] items-center justify-center gap-2 rounded-3xl bg-[#463421] px-6 py-3 text-xs font-bold text-white shadow-sm transition-all duration-200 hover:bg-[#59432C] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
               >
                 {loading ? (
                   <>

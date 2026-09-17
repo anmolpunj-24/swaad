@@ -169,7 +169,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={mainLoading}
-              className="group mt-1 flex w-full items-center justify-center gap-2 rounded-full bg-[#463421] py-3.5 text-sm font-semibold tracking-wide text-[#FFF8E7] shadow-sm transition-all duration-300 hover:bg-[#59432C] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-70"
+              className="group mt-1 flex w-full items-center justify-center gap-2 rounded-full bg-[#463421] py-3.5 text-sm font-semibold tracking-wide text-[#FFF8E7] shadow-sm transition-all duration-300 hover:bg-[#59432C] hover:shadow-md disabled:cursor-not-allowed disabled:opacity-70 hover:cursor-pointer"
             >
               {mainLoading ? (
                 <>
