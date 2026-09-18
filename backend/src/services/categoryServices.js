@@ -96,8 +96,19 @@ const updateCategoryService = async (id, categoryData) => {
 };
 
 const deleteCategoryService = async (id) => {
-  const deletedCategory = await categoryRepo.deleteCategoryRepo(id);
+  const associatedProduct =
+    await categoryRepo.checkIfAnyProductIsAssociatedWithTheCategoryBeingDeleted(
+      id,
+    );
 
+  if (associatedProduct) {
+    return {
+      success: false,
+      errorMessage: "This category cannot be deleted because it is associated with one or more products!",
+    };
+  }
+
+  const deletedCategory = await categoryRepo.deleteCategoryRepo(id);
   return deletedCategory;
 };
 

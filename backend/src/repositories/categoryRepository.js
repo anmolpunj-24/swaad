@@ -1,4 +1,5 @@
 const categoryModel = require("../models/categories");
+const productModel = require("../models/products");
 
 const getAllCategoriesRepo = async () => {
   return await categoryModel
@@ -76,6 +77,12 @@ const updateCategoryRepo = async (id, categoryData) => {
   );
 };
 
+const checkIfAnyProductIsAssociatedWithTheCategoryBeingDeleted = async (
+  categoryId,
+) => {
+  return await productModel.exists({ categoryId });
+};
+
 const deleteCategoryRepo = async (id) => {
   return await categoryModel.findOneAndUpdate(
     {
@@ -100,6 +107,7 @@ module.exports = {
   checkIfExistingCategory,
   addCategoryRepo,
   checkIfExistingCategoryForUpdate,
+  checkIfAnyProductIsAssociatedWithTheCategoryBeingDeleted,
   updateCategoryRepo,
   deleteCategoryRepo,
 };

@@ -68,6 +68,10 @@ const deleteCategory = async (req, res) => {
   const deletedCategory =
     await categoryService.deleteCategoryService(categoryId);
 
+  if (deletedCategory.success === false) {
+    return res.status(400).json({ message: deletedCategory.errorMessage });
+  }
+
   return res
     .status(200)
     .json({ message: "Category deleted!", category: deletedCategory });
