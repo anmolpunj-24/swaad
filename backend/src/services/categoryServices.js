@@ -85,7 +85,20 @@ const updateCategoryService = async (id, categoryData) => {
     };
   }
 
-  // So when changing parentId, you should verify that the new parent is not somewhere inside the category's own descendant tree.
+  if (categoryData.isActive === false) {
+    const associatedProduct =
+      await categoryRepo.checkIfAnyProductIsAssociatedWithCategory(
+        id,
+      );
+
+    if (associatedProduct) {
+      return {
+        success: false,
+        errorMessage:
+          "This category cannot be set to inactive because it is associated with one or more products!",
+      };
+    }
+  }
 
   const updatedProduct = await categoryRepo.updateCategoryRepo(
     id,
@@ -97,14 +110,15 @@ const updateCategoryService = async (id, categoryData) => {
 
 const deleteCategoryService = async (id) => {
   const associatedProduct =
-    await categoryRepo.checkIfAnyProductIsAssociatedWithTheCategoryBeingDeleted(
+    await categoryRepo.checkIfAnyProductIsAssociatedWithCategory(
       id,
     );
 
   if (associatedProduct) {
     return {
       success: false,
-      errorMessage: "This category cannot be deleted because it is associated with one or more products!",
+      errorMessage:
+        "This category cannot be deleted because it is associated with one or more products!",
     };
   }
 

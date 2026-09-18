@@ -77,7 +77,7 @@ const updateCategoryRepo = async (id, categoryData) => {
   );
 };
 
-const checkIfAnyProductIsAssociatedWithTheCategoryBeingDeleted = async (
+const checkIfAnyProductIsAssociatedWithCategory = async (
   categoryId,
 ) => {
   return await productModel.exists({ categoryId });
@@ -107,7 +107,7 @@ module.exports = {
   checkIfExistingCategory,
   addCategoryRepo,
   checkIfExistingCategoryForUpdate,
-  checkIfAnyProductIsAssociatedWithTheCategoryBeingDeleted,
+  checkIfAnyProductIsAssociatedWithCategory,
   updateCategoryRepo,
   deleteCategoryRepo,
 };
