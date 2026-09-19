@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const productImagesSchema = new mongoose.Schema(
+const productSeoSchema = new mongoose.Schema(
   {
     productId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -14,20 +14,19 @@ const productImagesSchema = new mongoose.Schema(
       required: true,
     },
 
-    image: {
+    metaTitle: {
       type: String,
-      default: null,
-    },
-
-    isPrimary: {
-      type: Boolean,
-      default: false,
-    },
-
-    alt: {
-      type: String,
-      default: "Product image",
       trim: true,
+    },
+
+    metaDescription: {
+      type: String,
+      trim: true,
+    },
+
+    metaKeywords: {
+      type: [String],
+      default: [],
     },
 
     isActive: {
@@ -40,5 +39,5 @@ const productImagesSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const productImages = mongoose.model("product_images", productImagesSchema);
-module.exports = productImages;
+const productSeo = mongoose.model("product_seo", productSeoSchema);
+module.exports = productSeo;

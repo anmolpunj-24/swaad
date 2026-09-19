@@ -14,11 +14,6 @@ const productSchema = new mongoose.Schema(
       trim: true,
     },
 
-    tagLine: {
-      type: String,
-      required: true,
-    },
-
     categoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "categories",
@@ -28,45 +23,6 @@ const productSchema = new mongoose.Schema(
     categoryName: {
       type: String,
       required: true,
-    },
-
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-
-    description: {
-      type: String,
-      required: true,
-    },
-
-    stock: {
-      type: Number,
-      default: 0,
-      min: 0,
-    },
-
-    hasVariants: {
-      type: Boolean,
-      default: false,
-    },
-
-    seo: {
-      metaTitle: {
-        type: String,
-        trim: true,
-      },
-
-      metaDescription: {
-        type: String,
-        trim: true,
-      },
-
-      metaKeywords: {
-        type: [String],
-        default: [],
-      },
     },
 
     isActive: {
