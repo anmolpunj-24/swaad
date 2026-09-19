@@ -12,6 +12,7 @@ const productVariantSchema = new mongoose.Schema(
       type: String,
       required: [true, "Name is required!"],
       lowercase: true,
+      trim: true,
     },
 
     slug: {
@@ -22,16 +23,18 @@ const productVariantSchema = new mongoose.Schema(
 
     tagLine: {
       type: String,
+      trim: true,
     },
 
     price: {
       type: Number,
       required: true,
-      min: 0, 
+      min: 0,
     },
 
     description: {
       type: String,
+      trim: true,
     },
 
     stock: {
@@ -48,6 +51,16 @@ const productVariantSchema = new mongoose.Schema(
     deletedAt: { type: Date, default: null },
   },
   { timestamps: true },
+);
+
+productVariantSchema.index(
+  { slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
 );
 
 const productVariants = mongoose.model(

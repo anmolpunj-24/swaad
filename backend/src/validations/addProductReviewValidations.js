@@ -8,17 +8,17 @@ const addProductReviewRules = [
     .custom((value) => mongoose.Types.ObjectId.isValid(value))
     .withMessage("Please provide a valid product!"),
 
-  body("rating")
+  body("rating") 
     .notEmpty()
-    .withMessage("Rating is required!")
+    .withMessage("Rating is required!") 
     .isInt({ min: 1, max: 5 })
     .withMessage("Rating must be between 1 and 5!"),
 
   body("description")
     .optional()
     .trim()
-    .isLength({ min: 2, max: 1000 })
-    .withMessage("Review cannot exceed 1000 characters!"),
+    .isLength({ min: 2, max: 500})
+    .withMessage("Review cannot exceed 500 characters!"),
 
   body("customerName")
     .optional()

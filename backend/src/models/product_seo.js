@@ -39,5 +39,15 @@ const productSeoSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+productSeoSchema.index(
+  { productVariantId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
+);
+
 const productSeo = mongoose.model("product_seo", productSeoSchema);
 module.exports = productSeo;

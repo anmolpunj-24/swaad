@@ -7,7 +7,7 @@ const productReviewsSchema = new mongoose.Schema(
       ref: "products",
       required: true,
     },
- 
+
     rating: {
       type: Number,
       required: [true, "Rating is required!"],
@@ -27,6 +27,8 @@ const productReviewsSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true },
 );
