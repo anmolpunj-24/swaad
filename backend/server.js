@@ -37,10 +37,19 @@ const server = async () => {
   app.use("/api/admin/product/:productId/variant", productVariantRoutes);
 
   const productImageRoutes = require("./src/routes/productImagesRoutes");
-  app.use("/api/admin/product/:productId/image", productImageRoutes);
+  app.use(
+    "/api/admin/product/:productId/variant/:variantId/image",
+    productImageRoutes,
+  );
 
   const productReviewRoutes = require("./src/routes/productReviewsRoutes");
   app.use("/api/admin/product/:productId/review", productReviewRoutes);
+
+  const productSeoRoutes = require("./src/routes/productSeoRoutes");
+  app.use(
+    "/api/admin/product/:productId/variant/:variantId/seo",
+    productSeoRoutes,
+  );
 
   const categoryRoutes = require("./src/routes/categoryRoutes");
   app.use("/api/admin/category", categoryRoutes);
