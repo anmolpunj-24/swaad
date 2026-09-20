@@ -8,6 +8,12 @@ const productReviewsSchema = new mongoose.Schema(
       required: true,
     },
 
+    customerUuid: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     rating: {
       type: Number,
       required: [true, "Rating is required!"],
@@ -31,6 +37,16 @@ const productReviewsSchema = new mongoose.Schema(
     deletedAt: { type: Date, default: null },
   },
   { timestamps: true },
+);
+
+productReviewsSchema.index(
+  { productId: 1, customerUuid: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
 );
 
 const productReviews = mongoose.model("product_reviews", productReviewsSchema);
