@@ -1,4 +1,5 @@
 const categoryRepo = require("../repositories/categoryRepository");
+const productRepo = require("../repositories/productRepository");
 
 const getAllCategoriesService = async () => {
   const allCategories = await categoryRepo.getAllCategoriesRepo();
@@ -85,19 +86,25 @@ const updateCategoryService = async (id, categoryData) => {
     };
   }
 
-  if (categoryData.isActive === false) {
-    const associatedProduct =
-      await categoryRepo.checkIfAnyProductIsAssociatedWithCategory(
-        id,
-      );
+  const associatedProduct =
+    await productRepo.checkIfAnyProductIsAssociatedWithCategory(id);
 
-    if (associatedProduct) {
-      return {
-        success: false,
-        errorMessage:
-          "This category cannot be set to inactive because it is associated with one or more products!",
-      };
-    }
+  if (categoryData.isActive === false && associatedProduct) {
+    return {
+      success: false,
+      errorMessage:
+        "This category cannot be set to inactive because it is associated with one or more products!",
+    };
+  }
+
+  const existingCategoryName =
+    await categoryRepo.getOneCategoryForUpdateRepo(id);
+
+  if (categoryData.name !== existingCategoryName.name && associatedProduct) {
+    await productRepo.updateCategoryNameForProductsRepo(
+      existingCategoryName._id,
+      categoryData.name,
+    );
   }
 
   const updatedProduct = await categoryRepo.updateCategoryRepo(
@@ -110,9 +117,7 @@ const updateCategoryService = async (id, categoryData) => {
 
 const deleteCategoryService = async (id) => {
   const associatedProduct =
-    await categoryRepo.checkIfAnyProductIsAssociatedWithCategory(
-      id,
-    );
+    await productRepo.checkIfAnyProductIsAssociatedWithCategory(id);
 
   if (associatedProduct) {
     return {

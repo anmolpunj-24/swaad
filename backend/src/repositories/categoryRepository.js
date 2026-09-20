@@ -1,5 +1,4 @@
 const categoryModel = require("../models/categories");
-const productModel = require("../models/products");
 
 const getAllCategoriesRepo = async () => {
   return await categoryModel
@@ -17,6 +16,16 @@ const getOneCategoryRepo = async (id) => {
       isActive: true,
     })
     .select("name parentId parentName slug isActive")
+    .lean();
+};
+
+const getOneCategoryForUpdateRepo = async (id) => {
+  return await categoryModel
+    .findOne({
+      _id: id,
+      deletedAt: null,
+    })
+    .select("name")
     .lean();
 };
 
@@ -77,12 +86,6 @@ const updateCategoryRepo = async (id, categoryData) => {
   );
 };
 
-const checkIfAnyProductIsAssociatedWithCategory = async (
-  categoryId,
-) => {
-  return await productModel.exists({ categoryId });
-};
-
 const deleteCategoryRepo = async (id) => {
   return await categoryModel.findOneAndUpdate(
     {
@@ -103,11 +106,11 @@ const deleteCategoryRepo = async (id) => {
 module.exports = {
   getAllCategoriesRepo,
   getOneCategoryRepo,
+  getOneCategoryForUpdateRepo,
   checkIfParentCategoryExist,
   checkIfExistingCategory,
   addCategoryRepo,
   checkIfExistingCategoryForUpdate,
-  checkIfAnyProductIsAssociatedWithCategory,
   updateCategoryRepo,
   deleteCategoryRepo,
 };
