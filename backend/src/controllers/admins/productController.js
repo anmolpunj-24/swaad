@@ -1,7 +1,7 @@
 const productService = require("../../services/productServices");
 
 const addProduct = async (req, res) => {
-  const body = req.body
+  const body = req.body;
   const newProduct = await productService.addProductService(body);
 
   return res
