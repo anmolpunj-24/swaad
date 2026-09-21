@@ -25,6 +25,12 @@ const getAllProductVariants = async (req, res) => {
   const allProductVariants =
     await productVariantsService.getAllProductVariantsService(productId);
 
+  if (allProductVariants.success === false) {
+    return res.status(400).json({
+      message: allProductVariants.errorMessage,
+    });
+  }
+
   return res.status(200).json({
     message: "All product variants fetched!",
     productVariants: allProductVariants,
@@ -40,6 +46,12 @@ const getOneProductVariant = async (req, res) => {
       productId,
       productVariantId,
     );
+
+  if (productVariantData.success === false) {
+    return res.status(400).json({
+      message: productVariantData.errorMessage,
+    });
+  }
 
   return res.status(200).json({
     message: "Product variant fetched!",
@@ -59,6 +71,12 @@ const updateProductVariant = async (req, res) => {
       body,
     );
 
+  if (updatedProductVariant.success === false) {
+    return res.status(400).json({
+      message: updatedProductVariant.errorMessage,
+    });
+  }
+
   return res.status(200).json({
     message: "Product variant updated!",
     productVariant: updatedProductVariant,
@@ -69,10 +87,17 @@ const deleteProductVariant = async (req, res) => {
   const productId = req.params.productId;
   const productVariantId = req.params.id;
 
-  await productVariantsService.deleteProductVariantService(
-    productId,
-    productVariantId,
-  );
+  const deletedVariant =
+    await productVariantsService.deleteProductVariantService(
+      productId,
+      productVariantId,
+    );
+
+  if (deletedVariant.success === false) {
+    return res.status(400).json({
+      message: deletedVariant.errorMessage,
+    });
+  }
 
   return res.status(200).json({
     message: "Product variant deleted!",
