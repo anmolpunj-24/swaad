@@ -29,6 +29,12 @@ const getAllProductReviews = async (req, res) => {
   const allProductReviews =
     await productReviewsService.getAllProductReviewsService(productId);
 
+  if (allProductReviews.success === false) {
+    return res.status(400).json({
+      message: allProductReviews.errorMessage,
+    });
+  }
+
   return res.status(200).json({
     message: "All product reviews fetched!",
     productReviews: allProductReviews,
@@ -44,6 +50,12 @@ const getOneProductReview = async (req, res) => {
       productId,
       productReviewId,
     );
+
+  if (productReviewData.success === false) {
+    return res.status(400).json({
+      message: productReviewData.errorMessage,
+    });
+  }
 
   return res.status(200).json({
     message: "Product review fetched!",
@@ -65,6 +77,12 @@ const updateProductReview = async (req, res) => {
       body,
     );
 
+  if (updatedProductReview.success === false) {
+    return res.status(400).json({
+      message: updatedProductReview.errorMessage,
+    });
+  }
+
   return res.status(200).json({
     message: "Product review updated!",
     productReview: updatedProductReview,
@@ -76,11 +94,18 @@ const deleteProductReview = async (req, res) => {
   const productReviewId = req.params.id;
   const customerUuid = req.user.uuid;
 
-  await productReviewsService.deleteProductReviewService(
-    productId,
-    productReviewId,
-    customerUuid,
-  );
+  const deletedProductReview =
+    await productReviewsService.deleteProductReviewService(
+      productId,
+      productReviewId,
+      customerUuid,
+    );
+
+  if (deletedProductReview.success === false) {
+    return res.status(400).json({
+      message: deletedProductReview.errorMessage,
+    });
+  }
 
   return res.status(200).json({
     message: "Product review deleted!",

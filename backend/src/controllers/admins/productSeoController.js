@@ -29,6 +29,12 @@ const getAllProductSeos = async (req, res) => {
   const allProductSeos =
     await productSeoService.getAllProductSeoService(productId);
 
+  if (allProductSeos.success === false) {
+    return res.status(400).json({
+      message: allProductSeos.errorMessage,
+    });
+  }
+
   return res.status(200).json({
     message: "All product seo fetched!",
     productSeos: allProductSeos,
@@ -45,6 +51,12 @@ const getOneProductSeo = async (req, res) => {
     productVariantId,
     productSeoId,
   );
+
+  if (productSeoData.success === false) {
+    return res.status(400).json({
+      message: productSeoData.errorMessage,
+    });
+  }
 
   return res.status(200).json({
     message: "Product seo fetched!",
@@ -65,6 +77,12 @@ const updateProductSeo = async (req, res) => {
     body,
   );
 
+  if (updatedProductSeo.success === false) {
+    return res.status(400).json({
+      message: updatedProductSeo.errorMessage,
+    });
+  }
+
   return res.status(200).json({
     message: "Product seo updated!",
     productSeo: updatedProductSeo,
@@ -76,11 +94,17 @@ const deleteProductSeo = async (req, res) => {
   const productVariantId = req.params.variantId;
   const productSeoId = req.params.id;
 
-  await productSeoService.deleteProductSeoService(
+  const deletedProductSeo = await productSeoService.deleteProductSeoService(
     productId,
     productVariantId,
     productSeoId,
   );
+
+  if (deletedProductSeo.success === false) {
+    return res.status(400).json({
+      message: deletedProductSeo.errorMessage,
+    });
+  }
 
   return res.status(200).json({
     message: "Product seo deleted!",
