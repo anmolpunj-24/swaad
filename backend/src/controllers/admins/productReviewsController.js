@@ -2,10 +2,12 @@ const productReviewsService = require("../../services/productReviewsServices");
 
 const addProductReview = async (req, res) => {
   const productId = req.params.productId;
+  const customerUuid = req.user.uuid;
   const body = req.body;
 
   const newProductReview = await productReviewsService.addProductReviewService(
     productId,
+    customerUuid,
     body,
   );
 
@@ -52,12 +54,14 @@ const getOneProductReview = async (req, res) => {
 const updateProductReview = async (req, res) => {
   const productId = req.params.productId;
   const productReviewId = req.params.id;
+  const customerUuid = req.user.uuid;
   const body = req.body;
 
   const updatedProductReview =
     await productReviewsService.updateProductReviewService(
       productId,
       productReviewId,
+      customerUuid,
       body,
     );
 
@@ -70,10 +74,12 @@ const updateProductReview = async (req, res) => {
 const deleteProductReview = async (req, res) => {
   const productId = req.params.productId;
   const productReviewId = req.params.id;
+  const customerUuid = req.user.uuid;
 
   await productReviewsService.deleteProductReviewService(
     productId,
     productReviewId,
+    customerUuid,
   );
 
   return res.status(200).json({
