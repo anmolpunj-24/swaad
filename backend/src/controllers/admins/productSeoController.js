@@ -2,12 +2,12 @@ const productSeoService = require("../../services/productSeoService");
 
 const addProductSeo = async (req, res) => {
   const productId = req.params.productId;
-  const variantId = req.params.variantId;
+  const productVariantId = req.params.variantId;
   const body = req.body;
 
   const newProductSeo = await productSeoService.addProductSeoService(
     productId,
-    variantId,
+    productVariantId,
     body,
   );
 
@@ -37,12 +37,12 @@ const getAllProductSeos = async (req, res) => {
 
 const getOneProductSeo = async (req, res) => {
   const productId = req.params.productId;
-  const variantId = req.params.variantId;
+  const productVariantId = req.params.variantId;
   const productSeoId = req.params.id;
 
   const productSeoData = await productSeoService.getOneProductSeoService(
     productId,
-    variantId,
+    productVariantId,
     productSeoId,
   );
 
@@ -54,13 +54,13 @@ const getOneProductSeo = async (req, res) => {
 
 const updateProductSeo = async (req, res) => {
   const productId = req.params.productId;
-  const variantId = req.params.variantId;
+  const productVariantId = req.params.variantId;
   const productSeoId = req.params.id;
   const body = req.body;
 
   const updatedProductSeo = await productSeoService.updateProductSeoService(
     productId,
-    variantId,
+    productVariantId,
     productSeoId,
     body,
   );
@@ -73,12 +73,12 @@ const updateProductSeo = async (req, res) => {
 
 const deleteProductSeo = async (req, res) => {
   const productId = req.params.productId;
-  const variantId = req.params.variantId;
+  const productVariantId = req.params.variantId;
   const productSeoId = req.params.id;
 
   await productSeoService.deleteProductSeoService(
     productId,
-    variantId,
+    productVariantId,
     productSeoId,
   );
 
