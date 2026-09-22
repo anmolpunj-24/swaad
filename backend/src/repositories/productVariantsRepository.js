@@ -161,6 +161,22 @@ const updateProductImagesDeletedAt = async (productVariantId, deletedAt) => {
   );
 };
 
+const deleteAllProductVariantsRepo = async (productId, deletedAt) => {
+  return await productVariantModel.updateMany(
+    {
+      productId,
+      deletedAt: null,
+      isActive: true,
+    },
+    {
+      $set: {
+        deletedAt,
+        isActive: false,
+      },
+    },
+  );
+};
+
 module.exports = {
   checkIfProductExistInDbRepo,
   addProductVariantRepo,
@@ -174,4 +190,5 @@ module.exports = {
   deletedProductVariantRepo,
   updateProductSeoDeletedAt,
   updateProductImagesDeletedAt,
+  deleteAllProductVariantsRepo,
 };

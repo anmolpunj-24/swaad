@@ -214,6 +214,27 @@ const checkForNextRecentImageAndUpdateIsPrimaryStatusFprDeleteRepo = async (
   );
 };
 
+const getPrimaryProductImageRepo = async () => {
+  return;
+};
+
+const deleteAllProductImagesRepo = async (productId, deletedAt) => {
+  return await productImagesModel.updateMany(
+    {
+      productId,
+      deletedAt: null,
+      isActive: true,
+    },
+    {
+      $set: {
+        deletedAt,
+        isActive: false,
+        isPrimary: false,
+      },
+    },
+  );
+};
+
 module.exports = {
   checkIfProductExistInDbRepo,
   checkIfProductVariantExistInDbRepo,
@@ -227,4 +248,6 @@ module.exports = {
   checkForNextRecentImageAndUpdateIsPrimaryStatusRepo,
   deletedProductImageRepo,
   checkForNextRecentImageAndUpdateIsPrimaryStatusFprDeleteRepo,
+  getPrimaryProductImageRepo,
+  deleteAllProductImagesRepo,
 };

@@ -200,10 +200,18 @@ const deleteProductVariantService = async (productId, productVariantId) => {
   return deletedProductVariant;
 };
 
+const deleteAllProductVariantsService = async (productId, deletedAt) => {
+  return await productVariantRepo.deleteAllProductVariantsRepo(
+    productId,
+    deletedAt,
+  );
+};
+
 module.exports = {
   addProductVariantService,
   getAllProductVariantsService,
   getOneProductVariantService,
   updateProductVariantService,
   deleteProductVariantService,
+  deleteAllProductVariantsService,
 };

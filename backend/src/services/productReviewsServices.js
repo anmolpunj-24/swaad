@@ -166,10 +166,18 @@ const deleteProductReviewService = async (
   return deletedReview;
 };
 
+const deleteAllProductReviewsService = async (productId, deletedAt) => {
+  return await productReviewRepo.deleteAllProductReviewsRepo(
+    productId,
+    deletedAt,
+  );
+};
+
 module.exports = {
   addProductReviewService,
   getAllProductReviewsService,
   getOneProductReviewService,
   updateProductReviewService,
   deleteProductReviewService,
+  deleteAllProductReviewsService,
 };

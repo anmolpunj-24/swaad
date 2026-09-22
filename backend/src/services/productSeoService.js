@@ -222,10 +222,15 @@ const deleteProductSeoService = async (
   return deletedSeoData;
 };
 
+const deleteAllProductSeoService = async (productId, deletedAt) => {
+  return await productSeoRepo.deleteAllProductSeoRepo(productId, deletedAt);
+};
+
 module.exports = {
   addProductSeoService,
   getAllProductSeoService,
   getOneProductSeoService,
   updateProductSeoService,
   deleteProductSeoService,
+  deleteAllProductSeoService,
 };

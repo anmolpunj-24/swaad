@@ -132,7 +132,7 @@ const deleteProductSeoRepo = async (
   productId,
   productVariantId,
 ) => {
- return await productSeoModel.findOneAndUpdate(
+  return await productSeoModel.findOneAndUpdate(
     {
       _id: productSeoId,
       productId,
@@ -143,6 +143,22 @@ const deleteProductSeoRepo = async (
     { $set: { deletedAt: new Date(), isActive: false } },
     {
       new: true,
+    },
+  );
+};
+
+const deleteAllProductSeoRepo = async (productId, deletedAt) => {
+  return await productSeoModel.updateMany(
+    {
+      productId,
+      deletedAt: null,
+      isActive: true,
+    },
+    {
+      $set: {
+        deletedAt,
+        isActive: false,
+      },
     },
   );
 };
@@ -159,4 +175,5 @@ module.exports = {
   updateSeoDataRepo,
   checkIfSeoDataAlreadyExistsForDeleteInDbRepo,
   deleteProductSeoRepo,
+  deleteAllProductSeoRepo,
 };

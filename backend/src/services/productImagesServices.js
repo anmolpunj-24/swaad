@@ -289,10 +289,51 @@ const deleteProductImageService = async (
   return deletedProductImage;
 };
 
+const getPrimaryProductImageService = async (productId, productVariantId) => {
+  const checkIfProductExist =
+    await productImagesRepo.checkIfProductExistInDbRepo(productId);
+
+  if (!checkIfProductExist) {
+    return {
+      success: false,
+      errorMessage: "Product not found!",
+    };
+  }
+
+  const checkIfProductVariantExist =
+    await productImagesRepo.checkIfProductVariantExistInDbRepo(
+      productVariantId,
+      productId,
+    );
+
+  if (!checkIfProductVariantExist) {
+    return {
+      success: false,
+      errorMessage: "Product variant not found!",
+    };
+  }
+
+  const primaryImage = await productImagesRepo.getPrimaryProductImageRepo(
+    productId,
+    productVariantId,
+  );
+
+  return primaryImage;
+};
+
+const deleteAllProductImagesService = async (productId, deletedAt) => {
+  return await productImagesRepo.deleteAllProductImagesRepo(
+    productId,
+    deletedAt,
+  );
+};
+
 module.exports = {
   addProductImageService,
   getAllProductImagesService,
   getOneProductImageService,
   updateProductImageService,
   deleteProductImageService,
+  getPrimaryProductImageService,
+  deleteAllProductImagesService,
 };

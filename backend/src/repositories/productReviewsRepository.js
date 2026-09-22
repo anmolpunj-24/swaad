@@ -101,7 +101,11 @@ const updateReviewDataRepo = async (
   );
 };
 
-const deleteReviewDataRepo = async (productReviewId, productId, customerUuid) => {
+const deleteReviewDataRepo = async (
+  productReviewId,
+  productId,
+  customerUuid,
+) => {
   return await productReviewsModel.findOneAndUpdate(
     {
       _id: productReviewId,
@@ -120,6 +124,22 @@ const deleteReviewDataRepo = async (productReviewId, productId, customerUuid) =>
   );
 };
 
+const deleteAllProductReviewsRepo = async (productId, deletedAt) => {
+  return await productReviewsModel.updateMany(
+    {
+      productId,
+      deletedAt: null,
+      isActive: true,
+    },
+    {
+      $set: {
+        deletedAt,
+        isActive: false,
+      },
+    },
+  );
+};
+
 module.exports = {
   checkIfProductExistsInDbRepo,
   checkIfCustomerExistInDbRepo,
@@ -130,4 +150,5 @@ module.exports = {
   getOneReviewDataRepo,
   updateReviewDataRepo,
   deleteReviewDataRepo,
+  deleteAllProductReviewsRepo,
 };
