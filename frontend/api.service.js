@@ -155,15 +155,33 @@ const customerAddressApi = {
 };
 
 const productApi = {
-  add: async () => {},
+  add: async (productData) => {
+    const response = await api.post("/api/admin/product/add", productData);
+    return response;
+  },
 
-  getAll: async () => {},
+  getAll: async () => {
+    const response = await api.get("/api/admin/product/getAll");
+    return response;
+  },
 
-  getOne: async () => {},
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/product/get/${id}`);
+    return response;
+  },
 
-  update: async () => {},
+  update: async (id, updateProductData) => {
+    const response = await api.put(
+      `/api/admin/seo/product/${id}`,
+      updateProductData,
+    );
+    return response;
+  },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/product/delete/${id}`);
+    return response;
+  },
 };
 
 const categoryApi = {

@@ -44,7 +44,6 @@ export default function AddProducts() {
     register,
     handleSubmit,
     control,
-    watch,
     setValue,
     formState: { errors },
   } = useForm({
