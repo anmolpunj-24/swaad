@@ -7,18 +7,27 @@ const addPageSeoRepo = async (pageSeoData) => {
 };
 
 const getAllPagesSeoRepo = async () => {
-  return await pageSeoModel.find({
-    deletedAt: null,
-    isActive: true,
-  });
+  return await pageSeoModel
+    .find({
+      deletedAt: null,
+      isActive: true,
+    })
+    .select(
+      "slug pageName metaTitle metaDescription metaKeywords isActive createdAt",
+    )
+    .sort("-createdAt")
+    .lean();
 };
 
 const getOnePageSeoRepo = async (pageSeoId) => {
-  return await pageSeoModel.findOne({
-    _id: pageSeoId,
-    deletedAt: null,
-    isActive: true,
-  });
+  return await pageSeoModel
+    .findOne({
+      _id: pageSeoId,
+      deletedAt: null,
+      isActive: true,
+    })
+    .select("slug pageName metaTitle metaDescription metaKeywords isActive")
+    .lean();
 };
 
 const updatePageSeoRepo = async (pageSeoId, pageSeoData) => {
