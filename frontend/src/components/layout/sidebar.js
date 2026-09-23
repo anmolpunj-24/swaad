@@ -1,4 +1,4 @@
-import { LayoutDashboard, Users, Tags, Store } from "lucide-react";
+import { LayoutDashboard, Users, Tags, Store, ScanSearch } from "lucide-react";
 import Link from "next/link";
 
 export default function Sidebar() {
@@ -88,6 +88,23 @@ export default function Sidebar() {
             className="transition-transform duration-200 group-hover:scale-105"
           />
           <span className="text-sm font-medium">Products</span>
+        </Link>
+
+        <Link
+          href="/page-seo"
+          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
+          text-[#D8D0C4]
+          border border-transparent
+          transition-all duration-200
+          hover:bg-[#37312C]
+          hover:border-[#51483F]
+          hover:text-[#FFFDF8]"
+        >
+          <ScanSearch
+            size={19}
+            className="transition-transform duration-200 group-hover:scale-105"
+          />
+          <span className="text-sm font-medium">Pages Seo</span>
         </Link>
       </nav>
     </aside>

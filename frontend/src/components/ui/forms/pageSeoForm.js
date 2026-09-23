@@ -1,32 +1,28 @@
-import { useForm, Controller } from "react-hook-form";
-import { Check, ChevronDown, FolderTree, ShieldCheck, Tag } from "lucide-react";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
 import { useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { Check, FileText, Search, ShieldCheck } from "lucide-react";
+import { SlugifyHandler } from "@/utils/slugifyHandler";
 
-export default function CategoryForm({
+export default function PageSeoForm({
   defaultValues = {
-    name: "",
-    parentId: null,
-    parentName: "",
     slug: "",
-    isParent: false,
-    isActive: false,
+    pageName: "",
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: "",
+    isActive: true,
   },
-  categories = [],
   onSubmit,
   buttonText,
   loading = false,
   loadingButtonText,
-  handleCategoryDropdownOpen,
-  currentCategoryId = "",
 }) {
   const {
     register,
     handleSubmit,
     control,
-    watch,
-    setValue,
     reset,
+    setValue,
     formState: { errors },
   } = useForm({
     defaultValues,
@@ -36,15 +32,13 @@ export default function CategoryForm({
     reset(defaultValues);
   }, [
     reset,
-    defaultValues.name,
-    defaultValues.parentId,
-    defaultValues.parentName,
     defaultValues.slug,
+    defaultValues.pageName,
+    defaultValues.metaTitle,
+    defaultValues.metaDescription,
+    defaultValues.metaKeywords,
     defaultValues.isActive,
-    defaultValues.isParent,
   ]);
-
-  const isParent = watch("isParent");
 
   return (
     <form
@@ -55,16 +49,16 @@ export default function CategoryForm({
       <div>
         <div className="mb-6 flex items-start gap-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E6CC] text-[#9B783E]">
-            <Tag size={18} />
+            <FileText size={18} />
           </div>
 
           <div>
             <h2 className="text-lg font-bold text-[#463525]">
-              Category Information
+              Page Information
             </h2>
 
             <p className="mt-1 text-xs leading-5 text-[#95846D]">
-              Add the basic information for this category.
+              Define the page name and URL used for this SEO configuration.
             </p>
           </div>
         </div>
@@ -73,18 +67,18 @@ export default function CategoryForm({
           <div className="min-w-0">
             <div className="relative">
               <label
-                htmlFor="name"
+                htmlFor="pageName"
                 className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
               >
-                Category Name <span className="text-[#B28B4C]">*</span>
+                Page Name <span className="text-[#B28B4C]">*</span>
               </label>
 
               <input
-                id="name"
+                id="pageName"
                 type="text"
                 disabled={loading}
-                {...register("name", {
-                  required: "Category name is required!",
+                {...register("pageName", {
+                  required: "Page name is required!",
                   onChange: (e) => {
                     setValue("slug", SlugifyHandler(e.target.value), {
                       shouldDirty: true,
@@ -92,14 +86,14 @@ export default function CategoryForm({
                     });
                   },
                 })}
-                placeholder="Enter category name"
+                placeholder="Enter page name"
                 className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
 
-            {errors.name && (
+            {errors.pageName && (
               <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                {errors.name.message}
+                {errors.pageName.message}
               </p>
             )}
           </div>
@@ -120,7 +114,7 @@ export default function CategoryForm({
                 {...register("slug", {
                   required: "Slug is required!",
                 })}
-                placeholder="category-slug"
+                placeholder="page-slug"
                 className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#806C52] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
@@ -133,7 +127,7 @@ export default function CategoryForm({
               )}
 
               <p className="mt-2 px-1 text-right text-[10px] font-medium text-[#A29480]">
-                Automatically generated from category name
+                Automatically generated from page name
               </p>
             </div>
           </div>
@@ -143,149 +137,88 @@ export default function CategoryForm({
       <div className="border-t border-[#ECE4D6] pt-8">
         <div className="mb-6 flex items-start gap-4">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E6CC] text-[#9B783E]">
-            <FolderTree size={18} />
+            <Search size={18} />
           </div>
 
           <div>
             <h2 className="text-lg font-bold text-[#463525]">
-              Category Hierarchy
+              Search Engine Metadata
             </h2>
 
             <p className="mt-1 text-xs leading-5 text-[#95846D]">
-              Define whether this category is a parent or belongs to another
-              category.
+              Configure the metadata that search engines can use for this page.
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div className="space-y-6">
           <div className="min-w-0">
             <div className="relative">
               <label
-                htmlFor="isParent"
+                htmlFor="metaTitle"
                 className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
               >
-                Category Type
+                Meta Title
               </label>
 
-              <Controller
-                name="isParent"
-                control={control}
-                render={({ field }) => (
-                  <button
-                    type="button"
-                    id="isParent"
-                    disabled={loading}
-                    onClick={() => {
-                      const newValue = !field.value;
+              <input
+                id="metaTitle"
+                type="text"
+                disabled={loading}
+                {...register("metaTitle")}
+                placeholder="Enter meta title"
+                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
+              />
+            </div>
 
-                      field.onChange(newValue);
+            <p className="mt-2 px-1 text-[10px] font-medium text-[#A29480]">
+              Recommended: keep the title concise and relevant to the page.
+            </p>
+          </div>
 
-                      if (newValue) {
-                        setValue("parentId", null);
-                        setValue("parentName", "");
-                      }
-                    }}
-                    className={`flex h-[52px] w-full items-center justify-between rounded-xl border px-4 text-left outline-none transition-all duration-300 ${
-                      field.value
-                        ? "border-[#DCC9A5] bg-[#FCF8EF]"
-                        : "border-[#DDD3C1] bg-white"
-                    } disabled:cursor-not-allowed disabled:opacity-60`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <span
-                        className={`h-2.5 w-2.5 rounded-full ${
-                          field.value ? "bg-[#8DAA72]" : "bg-[#B9B0A3]"
-                        }`}
-                      />
+          <div className="min-w-0">
+            <div className="relative">
+              <label
+                htmlFor="metaDescription"
+                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
+              >
+                Meta Description
+              </label>
 
-                      <div>
-                        <p className="text-sm font-semibold text-[#4B3A29]">
-                          {field.value ? "Parent Category" : "Child Category"}
-                        </p>
-
-                        <p className="mt-0.5 text-[10px] text-[#A29480]">
-                          {field.value
-                            ? "This category can contain child categories."
-                            : "This category belongs under a parent."}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span
-                      className={`relative h-7 w-12 shrink-0 rounded-full transition-colors duration-300 ${
-                        field.value ? "bg-[#B18A4D]" : "bg-[#CFC7B9]"
-                      }`}
-                    >
-                      <span
-                        className={`absolute top-1 h-5 w-5 rounded-full bg-white shadow-sm transition-transform duration-300 ${
-                          field.value ? "translate-x-6" : "translate-x-1"
-                        }`}
-                      />
-                    </span>
-                  </button>
-                )}
+              <textarea
+                id="metaDescription"
+                rows={5}
+                disabled={loading}
+                {...register("metaDescription")}
+                placeholder="Enter meta description"
+                className="min-h-[130px] w-full resize-none rounded-xl border border-[#DDD3C1] bg-white px-4 py-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
           </div>
 
-          {!isParent && (
-            <div className="min-w-0">
-              <div className="relative">
-                <label
-                  htmlFor="parentId"
-                  className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                >
-                  Parent Category <span className="text-[#B28B4C]">*</span>
-                </label>
+          <div className="min-w-0">
+            <div className="relative">
+              <label
+                htmlFor="metaKeywords"
+                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
+              >
+                Meta Keywords
+              </label>
 
-                <div className="relative">
-                  <select
-                    id="parentId"
-                    disabled={loading}
-                    {...register("parentId", {
-                      required: !isParent
-                        ? "Parent category is required!"
-                        : false,
-
-                      onChange: (e) => {
-                        const selectedCategory = categories.find(
-                          (category) => category._id === e.target.value,
-                        );
-
-                        setValue("parentName", selectedCategory?.name || "");
-                      },
-                    })}
-                    onFocus={handleCategoryDropdownOpen}
-                    className="h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white px-4 pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <option value="" disabled>
-                      Select parent category
-                    </option>
-
-                    {categories
-                      ?.filter((item) => item._id !== currentCategoryId)
-                      .map((item) => (
-                        <option key={item._id} value={item._id}>
-                          {item.name}
-                        </option>
-                      ))}
-                  </select>
-
-                  <ChevronDown
-                    size={18}
-                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52]"
-                  />
-                </div>
-              </div>
-
-              {errors.parentId && (
-                <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                  {errors.parentId.message}
-                </p>
-              )}
+              <input
+                id="metaKeywords"
+                type="text"
+                disabled={loading}
+                {...register("metaKeywords")}
+                placeholder="honey, punjabi food, natural honey"
+                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
+              />
             </div>
-          )}
+
+            <p className="mt-2 px-1 text-[10px] font-medium text-[#A29480]">
+              Separate multiple keywords with commas.
+            </p>
+          </div>
         </div>
       </div>
 
@@ -296,12 +229,10 @@ export default function CategoryForm({
           </div>
 
           <div>
-            <h2 className="text-lg font-bold text-[#463525]">
-              Category Status
-            </h2>
+            <h2 className="text-lg font-bold text-[#463525]">SEO Status</h2>
 
             <p className="mt-1 text-xs leading-5 text-[#95846D]">
-              Control whether this category is currently available.
+              Control whether this SEO configuration is currently available.
             </p>
           </div>
         </div>
@@ -335,14 +266,14 @@ export default function CategoryForm({
                 <div>
                   <p className="text-sm font-bold text-[#4B3929]">
                     {field.value
-                      ? "Category is active"
-                      : "Category is inactive"}
+                      ? "SEO configuration is active"
+                      : "SEO configuration is inactive"}
                   </p>
 
                   <p className="mt-1 text-xs text-[#95846D]">
                     {field.value
-                      ? "This category is visible and available."
-                      : "This category is currently disabled."}
+                      ? "This SEO configuration is available to the frontend."
+                      : "This SEO configuration is currently disabled."}
                   </p>
                 </div>
               </div>
@@ -369,7 +300,7 @@ export default function CategoryForm({
             <Check size={13} />
           </span>
 
-          <span>Review the category information before saving.</span>
+          <span>Review the SEO information before saving.</span>
         </div>
 
         <button

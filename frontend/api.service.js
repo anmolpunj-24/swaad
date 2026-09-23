@@ -193,6 +193,33 @@ const categoryApi = {
   delete: async () => {},
 };
 
+const pageSeoApi = {
+  add: async (pageSeoData) => {
+    const response = await api.post("/api/admin/seo/add", pageSeoData);
+    return response;
+  },
+
+  getAll: async () => {
+    const response = await api.get("/api/admin/seo/getAll");
+    return response;
+  },
+
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/seo/get/${id}`);
+    return response;
+  },
+
+  update: async (id, updatePageSeoData) => {
+    const response = await api.put(
+      `/api/admin/seo/update/${id}`,
+      updatePageSeoData,
+    );
+    return response;
+  },
+
+  delete: async () => {},
+};
+
 export {
   adminAuthApi,
   customerAuthApi,
@@ -201,4 +228,5 @@ export {
   customerAddressApi,
   productApi,
   categoryApi,
+  pageSeoApi,
 };

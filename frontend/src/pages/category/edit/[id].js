@@ -98,10 +98,10 @@ export default function EditCategory() {
 
   const categoryDefaultValues = useMemo(
     () => ({
-      name: category?.name || "",
+      name: category?.name ?? "",
       parentId: category?.parentId ? category?.parentId : null,
-      parentName: category?.parentName || "",
-      slug: category?.slug || "",
+      parentName: category?.parentName ?? "",
+      slug: category?.slug ?? "",
       isParent: !category?.parentId,
       isActive: category?.isActive ?? false,
     }),
