@@ -12,7 +12,7 @@ const addProductImage = async (req, res) => {
   );
 
   if (newProductImage.success === false) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       message: newProductImage.errorMessage,
     });
   }
@@ -25,9 +25,13 @@ const addProductImage = async (req, res) => {
 
 const getAllProductImages = async (req, res) => {
   const productId = req.params.productId;
+  const productVariantId = req.params.variantId;
 
   const allProductImages =
-    await productImagesService.getAllProductImagesService(productId);
+    await productImagesService.getAllProductImagesService(
+      productId,
+      productVariantId,
+    );
 
   if (allProductImages.success === false) {
     return res.status(400).json({

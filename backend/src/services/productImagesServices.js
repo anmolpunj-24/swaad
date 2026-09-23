@@ -62,7 +62,7 @@ const addProductImageService = async (
   return newImagesData;
 };
 
-const getAllProductImagesService = async (productId) => {
+const getAllProductImagesService = async (productId, productVariantId) => {
   const checkIfProductExist =
     await productImagesRepo.checkIfProductExistInDbRepo(productId);
 
@@ -73,8 +73,24 @@ const getAllProductImagesService = async (productId) => {
     };
   }
 
+  const checkIfProductVariantExist =
+    await productImagesRepo.checkIfProductVariantExistInDbRepo(
+      productId,
+      productVariantId,
+    );
+
+  if (!checkIfProductVariantExist) {
+    return {
+      success: false,
+      errorMessage: "Product variant not found!",
+    };
+  }
+
   const allProductVariantImages =
-    await productImagesRepo.allProductVariantImagesRepo(productId);
+    await productImagesRepo.allProductVariantImagesRepo(
+      productId,
+      productVariantId,
+    );
 
   return allProductVariantImages;
 };

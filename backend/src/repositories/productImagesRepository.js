@@ -65,9 +65,10 @@ const addProductVariantImageRepo = async (
   return newImagesData;
 };
 
-const allProductVariantImagesRepo = async (productId) => {
+const allProductVariantImagesRepo = async (productId, productVariantId) => {
   return await productImagesModel.find({
     productId,
+    productVariantId,
     deletedAt: null,
     isActive: true,
   });
