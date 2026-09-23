@@ -25,10 +25,6 @@ const getAllCategories = async (req, res) => {
 const getOneCategory = async (req, res) => {
   const categoryId = req.params.id;
 
-  if (!categoryId) {
-    return res.status(400).json({ message: "Category id not found!" });
-  }
-
   const categoryData = await categoryService.getOneCategoryService(categoryId);
 
   return res
@@ -39,10 +35,6 @@ const getOneCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   const categoryId = req.params.id;
   const body = req.body;
-
-  if (!categoryId) {
-    return res.status(400).json({ message: "Category id not found!" });
-  }
 
   const updatedCategory = await categoryService.updateCategoryService(
     categoryId,
@@ -60,10 +52,6 @@ const updateCategory = async (req, res) => {
 
 const deleteCategory = async (req, res) => {
   const categoryId = req.params.id;
-
-  if (!categoryId) {
-    return res.status(400).json({ message: "Category id not found!" });
-  }
 
   const deletedCategory =
     await categoryService.deleteCategoryService(categoryId);
