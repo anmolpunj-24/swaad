@@ -30,6 +30,8 @@ export default function CustomerInfo() {
 
   const [customer, setCustomer] = useState({});
 
+  console.log(customer);
+
   useEffect(() => {
     if (!router.isReady || !uuid) return;
 
@@ -225,9 +227,9 @@ export default function CustomerInfo() {
 
           <div className="space-y-3 p-5">
             {customer?.addresses?.length > 0 ? (
-              customer?.addresses.map((address) => (
+              customer?.addresses.map((address, index) => (
                 <div
-                  key={address.id}
+                  key={index}
                   className="rounded-2xl border border-[#E5DED1] bg-white p-4"
                 >
                   <div className="flex items-start justify-between gap-4">
@@ -374,7 +376,7 @@ export default function CustomerInfo() {
             <tbody>
               {customer?.orders?.length > 0 ? (
                 customer?.orders.map((order) => {
-                  const status = getOrderStatus(order.status);
+                  const status = getOrderStatus(order?.status);
                   const StatusIcon = status.icon;
 
                   return (
@@ -384,12 +386,12 @@ export default function CustomerInfo() {
                     >
                       <td className="px-6 py-4">
                         <span className="font-mono text-sm font-bold tracking-wide text-[#4C443C]">
-                          #{order?.id}
+                          #{order?._id}
                         </span>
                       </td>
 
                       <td className="px-6 py-4 text-sm text-[#766D64]">
-                        {order?.date}
+                        {dateHandler(order?.createdAt)}
                       </td>
 
                       <td className="px-6 py-4">
@@ -402,7 +404,7 @@ export default function CustomerInfo() {
                       </td>
 
                       <td className="px-6 py-4 text-right text-sm font-extrabold text-[#38312B]">
-                        {formatPrice(order?.amount)}
+                        {formatPrice(order?.totalAmount)}
                       </td>
 
                       <td className="px-6 py-4">
