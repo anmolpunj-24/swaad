@@ -53,6 +53,4 @@ seoSchema.index(
   },
 );
 
-const seo = mongoose.model("pages_seo", seoSchema);
-
-module.exports = seo;
+module.exports = mongoose.model("pages_seo", seoSchema);

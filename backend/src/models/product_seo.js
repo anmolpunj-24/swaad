@@ -49,5 +49,4 @@ productSeoSchema.index(
   },
 );
 
-const productSeo = mongoose.model("product_seo", productSeoSchema);
-module.exports = productSeo;
+module.exports = mongoose.model("product_seo", productSeoSchema);

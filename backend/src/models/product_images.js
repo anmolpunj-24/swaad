@@ -40,5 +40,4 @@ const productImagesSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const productImages = mongoose.model("product_images", productImagesSchema);
-module.exports = productImages;
+module.exports = mongoose.model("product_images", productImagesSchema);

@@ -49,5 +49,4 @@ productReviewsSchema.index(
   },
 );
 
-const productReviews = mongoose.model("product_reviews", productReviewsSchema);
-module.exports = productReviews;
+module.exports = mongoose.model("product_reviews", productReviewsSchema);

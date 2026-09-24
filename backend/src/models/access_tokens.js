@@ -30,5 +30,4 @@ const accessTokenSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-const access_tokens = mongoose.model("access_tokens", accessTokenSchema);
-module.exports = access_tokens;
+module.exports = mongoose.model("access_tokens", accessTokenSchema);
