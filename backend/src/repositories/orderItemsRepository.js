@@ -4,29 +4,38 @@ const productModel = require("../models/products");
 const productVariantModel = require("../models/product_variants");
 
 const checkIfOrderExistInDbRepo = async (orderId) => {
-  return await ordersModel.findOne({
-    _id: orderId,
-  });
+  return await ordersModel
+    .findOne({
+      _id: orderId,
+    })
+    .select("_id")
+    .lean();
 };
 
 const checkIfProductExistInDbRepo = async (productId) => {
-  return await productModel.findOne({
-    _id: productId,
-    isActive: true,
-    deletedAt: null,
-  });
+  return await productModel
+    .findOne({
+      _id: productId,
+      isActive: true,
+      deletedAt: null,
+    })
+    .select("_id")
+    .lean();
 };
 
 const checkIfProductVariantExistInDbRepo = async (
   productVariantId,
   productId,
 ) => {
-  return await productVariantModel.findOne({
-    _id: productVariantId,
-    productId,
-    deletedAt: null,
-    isActive: true,
-  });
+  return await productVariantModel
+    .findOne({
+      _id: productVariantId,
+      productId,
+      deletedAt: null,
+      isActive: true,
+    })
+    .select("_id")
+    .lean();
 };
 
 const addCustomerOrderItemRepo = async (newOrderItemData) => {
@@ -36,16 +45,23 @@ const addCustomerOrderItemRepo = async (newOrderItemData) => {
 };
 
 const getAllCustomerOrderItemsRepo = async (orderId) => {
-  return await orderItemModel.find({
-    orderId,
-  });
+  return await orderItemModel
+    .find({
+      orderId,
+    })
+    .select("-updatedAt")
+    .sort("-createdAt")
+    .lean();
 };
 
 const checkIfOneOrderItemExistInDbRepo = async (orderItemId, orderId) => {
-  return await orderItemModel.findOne({
-    _id: orderItemId,
-    orderId,
-  });
+  return await orderItemModel
+    .findOne({
+      _id: orderItemId,
+      orderId,
+    })
+    .select("-updatedAt")
+    .lean();
 };
 
 const updateCustomerOrderItemRepo = async (

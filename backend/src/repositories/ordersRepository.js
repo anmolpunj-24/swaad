@@ -2,11 +2,14 @@ const customerModel = require("../models/customers");
 const ordersModel = require("../models/orders");
 
 const checkIfCustomerExistInDbRepo = async (customerUuid) => {
-  return await customerModel.findOne({
-    uuid: customerUuid,
-    deletedAt: null,
-    isActive: true,
-  });
+  return await customerModel
+    .findOne({
+      uuid: customerUuid,
+      deletedAt: null,
+      isActive: true,
+    })
+    .select("_id")
+    .lean();
 };
 
 const addCustomerOrderRepo = async (customerUuid, orderData) => {
@@ -16,16 +19,23 @@ const addCustomerOrderRepo = async (customerUuid, orderData) => {
 };
 
 const getAllCustomerOrdersRepo = async (customerUuid) => {
-  return await ordersModel.find({
-    customerUuid,
-  });
+  return await ordersModel
+    .find({
+      customerUuid,
+    })
+    .select("-updatedAt")
+    .sort("-createdAt")
+    .lean();
 };
 
 const checkIfOrderExistInDbRepo = async (orderId, customerUuid) => {
-  return await ordersModel.findOne({
-    _id: orderId,
-    customerUuid,
-  });
+  return await ordersModel
+    .findOne({
+      _id: orderId,
+      customerUuid,
+    })
+    .select("-updatedAt")
+    .lean();
 };
 
 const updateCustomerOrderRepo = async (customerUuid, orderId, orderData) => {
