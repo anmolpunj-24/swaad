@@ -57,6 +57,12 @@ const server = async () => {
   const pagesSeoRoutes = require("./src/routes/pagesSeoRoutes");
   app.use("/api/admin/seo", pagesSeoRoutes);
 
+  const customerOrderRoutes = require("./src/routes/ordersRoutes");
+  app.use("/api/auth/customer/:customerUuid/orders", customerOrderRoutes);
+
+  const orderItemsRoutes = require("./src/routes/orderItemsRoutes");
+  app.use("/api/auth/order/:orderId/items", orderItemsRoutes);
+
   app.use(errorHandlingMiddleware);
 
   PORT = process.env.PORT || 5000;
