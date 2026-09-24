@@ -7,7 +7,7 @@ const getAllCustomersService = async () => {
     email: customer?.userId?.email,
     profile: customer?.userId?.profile,
     gender: customer?.gender,
-    dob: customer?.dob, 
+    dob: customer?.dob,
     phone: customer?.phone,
     isActive: customer?.isActive ?? false,
     uuid: customer?.uuid,
@@ -28,6 +28,7 @@ const getOneCustomerService = async (uuid) => {
     uuid: customerData?.uuid,
     createdAt: customerData?.createdAt,
     addresses: customerData?.addresses,
+    orders: customerData?.orders,
   };
 };
 

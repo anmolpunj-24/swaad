@@ -1,5 +1,6 @@
 const customerModel = require("../models/customers");
 const customerAddressModel = require("../models/customer_address");
+const customerOrderModel = require("../models/orders");
 
 const getAllCustomersRepo = async () => {
   return await customerModel
@@ -39,9 +40,17 @@ const getOneCustomerRepo = async (uuid) => {
     .sort("-createdAt")
     .lean();
 
+  const orders = await customerOrderModel
+    .find({
+      customerUuid: uuid,
+    })
+    .select("-customerUuid")
+    .lean();
+
   return {
     ...customer,
     addresses,
+    orders,
   };
 };
 
