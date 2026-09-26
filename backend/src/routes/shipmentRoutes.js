@@ -6,12 +6,6 @@ const shipmentController = require("../controllers/customers/shipmentController"
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
 routes.get(
-  "/getAll",
-  authenticateUserMiddleware,
-  shipmentController.getAllShipments,
-);
-
-routes.get(
   "/get",
   authenticateUserMiddleware,
   shipmentController.getOneShipment,
