@@ -66,6 +66,9 @@ const server = async () => {
   const paymentRoutes = require("./src/routes/paymentRoutes");
   app.use("/api/auth/customer/:customerUuid", paymentRoutes);
 
+  const shipmentRoutes = require("./src/routes/shipmentRoutes");
+  app.use("/api/auth/order/:orderId/shipment", shipmentRoutes);
+
   app.use(errorHandlingMiddleware);
 
   PORT = process.env.PORT || 5000;

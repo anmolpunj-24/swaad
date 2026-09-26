@@ -27,6 +27,18 @@ const orderSchema = new mongoose.Schema(
       default: "pending",
     },
 
+    shippingProvider: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
+    shipmentTrackingId: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
     subtotal: {
       type: Number,
       required: true,
