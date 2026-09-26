@@ -66,12 +66,16 @@ const addProductVariantImageRepo = async (
 };
 
 const allProductVariantImagesRepo = async (productId, productVariantId) => {
-  return await productImagesModel.find({
-    productId,
-    productVariantId,
-    deletedAt: null,
-    isActive: true,
-  });
+  return await productImagesModel
+    .find({
+      productId,
+      productVariantId,
+      deletedAt: null,
+      isActive: true,
+    })
+    .select("_id image alt isPrimary createdAt")
+    .sort("-createdAt")
+    .lean();
 };
 
 const oneProductVariantImageRepo = async (
@@ -190,7 +194,7 @@ const deletedProductImageRepo = async (
   );
 };
 
-const checkForNextRecentImageAndUpdateIsPrimaryStatusFprDeleteRepo = async (
+const checkForNextRecentImageAndUpdateIsPrimaryStatusForDeleteRepo = async (
   productId,
   productVariantId,
 ) => {
@@ -248,7 +252,7 @@ module.exports = {
   updateProductImageIsPrimaryStatusForUpdateRepo,
   checkForNextRecentImageAndUpdateIsPrimaryStatusRepo,
   deletedProductImageRepo,
-  checkForNextRecentImageAndUpdateIsPrimaryStatusFprDeleteRepo,
+  checkForNextRecentImageAndUpdateIsPrimaryStatusForDeleteRepo,
   getPrimaryProductImageRepo,
   deleteAllProductImagesRepo,
 };

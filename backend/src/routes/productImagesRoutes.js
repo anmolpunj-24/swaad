@@ -5,6 +5,7 @@ const productImagesController = require("../controllers/admins/productImagesCont
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
+const uploadMiddleware = require("../middlewares/uploadMiddleware");
 
 const addProductImagesRules = require("../validations/addProductImageValidations");
 
@@ -23,6 +24,7 @@ routes.get(
 routes.post(
   "/add",
   authenticateUserMiddleware,
+  uploadMiddleware("image").array("images", 5),
   addProductImagesRules,
   validationMiddleware,
   productImagesController.addProductImage,

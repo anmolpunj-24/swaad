@@ -30,8 +30,6 @@ export default function CustomerInfo() {
 
   const [customer, setCustomer] = useState({});
 
-  console.log(customer);
-
   useEffect(() => {
     if (!router.isReady || !uuid) return;
 

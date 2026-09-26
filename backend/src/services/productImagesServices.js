@@ -1,9 +1,14 @@
+const fs = require("fs");
+const path = require("path");
+const sharp = require("sharp");
+
 const productImagesRepo = require("../repositories/productImagesRepository");
 
 const addProductImageService = async (
   productId,
   productVariantId,
   productImagesData,
+  file,
 ) => {
   const checkIfProductExist =
     await productImagesRepo.checkIfProductExistInDbRepo(productId);
@@ -25,6 +30,13 @@ const addProductImageService = async (
     return {
       success: false,
       errorMessage: "Product variant not found!",
+    };
+  }
+
+  if (!file) {
+    return {
+      success: false,
+      errorMessage: "Image file is required!",
     };
   }
 
@@ -54,12 +66,47 @@ const addProductImageService = async (
     );
   }
 
-  const newImagesData = await productImagesRepo.addProductVariantImageRepo(
-    productId,
-    productVariantId,
-    productImagesData,
+  const productDirectory = path.join(
+    process.cwd(),
+    "uploads",
+    "products",
+    productId.toString(),
+    productVariantId.toString(),
   );
-  return newImagesData;
+
+  fs.mkdirSync(productDirectory, { recursive: true });
+
+  const originalName = path
+    .parse(file.originalname)
+    .name.replace(/[^a-zA-Z0-9-_]/g, "-");
+
+  const fileName = `${Date.now()}-${originalName}.webp`;
+
+  const filePath = path.join(productDirectory, fileName);
+
+  try {
+    await sharp(file.buffer)
+      .webp({
+        quality: 80,
+      })
+      .toFile(filePath);
+
+    productImagesData.image = fileName;
+
+    const newImagesData = await productImagesRepo.addProductVariantImageRepo(
+      productId,
+      productVariantId,
+      productImagesData,
+    );
+
+    return newImagesData;
+  } catch (error) {
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    throw error;
+  }
 };
 
 const getAllProductImagesService = async (productId, productVariantId) => {
@@ -75,8 +122,8 @@ const getAllProductImagesService = async (productId, productVariantId) => {
 
   const checkIfProductVariantExist =
     await productImagesRepo.checkIfProductVariantExistInDbRepo(
-      productId,
       productVariantId,
+      productId,
     );
 
   if (!checkIfProductVariantExist) {
@@ -274,13 +321,7 @@ const deleteProductImageService = async (
     };
   }
 
-  const checkVariantImagesCount =
-    await productImagesRepo.checkVariantImagesCountInDbRepo(
-      productId,
-      productVariantId,
-    );
-
-  const isDeletingPrimary = checkIfProductVariantImageExist.isPrimary === true;
+  const wasPrimary = checkIfProductVariantImageExist.isPrimary;
 
   const deletedProductImage = await productImagesRepo.deletedProductImageRepo(
     productImageId,
@@ -291,12 +332,12 @@ const deleteProductImageService = async (
   if (!deletedProductImage) {
     return {
       success: false,
-      errorMessage: "Product variant image not found!",
+      errorMessage: "Failed to delete product image!",
     };
   }
 
-  if (isDeletingPrimary && checkVariantImagesCount > 1) {
-    await productImagesRepo.checkForNextRecentImageAndUpdateIsPrimaryStatusFprDeleteRepo(
+  if (wasPrimary) {
+    await productImagesRepo.checkForNextRecentImageAndUpdateIsPrimaryStatusForDeleteRepo(
       productId,
       productVariantId,
     );

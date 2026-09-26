@@ -21,11 +21,15 @@ const addProductVariantRepo = async (productId, productVariantData) => {
 };
 
 const allProductVariantsRepo = async (productId) => {
-  return await productVariantModel.find({
-    productId,
-    deletedAt: null,
-    isActive: true,
-  });
+  return await productVariantModel
+    .find({
+      productId,
+      deletedAt: null,
+      isActive: true,
+    })
+    .select("_id name slug tagLine price stock description isActive createdAt")
+    .sort("-createdAt")
+    .lean();
 };
 
 const oneProductVariantRepo = async (productVariantId, productId) => {

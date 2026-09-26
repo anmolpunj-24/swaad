@@ -13,7 +13,7 @@ const getAllPagesSeoRepo = async () => {
       isActive: true,
     })
     .select(
-      "slug pageName metaTitle metaDescription metaKeywords isActive createdAt",
+      "_id slug pageName metaTitle metaDescription metaKeywords isActive createdAt",
     )
     .sort("-createdAt")
     .lean();
@@ -26,7 +26,7 @@ const getOnePageSeoRepo = async (pageSeoId) => {
       deletedAt: null,
       isActive: true,
     })
-    .select("slug pageName metaTitle metaDescription metaKeywords isActive")
+    .select("_id slug pageName metaTitle metaDescription metaKeywords isActive")
     .lean();
 };
 

@@ -2,7 +2,9 @@ const productService = require("../../services/productServices");
 
 const addProduct = async (req, res) => {
   const body = req.body;
-  const newProduct = await productService.addProductService(body);
+  const files = req.files;
+
+  const newProduct = await productService.addProductService(body, files);
 
   if (newProduct.success === false) {
     return res.status(400).json({
@@ -48,10 +50,12 @@ const getOneProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
   const productId = req.params.id;
   const body = req.body;
+  const files = req.files;
 
   const updatedProduct = await productService.updateProductService(
     productId,
     body,
+    files,
   );
 
   if (updatedProduct.success === false) {

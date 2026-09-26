@@ -4,11 +4,13 @@ const addProductImage = async (req, res) => {
   const productId = req.params.productId;
   const productVariantId = req.params.variantId;
   const body = req.body;
+  const files = req.files;
 
   const newProductImage = await productImagesService.addProductImageService(
     productId,
     productVariantId,
     body,
+    files,
   );
 
   if (newProductImage.success === false) {

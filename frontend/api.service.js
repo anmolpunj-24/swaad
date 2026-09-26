@@ -172,7 +172,7 @@ const productApi = {
 
   update: async (id, updateProductData) => {
     const response = await api.put(
-      `/api/admin/seo/product/${id}`,
+      `/api/admin/product/update/${id}`,
       updateProductData,
     );
     return response;

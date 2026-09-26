@@ -60,12 +60,18 @@ const allActiveVariantsForProductSeoRepo = async (productId) => {
 };
 
 const allProductSeosDataRepo = async (productId, variantIds) => {
-  return await productSeoModel.find({
-    productId,
-    productVariantId: { $in: variantIds },
-    deletedAt: null,
-    isActive: true,
-  });
+  return await productSeoModel
+    .find({
+      productId,
+      productVariantId: { $in: variantIds },
+      deletedAt: null,
+      isActive: true,
+    })
+    .select(
+      "_id productVariantId metaTitle metaDescription metaKeywords createdAt",
+    )
+    .sort("-createdAt")
+    .lean();
 };
 
 const oneSeoDataRepo = async (productSeoId, productId, productVariantId) => {

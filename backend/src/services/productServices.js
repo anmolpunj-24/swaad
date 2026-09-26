@@ -5,7 +5,7 @@ const productVariantImagesService = require("../services/productImagesServices")
 const productVariantSeoService = require("../services/productSeoService");
 const productReviewsService = require("../services/productReviewsServices");
 
-const addProductService = async (productData) => {
+const addProductService = async (productData, files) => {
   if (
     !productData ||
     !productData.product ||
@@ -29,6 +29,16 @@ const addProductService = async (productData) => {
     };
   }
 
+  const { imageMetadata = [] } = productData;
+  const uploadedFiles = files || [];
+
+  if (imageMetadata.length !== uploadedFiles.length) {
+    return {
+      success: false,
+      errorMessage: "Image data does not match uploaded images!",
+    };
+  }
+
   const savedProduct = await productRepo.addProductRepo(
     checkIfCategoryExist._id,
     checkIfCategoryExist.name,
@@ -41,8 +51,16 @@ const addProductService = async (productData) => {
     };
   }
 
+  const createdVariants = [];
+
+  let imageFileIndex = 0;
+
   for (const variantData of productData.variants) {
-    const { images = [], seo = null, ...productVariantData } = variantData;
+    const { clientId, seo = null, ...productVariantData } = variantData;
+
+    const variantImages = productData.imageMetadata.filter(
+      (image) => image.variantId === clientId,
+    );
 
     const newVariant = await productVariantService.addProductVariantService(
       savedProduct._id,
@@ -58,11 +76,20 @@ const addProductService = async (productData) => {
       );
     }
 
-    for (const imageData of images) {
+    const createdVariant = {
+      ...newVariant.toObject(),
+      images: [],
+      seo: null,
+    };
+
+    for (const imageData of variantImages) {
+      const file = files[imageFileIndex];
+
       const newImage = await productVariantImagesService.addProductImageService(
         savedProduct._id,
         newVariant._id,
         imageData,
+        file,
       );
 
       if (!newImage || newImage.success === false) {
@@ -73,6 +100,10 @@ const addProductService = async (productData) => {
           }
         );
       }
+
+      createdVariant.images.push(newImage);
+
+      imageFileIndex++;
     }
 
     if (seo) {
@@ -90,10 +121,15 @@ const addProductService = async (productData) => {
           }
         );
       }
+      createdVariant.seo = newSeo;
     }
+    createdVariants.push(createdVariant);
   }
 
-  return savedProduct;
+  return {
+    product: savedProduct,
+    variants: createdVariants,
+  };
 };
 
 const getAllProductsService = async () => {
@@ -204,7 +240,7 @@ const getOneProductService = async (productId) => {
   };
 };
 
-const updateProductService = async (productId, productData) => {
+const updateProductService = async (productId, productData, files = []) => {
   if (!productData) {
     return {
       success: false,
@@ -262,14 +298,28 @@ const updateProductService = async (productId, productData) => {
     };
   }
 
+  const imageMetadataByVariant = new Map();
+
+  for (const image of productData.imageMetadata || []) {
+    const images = imageMetadataByVariant.get(image.variantId) || [];
+
+    images.push(image);
+
+    imageMetadataByVariant.set(image.variantId, images);
+  }
+
   if (Array.isArray(productData.variants)) {
     for (const variantData of productData.variants) {
       const {
         _id: productVariantId,
-        images,
+        clientId,
         seo,
         ...productVariantFields
       } = variantData;
+
+      const variantKey = productVariantId || clientId;
+
+      const images = imageMetadataByVariant.get(variantKey) || [];
 
       let variant;
 
@@ -301,7 +351,7 @@ const updateProductService = async (productId, productData) => {
 
       if (Array.isArray(images)) {
         for (const imageData of images) {
-          const { _id: productImageId, ...imageFields } = imageData;
+          const { _id: productImageId, fileIndex, ...imageFields } = imageData;
 
           let image;
 
@@ -313,10 +363,20 @@ const updateProductService = async (productId, productData) => {
               imageFields,
             );
           } else {
+            const file = files[fileIndex];
+
+            if (!file) {
+              return {
+                success: false,
+                errorMessage: "Product image file is required!",
+              };
+            }
+
             image = await productVariantImagesService.addProductImageService(
               productId,
               currentVariantId,
               imageFields,
+              file,
             );
           }
 
@@ -367,7 +427,57 @@ const updateProductService = async (productId, productData) => {
     }
   }
 
-  return updatedProduct;
+  if (Array.isArray(productData.deletedVariantIds)) {
+    for (const productVariantId of productData.deletedVariantIds) {
+      const deletedVariant =
+        await productVariantService.deleteProductVariantService(
+          productId,
+          productVariantId,
+        );
+
+      if (!deletedVariant || deletedVariant.success === false) {
+        return (
+          deletedVariant || {
+            success: false,
+            errorMessage: "Failed to delete product variant!",
+          }
+        );
+      }
+    }
+  }
+
+  if (Array.isArray(productData.deletedImages)) {
+    for (const deletedImage of productData.deletedImages) {
+      const deletedProductImage =
+        await productVariantImagesService.deleteProductImageService(
+          productId,
+          deletedImage.variantId,
+          deletedImage._id,
+        );
+
+      if (!deletedProductImage || deletedProductImage.success === false) {
+        return (
+          deletedProductImage || {
+            success: false,
+            errorMessage: "Failed to delete product image!",
+          }
+        );
+      }
+    }
+  }
+
+  const updatedProductData = await getOneProductService(productId);
+
+  if (!updatedProductData || updatedProductData.success === false) {
+    return (
+      updatedProductData || {
+        success: false,
+        errorMessage: "Failed to fetch updated product!",
+      }
+    );
+  }
+
+  return updatedProductData;
 };
 
 const deleteProductService = async (productId) => {

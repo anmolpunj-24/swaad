@@ -5,6 +5,8 @@ const productController = require("../controllers/admins/productController");
 
 const validationMiddleware = require("../middlewares/globalValidationMiddleware");
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
+const uploadMiddleware = require("../middlewares/uploadMiddleware");
+const parseProductFormDataMiddleware = require("../middlewares/parseProductFormDataMiddleware");
 
 const addProductRules = require("../validations/addProductValidations");
 
@@ -23,6 +25,8 @@ routes.get(
 routes.post(
   "/add",
   authenticateUserMiddleware,
+  uploadMiddleware("image").array("images", 50),
+  parseProductFormDataMiddleware,
   addProductRules,
   validationMiddleware,
   productController.addProduct,
@@ -31,6 +35,8 @@ routes.post(
 routes.put(
   "/update/:id",
   authenticateUserMiddleware,
+  uploadMiddleware("image").array("images", 50),
+  parseProductFormDataMiddleware,
   productController.updateProduct,
 );
 
