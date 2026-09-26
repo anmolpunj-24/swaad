@@ -21,7 +21,7 @@ const paymentSchema = new mongoose.Schema(
       required: true,
     },
 
-    providerOrderId: {
+    providerLinkId: {
       type: String,
       required: true,
       trim: true,
@@ -30,6 +30,12 @@ const paymentSchema = new mongoose.Schema(
 
     providerPaymentId: {
       type: String,
+      trim: true,
+    },
+
+    paymentLink: {
+      type: String,
+      required: true,
       trim: true,
     },
 
@@ -49,13 +55,7 @@ const paymentSchema = new mongoose.Schema(
 
     paymentMethod: {
       type: String,
-      enum: [
-        "card",
-        "netbanking",
-        "wallet",
-        "emi",
-        "upi",
-      ],
+      enum: ["card", "netbanking", "wallet", "emi", "upi"],
       trim: true,
     },
 

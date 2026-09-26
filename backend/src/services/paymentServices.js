@@ -1,5 +1,7 @@
 const Razorpay = require("razorpay");
-const crypto = require("crypto");
+const {
+  validatePaymentVerification,
+} = require("razorpay/dist/utils/razorpay-utils");
 
 const orderRepo = require("../repositories/ordersRepository");
 const paymentRepo = require("../repositories/paymentsRepository");
@@ -31,18 +33,32 @@ const createPaymentService = async (customerUuid, orderId) => {
 
   const amountInSubunits = Math.round(order.totalAmount * 100);
 
-  const razorpayOrder = await razorpay.orders.create({
+  const razorpayPaymentLink = await razorpay.paymentLink.create({
     amount: amountInSubunits,
     currency: order.currency,
-    receipt: order._id.toString(),
-    partial_payment: false,
+    reference_id: order._id.toString(),
+    description: `Payment for order ${order._id}`,
+    accept_partial: false,
+    customer: {
+      name: order.shippingAddress.name,
+      contact: order.shippingAddress.phone,
+    },
+    notify: {
+      sms: false,
+      email: false,
+    },
+    reminder_enable: false,
+
+    callback_url: `${process.env.FRONTEND_URL}/payment/success`,
+    callback_method: "get",
   });
 
   const paymentData = {
     orderId: order._id,
     customerUuid: order.customerUuid,
     provider: "razorpay",
-    providerOrderId: razorpayOrder.id,
+    providerLinkId: razorpayPaymentLink.id,
+    paymentLink: razorpayPaymentLink.short_url,
     amount: order.totalAmount,
     currency: order.currency,
     status: "pending",
@@ -51,15 +67,18 @@ const createPaymentService = async (customerUuid, orderId) => {
   const payment = await paymentRepo.addPaymentRepo(paymentData);
 
   return {
-    payment,
-    razorpayOrder,
+    ...payment.toObject(),
+    paymentLink: razorpayPaymentLink.short_url,
   };
 };
 
 const verifyPaymentService = async (
   customerUuid,
   paymentId,
+  razorpayPaymentLinkId,
   razorpayPaymentId,
+  razorpayPaymentLinkReferenceId,
+  razorpayPaymentLinkStatus,
   razorpaySignature,
 ) => {
   const payment = await paymentRepo.getOnePaymentRepo(paymentId, customerUuid);
@@ -71,13 +90,6 @@ const verifyPaymentService = async (
     };
   }
 
-  if (payment.customerUuid !== customerUuid) {
-    return {
-      success: false,
-      errorMessage: "Payment does not belong to this customer!",
-    };
-  }
-
   if (payment.status === "paid") {
     return {
       success: false,
@@ -85,31 +97,46 @@ const verifyPaymentService = async (
     };
   }
 
-  const generatedSignature = crypto
-    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-    .update(`${payment.providerOrderId}|${razorpayPaymentId}`)
-    .digest("hex");
+  if (payment.providerLinkId !== razorpayPaymentLinkId) {
+    return {
+      success: false,
+      errorMessage: "Payment link does not belong to this payment!",
+    };
+  }
 
-  const isSignatureValid = crypto.timingSafeEqual(
-    Buffer.from(generatedSignature),
-    Buffer.from(razorpaySignature),
-  );
+  if (payment.orderId.toString() !== razorpayPaymentLinkReferenceId) {
+    return {
+      success: false,
+      errorMessage: "Payment link does not belong to this order!",
+    };
+  }
 
-  if (!isSignatureValid) {
+  try {
+    validatePaymentVerification(
+      {
+        payment_link_id: razorpayPaymentLinkId,
+        payment_id: razorpayPaymentId,
+        payment_link_reference_id: razorpayPaymentLinkReferenceId,
+        payment_link_status: razorpayPaymentLinkStatus,
+      },
+      razorpaySignature,
+      process.env.RAZORPAY_KEY_SECRET,
+    );
+  } catch (error) {
     return {
       success: false,
       errorMessage: "Invalid payment signature!",
     };
   }
 
-  const razorpayPayment = await razorpay.payments.fetch(razorpayPaymentId);
-
-  if (razorpayPayment.order_id !== payment.providerOrderId) {
+  if (razorpayPaymentLinkStatus !== "paid") {
     return {
       success: false,
-      errorMessage: "Payment does not belong to this order!",
+      errorMessage: "Payment link has not been paid!",
     };
   }
+
+  const razorpayPayment = await razorpay.payments.fetch(razorpayPaymentId);
 
   const expectedAmount = Math.round(payment.amount * 100);
 

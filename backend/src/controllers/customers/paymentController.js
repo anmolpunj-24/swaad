@@ -25,12 +25,21 @@ const verifyPaymentController = async (req, res) => {
   const customerUuid = req.params.customerUuid;
   const paymentId = req.params.paymentId;
 
-  const { razorpayPaymentId, razorpaySignature } = req.body;
+  const {
+    razorpayPaymentLinkId,
+    razorpayPaymentId,
+    razorpayPaymentLinkReferenceId,
+    razorpayPaymentLinkStatus,
+    razorpaySignature,
+  } = req.body;
 
   const verifiedPayment = await paymentService.verifyPaymentService(
     customerUuid,
     paymentId,
+    razorpayPaymentLinkId,
     razorpayPaymentId,
+    razorpayPaymentLinkReferenceId,
+    razorpayPaymentLinkStatus,
     razorpaySignature,
   );
 
