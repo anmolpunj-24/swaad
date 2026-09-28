@@ -4,6 +4,20 @@ const mongoose = require("mongoose");
 const addProductRules = [
   body("product").isObject().withMessage("Product data is required!"),
 
+  body("product.name")
+    .notEmpty()
+    .trim()
+    .withMessage("Product name is required!")
+    .isLength({ min: 3, max: 100 })
+    .withMessage("Please provide a valid product name!"),
+
+  body("product.slug")
+    .notEmpty()
+    .trim()
+    .withMessage("Product slug is required!")
+    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .withMessage("Please provide a valid product slug!"),
+
   body("product.categoryId")
     .notEmpty()
     .withMessage("Category is required!")

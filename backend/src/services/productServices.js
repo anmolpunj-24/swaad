@@ -164,9 +164,10 @@ const getAllProductsService = async () => {
 
     allProducts.push({
       _id: productVariant._id,
-      name: productVariant.name,
-      slug: productVariant.slug,
-      price: productVariant.price,
+      name: product.name,
+      slug: product.slug,
+      mrp: productVariant.mrp,
+      sellingPrice: productVariant.sellingPrice,
       stock: productVariant.stock,
       isActive: product.isActive,
       primaryImage: primaryImage?.image || null,

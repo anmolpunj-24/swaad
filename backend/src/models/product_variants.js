@@ -8,17 +8,16 @@ const productVariantSchema = new mongoose.Schema(
       required: true,
     },
 
-    name: {
+    size: {
       type: String,
-      required: true,
-      lowercase: true,
       trim: true,
+      required: true,
     },
 
-    slug: {
+    unit: {
       type: String,
-      required: true,
-      trim: true,
+      enum: ["L", "ml", "kg", "g"],
+      default: "g",
     },
 
     tagLine: {
@@ -26,7 +25,13 @@ const productVariantSchema = new mongoose.Schema(
       trim: true,
     },
 
-    price: {
+    mrp: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+
+    sellingPrice: {
       type: Number,
       required: true,
       min: 0,
@@ -54,7 +59,7 @@ const productVariantSchema = new mongoose.Schema(
 );
 
 productVariantSchema.index(
-  { slug: 1 },
+  { productId: 1, size: 1 },
   {
     unique: true,
     partialFilterExpression: {

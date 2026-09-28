@@ -87,19 +87,19 @@ const updateProductVariantService = async (
   }
 
   if (
-    productVariantData.slug &&
-    productVariantData.slug !== checkIfProductVariantExist.slug
+    productVariantData.size &&
+    productVariantData.size.toLowerCase() !== checkIfProductVariantExist.size.toLowerCase()
   ) {
-    const checkIfSlugAlreadyExists =
-      await productVariantRepo.checkIfSlugAlreadyExistsInDbRepo(
+    const checkIfSizeAlreadyExists =
+      await productVariantRepo.checkIfSizeAlreadyExistsInDbRepo(
         productVariantData,
         productVariantId,
       );
 
-    if (checkIfSlugAlreadyExists) {
+    if (checkIfSizeAlreadyExists) {
       return {
         success: false,
-        errorMessage: "Product variant slug already exists!",
+        errorMessage: "Product variant size already exists!",
       };
     }
   }

@@ -27,7 +27,7 @@ const allProductVariantsRepo = async (productId) => {
       deletedAt: null,
       isActive: true,
     })
-    .select("_id name slug tagLine price stock description isActive createdAt")
+    .select("_id size unit tagLine mrp sellingPrice stock description isActive createdAt")
     .sort("-createdAt")
     .lean();
 };
@@ -41,12 +41,12 @@ const oneProductVariantRepo = async (productVariantId, productId) => {
   });
 };
 
-const checkIfSlugAlreadyExistsInDbRepo = async (
+const checkIfSizeAlreadyExistsInDbRepo = async (
   productVariantData,
   productVariantId,
 ) => {
   return await productVariantModel.findOne({
-    slug: productVariantData.slug,
+    size: productVariantData.size,
     deletedAt: null,
     _id: { $ne: productVariantId },
   });
@@ -186,7 +186,7 @@ module.exports = {
   addProductVariantRepo,
   allProductVariantsRepo,
   oneProductVariantRepo,
-  checkIfSlugAlreadyExistsInDbRepo,
+  checkIfSizeAlreadyExistsInDbRepo,
   activeVariantsCountRepo,
   updatedProductVariantRepo,
   updateProductSeoStatus,
