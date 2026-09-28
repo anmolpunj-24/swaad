@@ -41,7 +41,7 @@ const userLogin = async (req, res) => {
 
   return res.status(200).json({
     message: "Login succesfull!",
-    token: savedSessionToken,
+    token: `Bearer ${savedSessionToken}`,
   });
 };
 

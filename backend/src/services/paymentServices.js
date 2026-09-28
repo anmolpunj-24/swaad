@@ -33,25 +33,52 @@ const createPaymentService = async (customerUuid, orderId) => {
 
   const amountInSubunits = Math.round(order.totalAmount * 100);
 
-  const razorpayPaymentLink = await razorpay.paymentLink.create({
-    amount: amountInSubunits,
-    currency: order.currency,
-    reference_id: order._id.toString(),
-    description: `Payment for order ${order._id}`,
-    accept_partial: false,
-    customer: {
-      name: order.shippingAddress.name,
-      contact: order.shippingAddress.phone,
-    },
-    notify: {
-      sms: false,
-      email: false,
-    },
-    reminder_enable: false,
+  // const razorpayPaymentLink = await razorpay.paymentLink.create({
+  //   amount: amountInSubunits,
+  //   currency: order.currency,
+  //   reference_id: order._id.toString(),
+  //   description: `Payment for order ${order._id}`,
+  //   accept_partial: false,
+  //   customer: {
+  //     name: order.shippingAddress.name,
+  //     contact: order.shippingAddress.phone,
+  //   },
+  //   notify: {
+  //     sms: false,
+  //     email: false,
+  //   },
+  //   reminder_enable: false,
 
-    callback_url: `${process.env.FRONTEND_URL}/payment/success`,
-    callback_method: "get",
-  });
+  //   callback_url: `${process.env.FRONTEND_URL}/payment/success`,
+  //   callback_method: "get",
+  // });
+
+  let razorpayPaymentLink;
+
+  try {
+    razorpayPaymentLink = await razorpay.paymentLink.create({
+      amount: amountInSubunits,
+      currency: order.currency,
+      reference_id: order._id.toString(),
+      description: `Payment for order ${order._id}`,
+      accept_partial: false,
+      customer: {
+        name: order.shippingAddress.name,
+        contact: order.shippingAddress.phone,
+      },
+      notify: {
+        sms: false,
+        email: false,
+      },
+      reminder_enable: false,
+      callback_url: `${process.env.FRONTEND_URL}/thank-you`,
+      callback_method: "get",
+    });
+  } catch (error) {
+    console.log("RAZORPAY ERROR:", error);
+    console.log("RAZORPAY RESPONSE:", error.response?.data);
+    throw error;
+  }
 
   const paymentData = {
     orderId: order._id,
