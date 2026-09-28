@@ -238,6 +238,33 @@ const pageSeoApi = {
   delete: async () => {},
 };
 
+const pageFaqApi = {
+  add: async (pageFaqData) => {
+    const response = await api.post("/api/admin/faq/add", pageFaqData);
+    return response;
+  },
+
+  getAll: async () => {
+    const response = await api.get("/api/admin/faq/getAll");
+    return response;
+  },
+
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/faq/get/${id}`);
+    return response;
+  },
+
+  update: async (id, updatePageFaqData) => {
+    const response = await api.put(
+      `/api/admin/faq/update/${id}`,
+      updatePageFaqData,
+    );
+    return response;
+  },
+
+  delete: async () => {},
+};
+
 export {
   adminAuthApi,
   customerAuthApi,
@@ -247,4 +274,5 @@ export {
   productApi,
   categoryApi,
   pageSeoApi,
+  pageFaqApi,
 };

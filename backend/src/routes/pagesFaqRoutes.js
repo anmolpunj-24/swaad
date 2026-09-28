@@ -8,13 +8,13 @@ const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 routes.get(
   "/getAll",
   authenticateUserMiddleware,
-  pagesFaqController.getOnePageAllFaqs,
+  pagesFaqController.getAllPagesFaq,
 );
 
 routes.get(
   "/get/:id",
   authenticateUserMiddleware,
-  pagesFaqController.getOnePageOneFaq,
+  pagesFaqController.getOnePageAllFaq,
 );
 
 routes.post("/add", authenticateUserMiddleware, pagesFaqController.addPageFaq);
@@ -22,13 +22,13 @@ routes.post("/add", authenticateUserMiddleware, pagesFaqController.addPageFaq);
 routes.put(
   "/update/:id",
   authenticateUserMiddleware,
-  pagesFaqController.updateOnePageOneFaq,
+  pagesFaqController.updateOnePageFaqs,
 );
 
 routes.delete(
   "/delete/:id",
   authenticateUserMiddleware,
-  pagesFaqController.deleteOnePageOneFaq,
+  pagesFaqController.deleteOnePageFaqs,
 );
 
 module.exports = routes;
