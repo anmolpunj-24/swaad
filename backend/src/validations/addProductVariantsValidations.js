@@ -5,20 +5,6 @@ const addProductVariantRules = [
     .isArray({ min: 1 })
     .withMessage("At least one product variant is required!"),
 
-  body("variants.*.name")
-    .notEmpty()
-    .trim()
-    .withMessage("Variant name is required!")
-    .isLength({ min: 3, max: 100 })
-    .withMessage("Please provide a valid variant name!"),
-
-  body("variants.*.slug")
-    .notEmpty()
-    .trim()
-    .withMessage("Variant slug is required!")
-    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-    .withMessage("Please provide a valid variant slug!"),
-
   body("variants.*.tagLine")
     .notEmpty()
     .trim()
@@ -26,11 +12,17 @@ const addProductVariantRules = [
     .isLength({ min: 2, max: 150 })
     .withMessage("Please provide a valid variant tagline!"),
 
-  body("variants.*.price")
+  body("variants.*.mrp")
     .notEmpty()
-    .withMessage("Variant price is required!")
+    .withMessage("Variant mrp is required!")
     .isFloat({ min: 0 })
-    .withMessage("Variant price must be a valid positive number!"),
+    .withMessage("Variant mrp must be a valid positive number!"),
+
+  body("variants.*.sellingPrice")
+    .notEmpty()
+    .withMessage("Variant sellingPrice is required!")
+    .isFloat({ min: 0 })
+    .withMessage("Variant sellingPrice must be a valid positive number!"),
 
   body("variants.*.description")
     .notEmpty()

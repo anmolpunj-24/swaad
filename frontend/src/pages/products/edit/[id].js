@@ -88,6 +88,8 @@ export default function EditProduct() {
   const productDefaultValues = useMemo(
     () => ({
       _id: product?._id ?? "",
+      name: product?.name ?? "",
+      slug: product?.slug ?? "",
       categoryId: product?.categoryId ?? "",
       categoryName: product?.categoryName ?? "",
       isActive: product?.isActive ?? false,
@@ -95,11 +97,12 @@ export default function EditProduct() {
       variants:
         product?.variants?.map((variant) => ({
           _id: variant?._id ?? "",
-          name: variant?.name ?? "",
-          slug: variant?.slug ?? "",
           tagLine: variant?.tagLine ?? "",
           description: variant?.description ?? "",
-          price: variant?.price ?? 0,
+          size: variant?.size ?? 0,
+          unit: variant?.unit ?? "g",
+          mrp: variant?.mrp ?? 0,
+          sellingPrice: variant?.sellingPrice ?? 0,
           stock: variant?.stock ?? 0,
           isActive: variant?.isActive ?? false,
 

@@ -16,19 +16,25 @@ import {
 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
+import GenericInput from "../genericInput";
+import SectionHeaderProduct from "../sectionHeaderProduct";
+import VariantSectionHeaderProduct from "../variantSectionHeaderProduct";
 
 const DEFAULT_PRODUCT_VALUES = {
+  name: "",
+  slug: "",
   categoryId: "",
   categoryName: "",
   isActive: false,
 
   variants: [
     {
-      name: "",
-      slug: "",
       tagLine: "",
       description: "",
-      price: 0,
+      size: 0,
+      unit: "g",
+      mrp: 0,
+      sellingPrice: 0,
       stock: 0,
       isActive: false,
       images: [],
@@ -53,11 +59,12 @@ export default function ProductForm({
 }) {
   const createEmptyVariant = () => ({
     id: `${Date.now()}-${Math.random()}`,
-    name: "",
-    slug: "",
     tagLine: "",
     description: "",
-    price: 0,
+    size: 0,
+    unit: "g",
+    mrp: 0,
+    sellingPrice: 0,
     stock: 0,
     isActive: false,
     images: [],
@@ -212,6 +219,18 @@ export default function ProductForm({
     );
   };
 
+  const handleProductNameChange = (value) => {
+    setValue("name", value, {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+
+    setValue("slug", SlugifyHandler(value), {
+      shouldDirty: true,
+      shouldValidate: true,
+    });
+  };
+
   const handleImageUpload = (variantId, event) => {
     const files = Array.from(event.target.files || []);
 
@@ -331,6 +350,11 @@ export default function ProductForm({
     const formData = new FormData();
 
     const product = {
+      ...(data._id && {
+        _id: data._id,
+      }),
+      name: data.name,
+      slug: data.slug,
       categoryId: data.categoryId,
       categoryName: data.categoryName,
       isActive: data.isActive,
@@ -342,10 +366,11 @@ export default function ProductForm({
       }),
       clientId: variant.id,
 
-      name: variant.name,
-      slug: variant.slug,
       tagLine: variant.tagLine,
-      price: Number(variant.price),
+      size: Number(variant.size),
+      unit: variant.unit,
+      mrp: Number(variant.mrp),
+      sellingPrice: Number(variant.sellingPrice),
       stock: Number(variant.stock),
       description: variant.description,
       isActive: variant.isActive,
@@ -395,12 +420,9 @@ export default function ProductForm({
     });
 
     formData.append("product", JSON.stringify(product));
-
     formData.append("variants", JSON.stringify(variantsData));
     formData.append("imageMetadata", JSON.stringify(imageMetadata));
-
     formData.append("deletedVariantIds", JSON.stringify(deletedVariantIds));
-
     formData.append("deletedImages", JSON.stringify(deletedImages));
 
     onSubmit(formData);
@@ -468,7 +490,9 @@ export default function ProductForm({
                     </div>
                   </button>
 
-                  {index < tabs.length - 1 && <ChevronRightIcon />}
+                  {index < tabs.length - 1 && (
+                    <ChevronRight size={15} className="text-[#C9BDAA]" />
+                  )}
                 </div>
               );
             })}
@@ -479,7 +503,7 @@ export default function ProductForm({
           <div className="p-6 lg:p-8">
             {activeTab === "general" && (
               <section>
-                <SectionHeader
+                <SectionHeaderProduct
                   icon={Package}
                   title="Product Information"
                   description="Add the category and availability settings for this product."
@@ -487,6 +511,29 @@ export default function ProductForm({
 
                 <div className="mt-7 rounded-2xl border border-[#E7DFD1] bg-[#FDFBF7] p-6">
                   <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                    <GenericInput
+                      id="product-name"
+                      label="Product Name"
+                      required
+                      value={watch("name")}
+                      onChange={(e) => handleProductNameChange(e.target.value)}
+                      placeholder="Enter product name"
+                    />
+
+                    <GenericInput
+                      id="product-slug"
+                      label="Slug"
+                      required
+                      value={watch("slug")}
+                      onChange={(e) =>
+                        setValue("slug", e.target.value, {
+                          shouldDirty: true,
+                          shouldValidate: true,
+                        })
+                      }
+                      placeholder="product-slug"
+                    />
+
                     <div className="min-w-0">
                       <div className="relative">
                         <label
@@ -657,7 +704,7 @@ export default function ProductForm({
 
             {activeTab === "variants" && (
               <section>
-                <SectionHeader
+                <SectionHeaderProduct
                   icon={Settings2}
                   title="Product Variants"
                   description="Configure each variant with its details, images and SEO."
@@ -699,37 +746,15 @@ export default function ProductForm({
                       </div>
 
                       <div className="p-6">
-                        <VariantSectionHeader
+                        <VariantSectionHeaderProduct
                           icon={Tag}
                           title="Variant Information"
                           description="Define the content and pricing information for this variant."
                         />
 
                         <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-                          <FloatingInput
-                            label="Variant Name"
-                            required
-                            value={variant.name}
-                            onChange={(e) =>
-                              handleVariantNameChange(
-                                variant.id,
-                                e.target.value,
-                              )
-                            }
-                            placeholder="Enter variant name"
-                          />
-
-                          <FloatingInput
-                            label="Slug"
-                            required
-                            value={variant.slug}
-                            onChange={(e) =>
-                              updateVariant(variant.id, "slug", e.target.value)
-                            }
-                            placeholder="variant-slug"
-                          />
-
-                          <FloatingInput
+                          <GenericInput
+                            id={`tagline-${variant.id}`}
                             label="Tagline"
                             value={variant.tagLine}
                             onChange={(e) =>
@@ -742,19 +767,93 @@ export default function ProductForm({
                             placeholder="Enter variant tagline"
                           />
 
-                          <FloatingInput
-                            label="Price"
+                          <div className="grid grid-cols-2 gap-4">
+                            <GenericInput
+                              id={`size-${variant.id}`}
+                              label="Size"
+                              required
+                              type="number"
+                              min="0"
+                              value={variant.size}
+                              onChange={(e) =>
+                                updateVariant(
+                                  variant.id,
+                                  "size",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="Enter size"
+                            />
+
+                            <div className="min-w-0">
+                              <div className="relative">
+                                <label
+                                  htmlFor={`unit-${variant.id}`}
+                                  className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
+                                >
+                                  Unit <span className="text-[#B28B4C]">*</span>
+                                </label>
+
+                                <div className="relative">
+                                  <select
+                                    id={`unit-${variant.id}`}
+                                    value={variant.unit}
+                                    onChange={(e) =>
+                                      updateVariant(
+                                        variant.id,
+                                        "unit",
+                                        e.target.value,
+                                      )
+                                    }
+                                    className="h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white px-4 pr-10 text-sm text-[#4B3A29] outline-none transition focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40"
+                                  >
+                                    <option value="g">g</option>
+                                    <option value="kg">kg</option>
+                                    <option value="ml">ml</option>
+                                    <option value="L">L</option>
+                                  </select>
+
+                                  <ChevronDown
+                                    size={18}
+                                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#806C52]"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+
+                          <GenericInput
+                            id={`mrp-${variant.id}`}
+                            label="MRP"
                             required
                             type="number"
                             min="0"
-                            value={variant.price}
+                            value={variant.mrp}
                             onChange={(e) =>
-                              updateVariant(variant.id, "price", e.target.value)
+                              updateVariant(variant.id, "mrp", e.target.value)
                             }
-                            placeholder="Enter price"
+                            placeholder="Enter MRP"
                           />
 
-                          <FloatingInput
+                          <GenericInput
+                            id={`selling-price-${variant.id}`}
+                            label="Selling Price"
+                            required
+                            type="number"
+                            min="0"
+                            value={variant.sellingPrice}
+                            onChange={(e) =>
+                              updateVariant(
+                                variant.id,
+                                "sellingPrice",
+                                e.target.value,
+                              )
+                            }
+                            placeholder="Enter selling price"
+                          />
+
+                          <GenericInput
+                            id={`stock-${variant.id}`}
                             label="Stock"
                             type="number"
                             min="0"
@@ -793,7 +892,7 @@ export default function ProductForm({
                         </div>
 
                         <div className="mt-8 border-t border-[#ECE4D6] pt-8">
-                          <VariantSectionHeader
+                          <VariantSectionHeaderProduct
                             icon={ShieldCheck}
                             title="Variant Status"
                             description="Control whether this variant is currently available."
@@ -859,7 +958,7 @@ export default function ProductForm({
                         </div>
 
                         <div className="mt-8 border-t border-[#ECE4D6] pt-8">
-                          <VariantSectionHeader
+                          <VariantSectionHeaderProduct
                             icon={ImagePlus}
                             title="Variant Images"
                             description="Add up to 5 images. One image can be marked as the primary image."
@@ -985,14 +1084,15 @@ export default function ProductForm({
                         </div>
 
                         <div className="mt-8 border-t border-[#ECE4D6] pt-8">
-                          <VariantSectionHeader
+                          <VariantSectionHeaderProduct
                             icon={Search}
                             title="Variant SEO"
                             description="Configure search metadata specifically for this variant."
                           />
 
                           <div className="mt-6 space-y-6">
-                            <FloatingInput
+                            <GenericInput
+                              id={`meta-title-${variant.id}`}
                               label="Meta Title"
                               value={variant.seo.metaTitle}
                               onChange={(e) =>
@@ -1029,7 +1129,8 @@ export default function ProductForm({
                               />
                             </div>
 
-                            <FloatingInput
+                            <GenericInput
+                              id={`meta-keywords-${variant.id}`}
                               label="Meta Keywords"
                               value={variant.seo.metaKeywords}
                               onChange={(e) =>
@@ -1135,65 +1236,4 @@ export default function ProductForm({
       </div>
     </div>
   );
-}
-
-function SectionHeader({ icon: Icon, title, description, action }) {
-  return (
-    <div className="flex items-start justify-between gap-4">
-      <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E6CC] text-[#9B783E]">
-          <Icon size={18} />
-        </div>
-
-        <div>
-          <h2 className="text-lg font-bold text-[#463525]">{title}</h2>
-
-          <p className="mt-1 text-xs leading-5 text-[#95846D]">{description}</p>
-        </div>
-      </div>
-
-      {action}
-    </div>
-  );
-}
-
-function VariantSectionHeader({ icon: Icon, title, description, action }) {
-  return (
-    <div className="flex items-start justify-between gap-4">
-      <div className="flex items-start gap-4">
-        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E6CC] text-[#9B783E]">
-          <Icon size={18} />
-        </div>
-
-        <div>
-          <h3 className="text-base font-bold text-[#463525]">{title}</h3>
-
-          <p className="mt-1 text-xs leading-5 text-[#95846D]">{description}</p>
-        </div>
-      </div>
-
-      {action}
-    </div>
-  );
-}
-
-function FloatingInput({ label, required, className = "", ...props }) {
-  return (
-    <div className={`min-w-0 ${className}`}>
-      <div className="relative">
-        <label className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]">
-          {label} {required && <span className="text-[#B28B4C]">*</span>}
-        </label>
-
-        <input
-          {...props}
-          className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40"
-        />
-      </div>
-    </div>
-  );
-}
-
-function ChevronRightIcon() {
-  return <ChevronRight size={15} className="text-[#C9BDAA]" />;
 }

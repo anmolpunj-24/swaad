@@ -26,7 +26,9 @@ export default function GenericInput({
         <input
           id={id}
           {...props}
-          className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white pl-11 pr-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
+          className={`h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white ${
+            Icon ? "pl-11" : "px-4"
+          } pr-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60`}
         />
       </div>
 
