@@ -22,7 +22,7 @@ const customerSchema = new mongoose.Schema(
 
     phone: {
       type: String,
-      required: [true, "Phone is required!"],
+      required: true,
       unique: true,
     },
 

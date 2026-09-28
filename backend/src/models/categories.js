@@ -4,7 +4,7 @@ const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: [true, "Name is required!"],
+      required: true,
     },
 
     parentId: {
@@ -19,7 +19,7 @@ const categorySchema = new mongoose.Schema(
 
     slug: {
       type: String,
-      required: [true, "Slug is required!"],
+      required: true,
       trim: true,
       lowercase: true,
     },

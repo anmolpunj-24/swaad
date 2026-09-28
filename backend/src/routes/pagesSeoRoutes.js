@@ -1,5 +1,5 @@
 const express = require("express");
-const routes = express.Router({ mergeParams: true });
+const routes = express.Router();
 
 const pagesSeoController = require("../controllers/admins/pagesSeoController");
 

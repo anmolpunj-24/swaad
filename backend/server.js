@@ -69,6 +69,9 @@ const server = async () => {
   const shipmentRoutes = require("./src/routes/shipmentRoutes");
   app.use("/api/auth/order/:orderId/shipment", shipmentRoutes);
 
+  const pagesFaqRoutes = require("./src/routes/pagesFaqRoutes");
+  app.use("/api/admin/faq", pagesFaqRoutes);
+
   app.use(errorHandlingMiddleware);
 
   PORT = process.env.PORT || 5000;
