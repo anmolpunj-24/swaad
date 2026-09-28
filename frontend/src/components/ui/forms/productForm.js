@@ -661,16 +661,6 @@ export default function ProductForm({
                   icon={Settings2}
                   title="Product Variants"
                   description="Configure each variant with its details, images and SEO."
-                  action={
-                    <button
-                      type="button"
-                      onClick={addVariant}
-                      className="flex items-center gap-2 rounded-3xl bg-[#463421] px-6 py-3 text-xs font-bold text-white shadow-sm transition hover:cursor-pointer hover:bg-[#59432C]"
-                    >
-                      <span className="text-base leading-none">+</span>
-                      Add Variant
-                    </button>
-                  }
                 />
 
                 <div className="mt-7 space-y-8">
@@ -1061,6 +1051,15 @@ export default function ProductForm({
                     </div>
                   ))}
                 </div>
+
+                <button
+                  type="button"
+                  onClick={addVariant}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-[#D7C5A5] bg-[#FCF8EF] px-5 py-4 text-xs font-bold text-[#9B783E] transition hover:border-[#B99961] hover:bg-[#F8F0DF] hover:cursor-pointer"
+                >
+                  <span className="text-base leading-none">+</span>
+                  Add Another Variant
+                </button>
 
                 <div className="mt-6 rounded-2xl border border-[#E6D9BD] bg-[#FBF6EA] p-5">
                   <div className="flex items-start gap-3">
