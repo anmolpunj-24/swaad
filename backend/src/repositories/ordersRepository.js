@@ -42,7 +42,7 @@ const updateCustomerOrderRepo = async (customerUuid, orderId, orderData) => {
   return await ordersModel.findOneAndUpdate(
     { customerUuid, _id: orderId },
     { $set: orderData },
-    { new: true },
+    { returnDocument: "after", },
   );
 };
 

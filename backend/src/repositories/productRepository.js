@@ -54,7 +54,7 @@ const updateProductRepo = async (productId, productData) => {
       returnDocument: "after",
       runValidators: true,
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 };
 

@@ -76,7 +76,7 @@ const deleteOnePageOneFaqRepo = async (faqId, pageSlug) => {
         isActive: false,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 };
 

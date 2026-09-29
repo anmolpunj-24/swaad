@@ -75,7 +75,7 @@ const updateCustomerOrderItemRepo = async (
       orderId,
     },
     { $set: orderItemData },
-    { new: true },
+    { returnDocument: "after" },
   );
 };
 
