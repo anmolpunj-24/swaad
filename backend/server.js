@@ -7,7 +7,7 @@ const app = express();
 const db = require("./src/config/db");
 
 const errorHandlingMiddleware = require("./src/middlewares/globalErrorHandlingMiddleware");
- 
+
 const server = async () => {
   await db();
 
@@ -57,8 +57,11 @@ const server = async () => {
   const pagesSeoRoutes = require("./src/routes/pagesSeoRoutes");
   app.use("/api/admin/seo", pagesSeoRoutes);
 
-  const customerOrderRoutes = require("./src/routes/ordersRoutes");
+  const customerOrderRoutes = require("./src/routes/customerOrdersRoutes");
   app.use("/api/auth/customer/:customerUuid/orders", customerOrderRoutes);
+
+  const ordersRoutes = require("./src/routes/ordersRoutes");
+  app.use("/api/auth/orders", ordersRoutes);
 
   const orderItemsRoutes = require("./src/routes/orderItemsRoutes");
   app.use("/api/auth/order/:orderId/items", orderItemsRoutes);

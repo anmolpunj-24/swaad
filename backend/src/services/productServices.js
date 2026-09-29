@@ -39,10 +39,13 @@ const addProductService = async (productData, files) => {
     };
   }
 
-  const savedProduct = await productRepo.addProductRepo(
-    checkIfCategoryExist._id,
-    checkIfCategoryExist.name,
-  );
+  const savedProduct = await productRepo.addProductRepo({
+    name: productData.product.name,
+    slug: productData.product.slug,
+    categoryId: checkIfCategoryExist._id,
+    categoryName: checkIfCategoryExist.name,
+    isActive: productData.product.isActive,
+  });
 
   if (!savedProduct) {
     return {
@@ -133,49 +136,16 @@ const addProductService = async (productData, files) => {
 };
 
 const getAllProductsService = async () => {
-  const allProducts = [];
-
   const productData = await productRepo.allProductsInDbRepo();
-
-  for (const product of productData) {
-    const productVariants =
-      await productVariantService.getAllProductVariantsService(product._id);
-
-    if (!productVariants || productVariants.success === false) {
-      return (
-        productVariants || {
-          success: false,
-          errorMessage: "Failed to fetch product variants!",
-        }
-      );
-    }
-
-    const productVariant = productVariants[0];
-
-    if (!productVariant) {
-      continue;
-    }
-
-    const primaryImage =
-      await productVariantImagesService.getPrimaryProductImageService(
-        product._id,
-        productVariant._id,
-      );
-
-    allProducts.push({
-      _id: productVariant._id,
-      name: product.name,
-      slug: product.slug,
-      mrp: productVariant.mrp,
-      sellingPrice: productVariant.sellingPrice,
-      stock: productVariant.stock,
-      isActive: product.isActive,
-      primaryImage: primaryImage?.image || null,
-      categoryName: product.categoryName,
-    });
+  
+  if (!productData) {
+    return {
+      success: false,
+      errorMessage: "Product not found!",
+    };
   }
 
-  return allProducts;
+  return productData;
 };
 
 const getOneProductService = async (productId) => {

@@ -29,6 +29,18 @@ const getAllOrdersController = async (req, res) => {
     .json({ message: "All orders fetched!", orders: allOrders });
 };
 
+const getAllAvailableOrdersController = async (req, res) => {
+  const allOrders = await orderService.getAllAvailableOrdersService();
+
+  if (allOrders.success === false) {
+    return res.status(400).json({ message: allOrders.errorMessage });
+  }
+
+  return res
+    .status(200)
+    .json({ message: "All orders fetched!", orders: allOrders });
+};
+
 const getOneOrderController = async (req, res) => {
   const customerUuid = req.params.customerUuid;
   const orderId = req.params.id;
@@ -45,6 +57,20 @@ const getOneOrderController = async (req, res) => {
   return res
     .status(200)
     .json({ message: "Order fetched!", order: oneCustomerOrder });
+};
+
+const getOneAvailableOrderController = async (req, res) => {
+  const orderId = req.params.id;
+
+  const oneOrderData = await orderService.getOneAvailableOrderService(orderId);
+
+  if (oneOrderData.success === false) {
+    return res.status(400).json({ message: oneOrderData.errorMessage });
+  }
+
+  return res
+    .status(200)
+    .json({ message: "Order fetched!", order: oneOrderData });
 };
 
 const updateOrderController = async (req, res) => {
@@ -72,4 +98,6 @@ module.exports = {
   getAllOrdersController,
   getOneOrderController,
   updateOrderController,
+  getAllAvailableOrdersController,
+  getOneAvailableOrderController,
 };

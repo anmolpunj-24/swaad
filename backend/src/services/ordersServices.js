@@ -34,6 +34,12 @@ const getAllOrdersService = async (customerUuid) => {
   return allOrders;
 };
 
+const getAllAvailableOrdersService = async () => {
+  const allOrders = await orderRepo.getAllOrdersRepo();
+
+  return allOrders;
+};
+
 const getOneOrderService = async (customerUuid, orderId) => {
   const checkIfCustomerExist =
     await orderRepo.checkIfCustomerExistInDbRepo(customerUuid);
@@ -49,6 +55,20 @@ const getOneOrderService = async (customerUuid, orderId) => {
     orderId,
     customerUuid,
   );
+
+  if (!oneOrderData) {
+    return {
+      success: false,
+      errorMessage: "No such order found!",
+    };
+  }
+
+  return oneOrderData;
+};
+
+const getOneAvailableOrderService = async (orderId) => {
+  const oneOrderData =
+    await orderRepo.checkIfAvailableOrderExistInDbRepo(orderId);
 
   if (!oneOrderData) {
     return {
@@ -104,4 +124,6 @@ module.exports = {
   getAllOrdersService,
   getOneOrderService,
   updateOrderService,
+  getAllAvailableOrdersService,
+  getOneAvailableOrderService,
 };

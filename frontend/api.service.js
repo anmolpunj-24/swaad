@@ -265,6 +265,18 @@ const pageFaqApi = {
   delete: async () => {},
 };
 
+const orderApi = {
+  getAll: async () => {
+    const response = await api.get("/api/auth/orders/getAll");
+    return response;
+  },
+
+  getOne: async (id) => {
+    const response = await api.get(`/api/auth/orders/get/${id}`);
+    return response;
+  },
+};
+
 export {
   adminAuthApi,
   customerAuthApi,
@@ -275,4 +287,5 @@ export {
   categoryApi,
   pageSeoApi,
   pageFaqApi,
+  orderApi,
 };

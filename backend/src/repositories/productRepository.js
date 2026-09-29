@@ -26,13 +26,11 @@ const checkIfCategoryExistInDbRepo = async (categoryId) => {
   });
 };
 
-const addProductRepo = async (categoryId, categoryName) => {
-  const newProduct = new productModel({
-    categoryId,
-    categoryName,
-  });
+const addProductRepo = async (productData) => {
+  const newProduct = new productModel(productData);
 
   const savedProduct = await newProduct.save();
+
   return savedProduct;
 };
 
@@ -72,6 +70,8 @@ const allProductsInDbRepo = async () => {
       deletedAt: null,
       isActive: true,
     })
+    .select("_id categoryName isActive name slug createdAt")
+    .sort("-createdAt")
     .lean();
 };
 

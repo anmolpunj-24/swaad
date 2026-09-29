@@ -6,7 +6,7 @@ export default function TableHeader({
   searchValue = "",
   onSearch,
   onAdd,
-  addButtonText = "Add",
+  addButtonText,
 }) {
   return (
     <div className="bg-[#FFF8E7]">
@@ -35,13 +35,15 @@ export default function TableHeader({
             />
           </div>
 
-          <button
-            type="button"
-            onClick={onAdd}
-            className="flex items-center justify-center gap-2 rounded-full bg-[#463421] px-5 py-2.5 text-sm font-medium tracking-wide text-[#FFF8E7] transition-all duration-200 hover:bg-[#59432C] hover:cursor-pointer"
-          >
-            {addButtonText}
-          </button>
+          {addButtonText && (
+            <button
+              type="button"
+              onClick={onAdd}
+              className="flex items-center justify-center gap-2 rounded-full bg-[#463421] px-5 py-2.5 text-sm font-medium tracking-wide text-[#FFF8E7] transition-all duration-200 hover:bg-[#59432C] hover:cursor-pointer"
+            >
+              {addButtonText}
+            </button>
+          )}
         </div>
       </div>
 

@@ -3,7 +3,7 @@ import { categoryApi } from "../../../api.service";
 import { useEffect, useState } from "react";
 
 export default function Category() {
-  const [category, setCategory] = useState([]);
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     const fetchAllCategories = async () => {
@@ -11,7 +11,7 @@ export default function Category() {
         const res = await categoryApi.getAll();
 
         if (res?.status === 200) {
-          setCategory(res?.data?.categories);
+          setCategories(res?.data?.categories);
         }
       } catch (error) {
         toast.error(
@@ -63,7 +63,7 @@ export default function Category() {
 
       <CustomTable
         columns={categoryColumn}
-        data={category}
+        data={categories}
         title="Categories"
         addButtonText="Add Category"
         onAdd="/category/add"

@@ -1,37 +1,20 @@
 const express = require("express");
-const routes = express.Router({ mergeParams: true });
+const routes = express.Router();
 
 const ordersController = require("../controllers/customers/ordersController");
 
-const validationMiddleware = require("../middlewares/globalValidationMiddleware");
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
-
-const addOrderRules = require("../validations/addOrderValidations");
 
 routes.get(
   "/getAll",
   authenticateUserMiddleware,
-  ordersController.getAllOrdersController,
+  ordersController.getAllAvailableOrdersController,
 );
 
 routes.get(
   "/get/:id",
   authenticateUserMiddleware,
-  ordersController.getOneOrderController,
-);
-
-routes.post(
-  "/add",
-  authenticateUserMiddleware,
-  addOrderRules,
-  validationMiddleware,
-  ordersController.addOrderController,
-);
-
-routes.put(
-  "/update/:id",
-  authenticateUserMiddleware,
-  ordersController.updateOrderController,
+  ordersController.getOneAvailableOrderController,
 );
 
 module.exports = routes;

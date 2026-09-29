@@ -28,6 +28,14 @@ const getAllCustomerOrdersRepo = async (customerUuid) => {
     .lean();
 };
 
+const getAllOrdersRepo = async () => {
+  return await ordersModel
+    .find({})
+    .select("-updatedAt")
+    .sort("-createdAt")
+    .lean();
+};
+
 const checkIfOrderExistInDbRepo = async (orderId, customerUuid) => {
   return await ordersModel
     .findOne({
@@ -38,11 +46,20 @@ const checkIfOrderExistInDbRepo = async (orderId, customerUuid) => {
     .lean();
 };
 
+const checkIfAvailableOrderExistInDbRepo = async (orderId) => {
+  return await ordersModel
+    .findOne({
+      _id: orderId,
+    })
+    .select("-updatedAt")
+    .lean();
+};
+
 const updateCustomerOrderRepo = async (customerUuid, orderId, orderData) => {
   return await ordersModel.findOneAndUpdate(
     { customerUuid, _id: orderId },
     { $set: orderData },
-    { returnDocument: "after", },
+    { returnDocument: "after" },
   );
 };
 
@@ -52,4 +69,6 @@ module.exports = {
   getAllCustomerOrdersRepo,
   checkIfOrderExistInDbRepo,
   updateCustomerOrderRepo,
+  getAllOrdersRepo,
+  checkIfAvailableOrderExistInDbRepo,
 };
