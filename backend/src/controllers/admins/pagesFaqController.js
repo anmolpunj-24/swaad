@@ -19,9 +19,9 @@ const getAllPagesFaq = async (req, res) => {
 };
 
 const getOnePageAllFaq = async (req, res) => {
-  const pageId = req.params.id;
+  const pageSlug = req.params.pageSlug;
 
-  const pageFaqData = await faqServices.getOnePageAllFaqService(pageId);
+  const pageFaqData = await faqServices.getOnePageAllFaqService(pageSlug);
 
   if (pageFaqData.success === false) {
     return res.status(400).json({ message: pageFaqData.errorMessage });
@@ -33,11 +33,11 @@ const getOnePageAllFaq = async (req, res) => {
 };
 
 const updateOnePageFaqs = async (req, res) => {
-  const pageId = req.params.id;
+  const pageSlug = req.params.pageSlug;
   const body = req.body;
 
   const updatedPageFaq = await faqServices.updateOnePageFaqsService(
-    pageId,
+    pageSlug,
     body,
   );
 
@@ -51,9 +51,9 @@ const updateOnePageFaqs = async (req, res) => {
 };
 
 const deleteOnePageFaqs = async (req, res) => {
-  const pageId = req.params.id;
+  const pageSlug = req.params.pageSlug;
 
-  const deletedPageFaq = await faqServices.deleteOnePageFaqsService(pageId);
+  const deletedPageFaq = await faqServices.deleteOnePageFaqsService(pageSlug);
 
   if (deletedPageFaq.success === false) {
     return res.status(400).json({ message: deletedPageFaq.errorMessage });

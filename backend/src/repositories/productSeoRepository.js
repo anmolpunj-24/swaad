@@ -113,7 +113,7 @@ const updateSeoDataRepo = async (
     },
     { $set: productSeoData },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );
@@ -148,7 +148,7 @@ const deleteProductSeoRepo = async (
     },
     { $set: { deletedAt: new Date(), isActive: false } },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };

@@ -95,7 +95,7 @@ const updateReviewDataRepo = async (
       },
     },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );
@@ -120,7 +120,7 @@ const deleteReviewDataRepo = async (
         isActive: false,
       },
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 };
 

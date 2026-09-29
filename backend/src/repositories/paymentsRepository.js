@@ -44,7 +44,7 @@ const updatePaymentRepo = async (paymentId, orderId, paymentData) => {
       $set: paymentData,
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };

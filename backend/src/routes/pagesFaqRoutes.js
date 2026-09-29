@@ -12,7 +12,7 @@ routes.get(
 );
 
 routes.get(
-  "/get/:id",
+  "/get/:pageSlug",
   authenticateUserMiddleware,
   pagesFaqController.getOnePageAllFaq,
 );
@@ -20,13 +20,13 @@ routes.get(
 routes.post("/add", authenticateUserMiddleware, pagesFaqController.addPageFaq);
 
 routes.put(
-  "/update/:id",
+  "/update/:pageSlug",
   authenticateUserMiddleware,
   pagesFaqController.updateOnePageFaqs,
 );
 
 routes.delete(
-  "/delete/:id",
+  "/delete/:pageSlug",
   authenticateUserMiddleware,
   pagesFaqController.deleteOnePageFaqs,
 );

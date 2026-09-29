@@ -75,7 +75,7 @@ const updatedCustomerAddressRepo = async (
       },
     },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );
@@ -113,7 +113,7 @@ const makeAddressDefault = async (customerUuid, addressId) => {
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };
@@ -130,5 +130,3 @@ module.exports = {
   findMostRecentAddress,
   makeAddressDefault,
 };
-
-

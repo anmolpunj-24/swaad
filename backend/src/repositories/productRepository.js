@@ -62,7 +62,7 @@ const deleteProductRepo = async (productId, deletedAt) => {
   return await productModel.findOneAndUpdate(
     { _id: productId, deletedAt: null, isActive: true },
     { $set: { deletedAt, isActive: false } },
-    { new: true },
+    { returnDocument: "after" },
   );
 };
 

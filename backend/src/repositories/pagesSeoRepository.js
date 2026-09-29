@@ -38,7 +38,7 @@ const updatePageSeoRepo = async (pageSeoSlug, pageSeoData) => {
     {
       $set: pageSeoData,
     },
-    { new: true },
+    { returnDocument: "after" },
   );
 };
 
@@ -55,6 +55,7 @@ const deletePageSeoRepo = async (pageSeoSlug) => {
         isActive: false,
       },
     },
+    { returnDocument: "after" },
   );
 };
 

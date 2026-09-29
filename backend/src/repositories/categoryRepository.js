@@ -80,7 +80,7 @@ const updateCategoryRepo = async (id, categoryData) => {
     },
     categoryData,
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );
@@ -98,7 +98,7 @@ const deleteCategoryRepo = async (id) => {
       isActive: false,
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };

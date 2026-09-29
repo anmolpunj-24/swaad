@@ -69,7 +69,7 @@ const deleteCustomerRepo = async (uuid) => {
   return await customerModel.findOneAndUpdate(
     { uuid, deletedAt: null, isActive: true },
     { deletedAt: new Date(), isActive: false },
-    { new: true },
+    { returnDocument: "after", },
   );
 };
 

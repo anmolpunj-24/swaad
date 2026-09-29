@@ -114,7 +114,7 @@ const updatedProductImageRepo = async (
       },
     },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );
@@ -164,6 +164,7 @@ const checkForNextRecentImageAndUpdateIsPrimaryStatusRepo = async (
       sort: {
         createdAt: -1,
       },
+      returnDocument: "after",
     },
   );
 };
@@ -189,7 +190,7 @@ const deletedProductImageRepo = async (
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };
@@ -214,7 +215,7 @@ const checkForNextRecentImageAndUpdateIsPrimaryStatusForDeleteRepo = async (
       sort: {
         createdAt: -1,
       },
-      new: true,
+      returnDocument: "after",
     },
   );
 };

@@ -21,7 +21,7 @@ const addShipmentRepo = async (orderId, shipmentData) => {
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };
@@ -48,7 +48,7 @@ const updateShipmentDataRepo = async (orderId, shipmentData) => {
       },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };

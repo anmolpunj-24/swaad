@@ -1,19 +1,35 @@
 const pagesFaqRepo = require("../repositories/pagesFaqRepository");
 
 const addPageFaqService = async (pageFaqData) => {
-  const savedPageFaqData = await pagesFaqRepo.addPageFaqService(pageFaqData);
-  return savedPageFaqData;
+  const { pageSlug, pageName, faqs } = pageFaqData;
+
+  const savedPageFaqs = [];
+
+  for (const faq of faqs) {
+    const savedFaq = await pagesFaqRepo.addPageFaqRepo({
+      pageSlug,
+      pageName,
+      questionSlug: faq.questionSlug,
+      question: faq.question,
+      answer: faq.answer,
+      isActive: faq.isActive,
+    });
+
+    savedPageFaqs.push(savedFaq);
+  }
+
+  return savedPageFaqs;
 };
 
 const getAllPagesFaqsService = async () => {
-  const allPagesFaqData = await pagesFaqRepo.getAllPagesFaqsService();
+  const allPagesFaqData = await pagesFaqRepo.allPagesFaqRepo();
   return allPagesFaqData;
 };
 
-const getOnePageAllFaqService = async (pageId) => {
-  const onePageFaqsData = await pagesFaqRepo.getOnePageAllFaqService(pageId);
+const getOnePageAllFaqService = async (pageSlug) => {
+  const onePageFaqsData = await pagesFaqRepo.onePageAllFaqs(pageSlug);
 
-  if (!onePageFaqsData) {
+  if (!onePageFaqsData?.length) {
     return {
       success: false,
       errorMessage: "No page faqs found!",
@@ -23,13 +39,45 @@ const getOnePageAllFaqService = async (pageId) => {
   return onePageFaqsData;
 };
 
-const updateOnePageFaqsService = async (pageId, pageFaqData) => {
-  const updatedPageFaqData = await pagesFaqRepo.updateOnePageFaqsService(
-    pageId,
-    pageFaqData,
-  );
+const updateOnePageFaqsService = async (pageSlug, pageFaqData) => {
+  const { pageName, faqs } = pageFaqData;
 
-  if (!updatedPageFaqData) {
+  const existingFaqs = await pagesFaqRepo.onePageAllFaqs(pageSlug);
+
+  const submittedFaqIds = faqs
+    .filter((faq) => faq._id)
+    .map((faq) => faq._id.toString());
+
+  for (const existingFaq of existingFaqs) {
+    if (!submittedFaqIds.includes(existingFaq._id.toString())) {
+      await pagesFaqRepo.deleteOnePageOneFaqRepo(existingFaq._id, pageSlug);
+    }
+  }
+
+  for (const faq of faqs) {
+    if (faq._id) {
+      await pagesFaqRepo.updatePageFaqsRepo(faq._id, pageSlug, {
+        pageName,
+        question: faq.question,
+        questionSlug: faq.questionSlug,
+        answer: faq.answer,
+        isActive: faq.isActive,
+      });
+    } else {
+      await pagesFaqRepo.addPageFaqRepo({
+        pageSlug,
+        pageName,
+        questionSlug: faq.questionSlug,
+        question: faq.question,
+        answer: faq.answer,
+        isActive: faq.isActive,
+      });
+    }
+  }
+
+  const updatedPageFaqData = await pagesFaqRepo.onePageAllFaqs(pageSlug);
+
+  if (!updatedPageFaqData?.length) {
     return {
       success: false,
       errorMessage: "Page faqs not found!",
@@ -39,17 +87,17 @@ const updateOnePageFaqsService = async (pageId, pageFaqData) => {
   return updatedPageFaqData;
 };
 
-const deleteOnePageFaqsService = async (pageId) => {
-  const deletedPageFaqData = await pagesFaqRepo.deleteOnePageFaqsService(pageId);
-  
-    if (!deletedPageFaqData) {
-      return {
-        success: false,
-        errorMessage: "Page faqs not found!",
-      };
-    }
-  
-    return deletedPageFaqData;
+const deleteOnePageFaqsService = async (pageSlug) => {
+  const deletedPageFaqData = await pagesFaqRepo.deletePageFaqsRepo(pageSlug);
+
+  if (deletedPageFaqData.matchedCount === 0) {
+    return {
+      success: false,
+      errorMessage: "Page faqs not found!",
+    };
+  }
+
+  return deletedPageFaqData;
 };
 
 module.exports = {

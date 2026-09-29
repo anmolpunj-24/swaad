@@ -27,7 +27,9 @@ const allProductVariantsRepo = async (productId) => {
       deletedAt: null,
       isActive: true,
     })
-    .select("_id size unit tagLine mrp sellingPrice stock description isActive createdAt")
+    .select(
+      "_id size unit tagLine mrp sellingPrice stock description isActive createdAt",
+    )
     .sort("-createdAt")
     .lean();
 };
@@ -76,7 +78,7 @@ const updatedProductVariantRepo = async (
       $set: productVariantData,
     },
     {
-      new: true,
+      returnDocument: "after",
       runValidators: true,
     },
   );
@@ -128,7 +130,7 @@ const deletedProductVariantRepo = async (
       $set: { deletedAt, isActive: false },
     },
     {
-      new: true,
+      returnDocument: "after",
     },
   );
 };
