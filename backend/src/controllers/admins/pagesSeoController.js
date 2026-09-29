@@ -19,9 +19,9 @@ const getAllPagesSeo = async (req, res) => {
 };
 
 const getOnePageSeo = async (req, res) => {
-  const pageSeoId = req.params.id;
+  const pageSeoSlug = req.params.slug;
 
-  const pageSeoData = await pagesSeoServices.getOnePageSeoService(pageSeoId);
+  const pageSeoData = await pagesSeoServices.getOnePageSeoService(pageSeoSlug);
 
   if (pageSeoData.success === false) {
     return res.status(400).json({ message: pageSeoData.errorMessage });
@@ -33,11 +33,11 @@ const getOnePageSeo = async (req, res) => {
 };
 
 const updatePageSeo = async (req, res) => {
-  const pageSeoId = req.params.id;
+  const pageSeoSlug = req.params.slug;
   const body = req.body;
 
   const updatedPageSeo = await pagesSeoServices.updatePageSeoService(
-    pageSeoId,
+    pageSeoSlug,
     body,
   );
 
@@ -51,9 +51,10 @@ const updatePageSeo = async (req, res) => {
 };
 
 const deletePageSeo = async (req, res) => {
-  const pageSeoId = req.params.id;
+  const pageSeoSlug = req.params.slug;
 
-  const deletedPageSeo = await pagesSeoServices.deletePageSeoService(pageSeoId);
+  const deletedPageSeo =
+    await pagesSeoServices.deletePageSeoService(pageSeoSlug);
 
   if (deletedPageSeo.success === false) {
     return res.status(400).json({ message: deletedPageSeo.errorMessage });

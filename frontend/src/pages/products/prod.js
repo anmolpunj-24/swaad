@@ -337,9 +337,6 @@ export default function ProductDetails() {
 
   return (
     <div className="pb-10">
-      {/* =========================================================
-          PAGE HEADER
-      ========================================================= */}
       <div className="mb-7 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
@@ -362,15 +359,10 @@ export default function ProductDetails() {
         </div>
       </div>
 
-      {/* =========================================================
-          PRODUCT HERO
-      ========================================================= */}
       <div className="overflow-hidden rounded-2xl border border-[#E6DDCD] bg-white shadow-[0_12px_40px_rgba(78,57,28,0.07)]">
         <div className="grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr]">
-          {/* IMAGE AREA */}
           <div className="border-b border-[#ECE4D6] bg-[#FCFAF6] p-6 lg:border-b-0 lg:border-r">
             <div className="flex gap-4">
-              {/* THUMBNAILS */}
               {images.length > 1 && (
                 <div className="flex w-[72px] shrink-0 flex-col gap-3">
                   {images.map((image, index) => (
@@ -400,7 +392,6 @@ export default function ProductDetails() {
                 </div>
               )}
 
-              {/* MAIN IMAGE */}
               <div className="relative flex min-h-[430px] flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#E5DCCA] bg-white">
                 {images.length > 0 ? (
                   <img
@@ -427,7 +418,6 @@ export default function ProductDetails() {
             </div>
           </div>
 
-          {/* PRODUCT INFO */}
           <div className="flex flex-col p-7 lg:p-9">
             <div className="flex items-center gap-2">
               <span className="rounded-full border border-[#E5D4B4] bg-[#F8EEDB] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#9B7A43]">
@@ -457,7 +447,6 @@ export default function ProductDetails() {
               </p>
             )}
 
-            {/* RATING */}
             <div className="mt-5 flex items-center gap-3">
               <div className="flex items-center gap-1">
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -482,7 +471,6 @@ export default function ProductDetails() {
               </span>
             </div>
 
-            {/* PRICE */}
             <div className="mt-7 rounded-2xl border border-[#E9DFC9] bg-[#FCF8EF] p-5">
               <p className="text-[10px] font-bold uppercase tracking-widest text-[#9A896F]">
                 Price Range
@@ -499,7 +487,6 @@ export default function ProductDetails() {
               </p>
             </div>
 
-            {/* QUICK STATS */}
             <div className="mt-5 grid grid-cols-3 gap-3">
               <StatCard
                 icon={Layers3}
@@ -512,7 +499,6 @@ export default function ProductDetails() {
               <StatCard icon={ImageIcon} label="Images" value={images.length} />
             </div>
 
-            {/* META */}
             <div className="mt-auto pt-7">
               <div className="flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-[#ECE4D6] pt-5 text-[11px] text-[#96866F]">
                 <span className="flex items-center gap-1.5">
@@ -530,9 +516,6 @@ export default function ProductDetails() {
         </div>
       </div>
 
-      {/* =========================================================
-          PRODUCT OVERVIEW
-      ========================================================= */}
       <DetailSection
         icon={Package}
         title="Product Overview"
@@ -584,9 +567,6 @@ export default function ProductDetails() {
         </div>
       </DetailSection>
 
-      {/* =========================================================
-          PRODUCT IMAGES
-      ========================================================= */}
       <DetailSection
         icon={ImageIcon}
         title="Product Gallery"
@@ -633,9 +613,6 @@ export default function ProductDetails() {
         )}
       </DetailSection>
 
-      {/* =========================================================
-          VARIANTS
-      ========================================================= */}
       <DetailSection
         icon={Layers3}
         title="Product Variants"
@@ -748,9 +725,6 @@ export default function ProductDetails() {
         )}
       </DetailSection>
 
-      {/* =========================================================
-          SEO
-      ========================================================= */}
       <DetailSection
         icon={Search}
         title="Search Optimization"
@@ -802,9 +776,6 @@ export default function ProductDetails() {
         </div>
       </DetailSection>
 
-      {/* =========================================================
-          REVIEWS
-      ========================================================= */}
       <DetailSection
         icon={Star}
         title="Customer Reviews"
@@ -858,7 +829,6 @@ export default function ProductDetails() {
               </div>
             </div>
 
-            {/* REVIEWS LIST */}
             <div className="space-y-4">
               {reviews.map((review) => (
                 <ReviewCard key={review._id} review={review} />
@@ -877,10 +847,6 @@ export default function ProductDetails() {
   );
 }
 
-/* =========================================================
-   STAT CARD
-========================================================= */
-
 const StatCard = ({ icon: Icon, label, value }) => {
   return (
     <div className="rounded-xl border border-[#E7DED0] bg-[#FCFBF8] p-4">
@@ -896,10 +862,6 @@ const StatCard = ({ icon: Icon, label, value }) => {
     </div>
   );
 };
-
-/* =========================================================
-   DETAIL SECTION
-========================================================= */
 
 const DetailSection = ({ icon: Icon, title, description, children }) => {
   return (
@@ -921,10 +883,6 @@ const DetailSection = ({ icon: Icon, title, description, children }) => {
   );
 };
 
-/* =========================================================
-   INFO ROW
-========================================================= */
-
 const InfoRow = ({ icon: Icon, label, value, success = false }) => {
   return (
     <div className="flex items-center justify-between rounded-xl border border-[#E7DED0] bg-[#FCFBF8] px-4 py-3.5">
@@ -944,10 +902,6 @@ const InfoRow = ({ icon: Icon, label, value, success = false }) => {
     </div>
   );
 };
-
-/* =========================================================
-   STOCK BADGE
-========================================================= */
 
 const StockBadge = ({ stock }) => {
   const numericStock = Number(stock || 0);
@@ -978,10 +932,6 @@ const StockBadge = ({ stock }) => {
     </div>
   );
 };
-
-/* =========================================================
-   REVIEW CARD
-========================================================= */
 
 const ReviewCard = ({ review }) => {
   return (
@@ -1042,10 +992,6 @@ const ReviewCard = ({ review }) => {
   );
 };
 
-/* =========================================================
-   EMPTY STATE
-========================================================= */
-
 const EmptyState = ({ icon: Icon, title, description }) => {
   return (
     <div className="rounded-2xl border border-dashed border-[#DDD2BF] bg-[#FCFAF6] py-12 text-center">
@@ -1059,10 +1005,6 @@ const EmptyState = ({ icon: Icon, title, description }) => {
     </div>
   );
 };
-
-/* =========================================================
-   DATE FORMATTER
-========================================================= */
 
 const formatDate = (date) => {
   if (!date) return "-";

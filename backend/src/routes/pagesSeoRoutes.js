@@ -15,7 +15,7 @@ routes.get(
 );
 
 routes.get(
-  "/get/:id",
+  "/get/:slug",
   authenticateUserMiddleware,
   pagesSeoController.getOnePageSeo,
 );
@@ -29,13 +29,13 @@ routes.post(
 );
 
 routes.put(
-  "/update/:id",
+  "/update/:slug",
   authenticateUserMiddleware,
   pagesSeoController.updatePageSeo,
 );
 
 routes.delete(
-  "/delete/:id",
+  "/delete/:slug",
   authenticateUserMiddleware,
   pagesSeoController.deletePageSeo,
 );

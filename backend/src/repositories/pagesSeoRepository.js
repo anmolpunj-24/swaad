@@ -12,17 +12,15 @@ const getAllPagesSeoRepo = async () => {
       deletedAt: null,
       isActive: true,
     })
-    .select(
-      "_id slug pageName metaTitle metaDescription metaKeywords isActive createdAt",
-    )
+    .select("_id slug pageName isActive createdAt")
     .sort("-createdAt")
     .lean();
 };
 
-const getOnePageSeoRepo = async (pageSeoId) => {
+const getOnePageSeoRepo = async (pageSeoSlug) => {
   return await pageSeoModel
     .findOne({
-      _id: pageSeoId,
+      slug: pageSeoSlug,
       deletedAt: null,
       isActive: true,
     })
@@ -30,10 +28,10 @@ const getOnePageSeoRepo = async (pageSeoId) => {
     .lean();
 };
 
-const updatePageSeoRepo = async (pageSeoId, pageSeoData) => {
+const updatePageSeoRepo = async (pageSeoSlug, pageSeoData) => {
   return await pageSeoModel.findOneAndUpdate(
     {
-      _id: pageSeoId,
+      slug: pageSeoSlug,
       deletedAt: null,
       isActive: true,
     },
@@ -44,10 +42,10 @@ const updatePageSeoRepo = async (pageSeoId, pageSeoData) => {
   );
 };
 
-const deletePageSeoRepo = async (pageSeoId) => {
+const deletePageSeoRepo = async (pageSeoSlug) => {
   return await pageSeoModel.findOneAndUpdate(
     {
-      _id: pageSeoId,
+      slug: pageSeoSlug,
       deletedAt: null,
       isActive: true,
     },

@@ -8,18 +8,18 @@ import { ArrowLeft } from "lucide-react";
 
 export default function EditPageSeo() {
   const router = useRouter();
-  const { id } = router.query;
+  const { slug } = router.query;
 
   const [pageSeo, setPageSeo] = useState(null);
   const [fetchLoading, setFetchLoading] = useState(true);
   const [updateLoading, setUpdateLoading] = useState(false);
 
   useEffect(() => {
-    if (!router.isReady || !id) return;
+    if (!router.isReady || !slug) return;
 
     const onePageSeoData = async () => {
       try {
-        const res = await pageSeoApi.getOne(id);
+        const res = await pageSeoApi.getOne(slug);
 
         if (res?.status === 200) {
           const pageSeoData = res.data.seo;
@@ -36,7 +36,7 @@ export default function EditPageSeo() {
     };
 
     onePageSeoData();
-  }, [router.isReady, id]);
+  }, [router.isReady, slug]);
 
   const handlePageSeoUpdate = async (data) => {
     const updatePageSeoData = {
@@ -51,7 +51,7 @@ export default function EditPageSeo() {
     setUpdateLoading(true);
 
     try {
-      const res = await pageSeoApi.update(id, updatePageSeoData);
+      const res = await pageSeoApi.update(slug, updatePageSeoData);
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Page seo updated successfully!");

@@ -10,8 +10,8 @@ const getAllPagesSeoService = async () => {
   return allPagesSeoData;
 };
 
-const getOnePageSeoService = async (pageSeoId) => {
-  const onePageSeoData = await pagesSeoRepo.getOnePageSeoRepo(pageSeoId);
+const getOnePageSeoService = async (pageSeoSlug) => {
+  const onePageSeoData = await pagesSeoRepo.getOnePageSeoRepo(pageSeoSlug);
 
   if (!onePageSeoData) {
     return {
@@ -23,9 +23,9 @@ const getOnePageSeoService = async (pageSeoId) => {
   return onePageSeoData;
 };
 
-const updatePageSeoService = async (pageSeoId, pageSeoData) => {
+const updatePageSeoService = async (pageSeoSlug, pageSeoData) => {
   const updatedPageSeoData = await pagesSeoRepo.updatePageSeoRepo(
-    pageSeoId,
+    pageSeoSlug,
     pageSeoData,
   );
 
@@ -39,8 +39,8 @@ const updatePageSeoService = async (pageSeoId, pageSeoData) => {
   return updatedPageSeoData;
 };
 
-const deletePageSeoService = async (pageSeoId) => {
-  const deletedPageSeoData = await pagesSeoRepo.deletePageSeoRepo(pageSeoId);
+const deletePageSeoService = async (pageSeoSlug) => {
+  const deletedPageSeoData = await pagesSeoRepo.deletePageSeoRepo(pageSeoSlug);
 
   if (!deletedPageSeoData) {
     return {
