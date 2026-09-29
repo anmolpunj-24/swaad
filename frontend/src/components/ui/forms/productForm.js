@@ -25,7 +25,7 @@ const DEFAULT_PRODUCT_VALUES = {
   slug: "",
   categoryId: "",
   categoryName: "",
-  isActive: false,
+  isActive: true,
 
   variants: [
     {

@@ -17,7 +17,7 @@ export default function CustomerForm({
     gender: "",
     dob: null,
     phone: "",
-    isActive: false,
+    isActive: true,
   },
   onSubmit,
   buttonText,

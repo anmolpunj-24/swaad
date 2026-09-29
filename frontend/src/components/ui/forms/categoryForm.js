@@ -10,7 +10,7 @@ export default function CategoryForm({
     parentName: "",
     slug: "",
     isParent: false,
-    isActive: false,
+    isActive: true,
   },
   categories = [],
   onSubmit,

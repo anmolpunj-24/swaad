@@ -24,7 +24,7 @@ export default function UserForm({
     gender: "",
     dob: null,
     phone: "",
-    isActive: false,
+    isActive: true,
   },
   onSubmit,
   buttonText,
