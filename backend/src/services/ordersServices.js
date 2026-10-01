@@ -1,6 +1,6 @@
 const orderRepo = require("../repositories/ordersRepository");
 
-const addOrderService = async (customerUuid, orderData) => {
+const addCustomerOrderService = async (customerUuid, orderData) => {
   const checkIfCustomerExist =
     await orderRepo.checkIfCustomerExistInDbRepo(customerUuid);
 
@@ -18,7 +18,7 @@ const addOrderService = async (customerUuid, orderData) => {
   return newOrder;
 };
 
-const getAllOrdersService = async (customerUuid) => {
+const getAllCustomerOrdersService = async (customerUuid) => {
   const checkIfCustomerExist =
     await orderRepo.checkIfCustomerExistInDbRepo(customerUuid);
 
@@ -34,13 +34,13 @@ const getAllOrdersService = async (customerUuid) => {
   return allOrders;
 };
 
-const getAllAvailableOrdersService = async () => {
+const getAllOrdersService = async () => {
   const allOrders = await orderRepo.getAllOrdersRepo();
 
   return allOrders;
 };
 
-const getOneOrderService = async (customerUuid, orderId) => {
+const getOneCustomerOrderService = async (customerUuid, orderId) => {
   const checkIfCustomerExist =
     await orderRepo.checkIfCustomerExistInDbRepo(customerUuid);
 
@@ -66,7 +66,7 @@ const getOneOrderService = async (customerUuid, orderId) => {
   return oneOrderData;
 };
 
-const getOneAvailableOrderService = async (orderId) => {
+const getOneOrderService = async (orderId) => {
   const oneOrderData =
     await orderRepo.checkIfAvailableOrderExistInDbRepo(orderId);
 
@@ -80,7 +80,7 @@ const getOneAvailableOrderService = async (orderId) => {
   return oneOrderData;
 };
 
-const updateOrderService = async (customerUuid, orderId, orderData) => {
+const updateCustomerOrderService = async (customerUuid, orderId, orderData) => {
   const checkIfCustomerExist =
     await orderRepo.checkIfCustomerExistInDbRepo(customerUuid);
 
@@ -120,10 +120,10 @@ const updateOrderService = async (customerUuid, orderId, orderData) => {
 };
 
 module.exports = {
-  addOrderService,
+  addCustomerOrderService,
+  getAllCustomerOrdersService,
+  getOneCustomerOrderService,
+  updateCustomerOrderService,
   getAllOrdersService,
   getOneOrderService,
-  updateOrderService,
-  getAllAvailableOrdersService,
-  getOneAvailableOrderService,
 };

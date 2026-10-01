@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const path = require("path");
 
 const express = require("express");
@@ -6,10 +7,14 @@ const app = express();
 
 const db = require("./src/config/db");
 
+const sendEmail = require("./src/services/mailServices");
+
 const errorHandlingMiddleware = require("./src/middlewares/globalErrorHandlingMiddleware");
 
 const server = async () => {
   await db();
+
+  // await sendEmail();
 
   app.use(express.json());
 

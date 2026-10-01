@@ -11,13 +11,13 @@ const addOrderRules = require("../validations/addOrderValidations");
 routes.get(
   "/getAll",
   authenticateUserMiddleware,
-  ordersController.getAllOrdersController,
+  ordersController.getAllCustomerOrdersController,
 );
 
 routes.get(
   "/get/:id",
   authenticateUserMiddleware,
-  ordersController.getOneOrderController,
+  ordersController.getOneCustomerOrderController,
 );
 
 routes.post(
@@ -25,13 +25,13 @@ routes.post(
   authenticateUserMiddleware,
   addOrderRules,
   validationMiddleware,
-  ordersController.addOrderController,
+  ordersController.addCustomerOrderController,
 );
 
 routes.put(
   "/update/:id",
   authenticateUserMiddleware,
-  ordersController.updateOrderController,
+  ordersController.updateCustomerOrderController,
 );
 
 module.exports = routes;

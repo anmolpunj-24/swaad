@@ -1,145 +1,86 @@
-import { LayoutDashboard, Users, Tags, Store, ScanSearch, CircleHelp, ShoppingBag } from "lucide-react";
+import {
+  LayoutDashboard,
+  Users,
+  Tags,
+  Store,
+  ScanSearch,
+  CircleHelp,
+  ShoppingBag,
+} from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+const sidebarItems = [
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    label: "Users",
+    href: "/users",
+    icon: Users,
+  },
+  {
+    label: "Customers",
+    href: "/customers",
+    icon: Users,
+  },
+  {
+    label: "Category",
+    href: "/category",
+    icon: Tags,
+  },
+  {
+    label: "Products",
+    href: "/products",
+    icon: Store,
+  },
+  {
+    label: "Pages Seo",
+    href: "/page-seo",
+    icon: ScanSearch,
+  },
+  {
+    label: "Pages Faqs",
+    href: "/page-faq",
+    icon: CircleHelp,
+  },
+  {
+    label: "Orders",
+    href: "/orders",
+    icon: ShoppingBag,
+  },
+];
 
 export default function Sidebar() {
+  const router = useRouter();
+
   return (
     <aside className="shrink-0 bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] min-h-full p-4">
       <nav className="flex flex-col gap-1.5">
-        <Link
-          href="/dashboard"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <LayoutDashboard
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Dashboard</span>
-        </Link>
+        {sidebarItems.map(({ label, href, icon: Icon }) => {
+          const isActive = router.pathname === href;
 
-        <Link
-          href="/users"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <Users
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Users</span>
-        </Link>
+          return (
+            <Link
+              key={href}
+              href={href}
+              className={`${
+                isActive
+                  ? "bg-[#37312C] border-[#51483F] text-[#FFFDF8]"
+                  : "text-[#D8D0C4] border-transparent"
+              } group flex items-center gap-3 px-3 py-2.5 rounded-lg border transition-all duration-200 hover:bg-[#37312C] hover:border-[#51483F] hover:text-[#FFFDF8]`}
+            >
+              <Icon
+                size={19}
+                className="transition-transform duration-200 group-hover:scale-105"
+              />
 
-        <Link
-          href="/customers"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <Users
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Customers</span>
-        </Link>
-
-        <Link
-          href="/category"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <Tags
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Category</span>
-        </Link>
-
-        <Link
-          href="/products"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <Store
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Products</span>
-        </Link>
-
-        <Link
-          href="/page-seo"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <ScanSearch
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Pages Seo</span>
-        </Link>
-
-         <Link
-          href="/page-faq"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <CircleHelp
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Pages Faqs</span>
-        </Link>
-
-        <Link
-          href="/orders"
-          className="group flex items-center gap-3 px-3 py-2.5 rounded-lg
-          text-[#D8D0C4]
-          border border-transparent
-          transition-all duration-200
-          hover:bg-[#37312C]
-          hover:border-[#51483F]
-          hover:text-[#FFFDF8]"
-        >
-          <ShoppingBag
-            size={19}
-            className="transition-transform duration-200 group-hover:scale-105"
-          />
-          <span className="text-sm font-medium">Orders</span>
-        </Link>
+              <span className="text-sm font-medium">{label}</span>
+            </Link>
+          );
+        })}
       </nav>
     </aside>
   );

@@ -11,7 +11,9 @@ import {
   Clock3,
   CheckCircle2,
   XCircle,
+  ScanSearch,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function Dashboard() {
   const stats = [
@@ -42,22 +44,10 @@ export default function Dashboard() {
   ];
 
   const quickActions = [
-    {
-      title: "Add Product",
-      icon: Plus,
-    },
-    {
-      title: "Add Category",
-      icon: FolderPlus,
-    },
-    {
-      title: "Add Blog",
-      icon: FileText,
-    },
-    {
-      title: "Add Customer",
-      icon: UserPlus,
-    },
+    { title: "Add Product", icon: Plus, href: "/products/add" },
+    { title: "Add Category", icon: FolderPlus, href: "/category/add" },
+    { title: "Add FAQ", icon: ScanSearch, href: "/page-faq/add" },
+    { title: "Add User", icon: UserPlus, href: "/users/add" },
   ];
 
   const orderStats = [
@@ -146,21 +136,19 @@ export default function Dashboard() {
             const Icon = action.icon;
 
             return (
-              <button
+              <Link
                 key={action.title}
-                type="button"
+                href={action.href}
                 className="group flex items-center gap-4 rounded-2xl border border-[#9B7A43]/20 bg-[#FFF8E7] p-5 text-left shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#9B7A43]/40 hover:bg-[#F3E8D0]/50 hover:shadow-md"
               >
                 <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#463421] text-[#FFF8E7] transition-all duration-300 group-hover:bg-[#59432C]">
                   <Icon size={20} />
                 </div>
-
                 <div>
                   <p className="font-semibold text-[#4B3927]">{action.title}</p>
-
                   <p className="mt-0.5 text-xs text-[#806C52]">Create new</p>
                 </div>
-              </button>
+              </Link>
             );
           })}
         </div>

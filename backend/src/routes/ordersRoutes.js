@@ -8,13 +8,13 @@ const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 routes.get(
   "/getAll",
   authenticateUserMiddleware,
-  ordersController.getAllAvailableOrdersController,
+  ordersController.getAllOrdersController,
 );
 
 routes.get(
   "/get/:id",
   authenticateUserMiddleware,
-  ordersController.getOneAvailableOrderController,
+  ordersController.getOneOrderController,
 );
 
 module.exports = routes;

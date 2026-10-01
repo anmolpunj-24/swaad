@@ -1,10 +1,13 @@
 const orderService = require("../../services/ordersServices");
 
-const addOrderController = async (req, res) => {
+const addCustomerOrderController = async (req, res) => {
   const customerUuid = req.params.customerUuid;
   const body = req.body;
 
-  const addOrderData = await orderService.addOrderService(customerUuid, body);
+  const addOrderData = await orderService.addCustomerOrderService(
+    customerUuid,
+    body,
+  );
 
   if (addOrderData.success === false) {
     return res.status(400).json({ message: addOrderData.errorMessage });
@@ -15,10 +18,11 @@ const addOrderController = async (req, res) => {
     .json({ message: "Order created!", order: addOrderData });
 };
 
-const getAllOrdersController = async (req, res) => {
+const getAllCustomerOrdersController = async (req, res) => {
   const customerUuid = req.params.customerUuid;
 
-  const allOrders = await orderService.getAllOrdersService(customerUuid);
+  const allOrders =
+    await orderService.getAllCustomerOrdersService(customerUuid);
 
   if (allOrders.success === false) {
     return res.status(400).json({ message: allOrders.errorMessage });
@@ -29,8 +33,8 @@ const getAllOrdersController = async (req, res) => {
     .json({ message: "All orders fetched!", orders: allOrders });
 };
 
-const getAllAvailableOrdersController = async (req, res) => {
-  const allOrders = await orderService.getAllAvailableOrdersService();
+const getAllOrdersController = async (req, res) => {
+  const allOrders = await orderService.getAllOrdersService();
 
   if (allOrders.success === false) {
     return res.status(400).json({ message: allOrders.errorMessage });
@@ -41,11 +45,11 @@ const getAllAvailableOrdersController = async (req, res) => {
     .json({ message: "All orders fetched!", orders: allOrders });
 };
 
-const getOneOrderController = async (req, res) => {
+const getOneCustomerOrderController = async (req, res) => {
   const customerUuid = req.params.customerUuid;
   const orderId = req.params.id;
 
-  const oneCustomerOrder = await orderService.getOneOrderService(
+  const oneCustomerOrder = await orderService.getOneCustomerOrderService(
     customerUuid,
     orderId,
   );
@@ -59,10 +63,10 @@ const getOneOrderController = async (req, res) => {
     .json({ message: "Order fetched!", order: oneCustomerOrder });
 };
 
-const getOneAvailableOrderController = async (req, res) => {
+const getOneOrderController = async (req, res) => {
   const orderId = req.params.id;
 
-  const oneOrderData = await orderService.getOneAvailableOrderService(orderId);
+  const oneOrderData = await orderService.getOneOrderService(orderId);
 
   if (oneOrderData.success === false) {
     return res.status(400).json({ message: oneOrderData.errorMessage });
@@ -73,12 +77,12 @@ const getOneAvailableOrderController = async (req, res) => {
     .json({ message: "Order fetched!", order: oneOrderData });
 };
 
-const updateOrderController = async (req, res) => {
+const updateCustomerOrderController = async (req, res) => {
   const customerUuid = req.params.customerUuid;
   const orderId = req.params.id;
   const body = req.body;
 
-  const updatedOrder = await orderService.updateOrderService(
+  const updatedOrder = await orderService.updateCustomerOrderService(
     customerUuid,
     orderId,
     body,
@@ -94,10 +98,10 @@ const updateOrderController = async (req, res) => {
 };
 
 module.exports = {
-  addOrderController,
+  addCustomerOrderController,
+  getAllCustomerOrdersController,
+  getOneCustomerOrderController,
+  updateCustomerOrderController,
   getAllOrdersController,
   getOneOrderController,
-  updateOrderController,
-  getAllAvailableOrdersController,
-  getOneAvailableOrderController,
 };
