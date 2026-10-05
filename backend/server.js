@@ -29,11 +29,23 @@ const server = async () => {
   const userRoutes = require("./src/routes/userRoutes");
   app.use("/api/admin/user", userRoutes);
 
+  const rolesRoutes = require("./src/routes/rolesRoutes");
+  app.use("/api/admin/role", rolesRoutes);
+
+  const permissionsRoutes = require("./src/routes/permissionsRoutes");
+  app.use("/api/admin/permission", permissionsRoutes);
+
   const customerRoutes = require("./src/routes/customerRoutes");
   app.use("/api/auth/customer", customerRoutes);
 
   const customerAddressRoutes = require("./src/routes/customerAddressRoutes");
   app.use("/api/auth/customer/:uuid/address", customerAddressRoutes);
+
+  const customerCartRoutes = require("./src/routes/cartRoutes");
+  app.use("/api/auth/customer/:uuid/cart", customerCartRoutes);
+
+  const customerWishlistRoutes = require("./src/routes/wishlistRoutes");
+  app.use("/api/auth/customer/:uuid/wishlist", customerWishlistRoutes);
 
   const productRoutes = require("./src/routes/productRoutes");
   app.use("/api/admin/product", productRoutes);

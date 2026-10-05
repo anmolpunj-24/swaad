@@ -45,9 +45,7 @@ const deleteCustomer = async (req, res) => {
   const deletedCustomer =
     await customerService.deleteCustomerService(customerId);
 
-  return res
-    .status(200)
-    .json({ message: "Customer deleted!", customer: deletedCustomer });
+  return res.status(200).json({ message: "Customer deleted!" });
 };
 
 module.exports = {
