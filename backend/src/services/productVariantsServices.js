@@ -90,13 +90,13 @@ const updateProductVariantService = async (
     productVariantData.size &&
     productVariantData.size.toLowerCase() !== checkIfProductVariantExist.size.toLowerCase()
   ) {
-    const checkIfSizeAlreadyExists =
-      await productVariantRepo.checkIfSizeAlreadyExistsInDbRepo(
+    const checkIfSizeExists =
+      await productVariantRepo.checkIfSizeExistsInDbRepo(
         productVariantData,
         productVariantId,
       );
 
-    if (checkIfSizeAlreadyExists) {
+    if (checkIfSizeExists) {
       return {
         success: false,
         errorMessage: "Product variant size already exists!",

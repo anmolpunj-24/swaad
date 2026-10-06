@@ -43,7 +43,7 @@ const oneProductVariantRepo = async (productVariantId, productId) => {
   });
 };
 
-const checkIfSizeAlreadyExistsInDbRepo = async (
+const checkIfSizeExistsInDbRepo = async (
   productVariantData,
   productVariantId,
 ) => {
@@ -188,7 +188,7 @@ module.exports = {
   addProductVariantRepo,
   allProductVariantsRepo,
   oneProductVariantRepo,
-  checkIfSizeAlreadyExistsInDbRepo,
+  checkIfSizeExistsInDbRepo,
   activeVariantsCountRepo,
   updatedProductVariantRepo,
   updateProductSeoStatus,

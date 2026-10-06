@@ -17,12 +17,6 @@ routes.post(
   customerWishlistController.addToCustomerWishlist,
 );
 
-routes.put(
-  "/update/:id",
-  authenticateUserMiddleware,
-  customerWishlistController.updateCustomerWishlistItem,
-);
-
 routes.delete(
   "/delete/:id",
   authenticateUserMiddleware,

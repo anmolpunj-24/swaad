@@ -26,7 +26,7 @@ const addProductReviewService = async (
   }
 
   const checkIfExistingReview =
-    await productReviewRepo.checkIfReviewAlreadyExistsInDbRepo(
+    await productReviewRepo.checkIfReviewExistsInDbRepo(
       productId,
       customerUuid,
     );

@@ -50,7 +50,7 @@ const deleteCartItemFromDbRepo = async (cartItemId, customerUuid) => {
   });
 };
 
-const checkIfTheCartItemAlreadyExistsInDbRepo = async (
+const checkIfTheCartItemExistsInDbRepo = async (
   customerUuid,
   productId,
   productVariantId,
@@ -146,7 +146,7 @@ module.exports = {
   checkIfProductVariantExistsInDbRepo,
   clearCustomerCartFromDbRepo,
   deleteCartItemFromDbRepo,
-  checkIfTheCartItemAlreadyExistsInDbRepo,
+  checkIfTheCartItemExistsInDbRepo,
   addCartItemInDbRepo,
   checkIfCartItemRelatedToCustomerExistsInDbRepo,
   updateCartItemQuantityInDbRepo,

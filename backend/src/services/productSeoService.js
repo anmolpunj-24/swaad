@@ -28,13 +28,13 @@ const addProductSeoService = async (
     };
   }
 
-  const checkIfSeoDataAlreadyExists =
-    await productSeoRepo.checkIfSeoDataAlreadyExistsInDbRepo(
+  const checkIfSeoDataExists =
+    await productSeoRepo.checkIfSeoDataExistsInDbRepo(
       productId,
       productVariantId,
     );
 
-  if (checkIfSeoDataAlreadyExists) {
+  if (checkIfSeoDataExists) {
     return {
       success: false,
       errorMessage: "Seo data already exists for this variant!",
@@ -148,7 +148,7 @@ const updateProductSeoService = async (
   }
 
   const checkIfSeoExists =
-    await productSeoRepo.checkIfSeoDataAlreadyExistsForUpdateInDbRepo(
+    await productSeoRepo.checkIfSeoDataExistsForUpdateInDbRepo(
       productSeoId,
       productId,
       productVariantId,
@@ -200,7 +200,7 @@ const deleteProductSeoService = async (
   }
 
   const checkIfSeoExists =
-    await productSeoRepo.checkIfSeoDataAlreadyExistsForDeleteInDbRepo(
+    await productSeoRepo.checkIfSeoDataExistsForDeleteInDbRepo(
       productSeoId,
       productId,
       productVariantId,

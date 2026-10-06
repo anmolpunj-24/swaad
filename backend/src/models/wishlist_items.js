@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const wishListsSchema = new mongoose.Schema(
+const wishlistItemsSchema = new mongoose.Schema(
   {
     customerUuid: {
       type: String,
@@ -40,7 +40,7 @@ const wishListsSchema = new mongoose.Schema(
   },
 );
 
-wishListsSchema.index(
+wishlistItemsSchema.index(
   {
     customerUuid: 1,
     productId: 1,
@@ -51,6 +51,4 @@ wishListsSchema.index(
   },
 );
 
-module.exports = mongoose.model("wishlists", wishListsSchema);
-
-const mongoose = require("mongoose");
+module.exports = mongoose.model("wishlist_items", wishlistItemsSchema);

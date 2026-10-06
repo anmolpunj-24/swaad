@@ -3,13 +3,16 @@ const wishlistService = require("../../services/wishlistServices");
 const getCustomerWishlist = async (req, res) => {
   const customerUuid = req.params.uuid;
 
-  const wishlist = await wishlistService.getCustomerWishlistService(customerUuid);
+  const wishlist =
+    await wishlistService.getCustomerWishlistService(customerUuid);
 
   if (wishlist.success === false) {
     return res.status(400).json({ message: wishlist.errorMessage });
   }
 
-  return res.status(200).json({ message: "Wishlist fetched!", wishlist: wishlist });
+  return res
+    .status(200)
+    .json({ message: "Wishlist fetched!", wishlist: wishlist });
 };
 
 const addToCustomerWishlist = async (req, res) => {
@@ -30,27 +33,6 @@ const addToCustomerWishlist = async (req, res) => {
     .json({ message: "Product added to wishlist!", wishlist: wishlistItem });
 };
 
-const updateCustomerWishlistItem = async (req, res) => {
-  const customerUuid = req.params.uuid;
-  const wishlistItemId = req.params.id;
-  const body = req.body;
-
-  const updatedWishlistItem =
-    await wishlistService.updateCustomerWishlistItemService(
-      customerUuid,
-      wishlistItemId,
-      body,
-    );
-
-  if (updatedWishlistItem.success === false) {
-    return res.status(400).json({ message: updatedWishlistItem.errorMessage });
-  }
-
-  return res
-    .status(200)
-    .json({ message: "Wishlist item updated!", wishlistItem: updatedWishlistItem });
-};
-
 const deleteCustomerWishlistItem = async (req, res) => {
   const customerUuid = req.params.uuid;
   const wishlistItemId = req.params.id;
@@ -67,7 +49,10 @@ const deleteCustomerWishlistItem = async (req, res) => {
 
   return res
     .status(200)
-    .json({ message: "Wishlist item deleted!", wishlistItemItem: deletedWishlistItem });
+    .json({
+      message: "Wishlist item deleted!",
+      wishlistItemItem: deletedWishlistItem,
+    });
 };
 
 const clearCustomerWishlist = async (req, res) => {
@@ -86,7 +71,6 @@ const clearCustomerWishlist = async (req, res) => {
 module.exports = {
   getCustomerWishlist,
   addToCustomerWishlist,
-  updateCustomerWishlistItem,
   deleteCustomerWishlistItem,
   clearCustomerWishlist,
 };

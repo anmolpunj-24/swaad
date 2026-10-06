@@ -22,7 +22,7 @@ const checkIfProductVariantExistInDbRepo = async (
   });
 };
 
-const checkIfSeoDataAlreadyExistsInDbRepo = async (
+const checkIfSeoDataExistsInDbRepo = async (
   productId,
   productVariantId,
 ) => {
@@ -84,7 +84,7 @@ const oneSeoDataRepo = async (productSeoId, productId, productVariantId) => {
   });
 };
 
-const checkIfSeoDataAlreadyExistsForUpdateInDbRepo = async (
+const checkIfSeoDataExistsForUpdateInDbRepo = async (
   productSeoId,
   productId,
   productVariantId,
@@ -119,7 +119,7 @@ const updateSeoDataRepo = async (
   );
 };
 
-const checkIfSeoDataAlreadyExistsForDeleteInDbRepo = async (
+const checkIfSeoDataExistsForDeleteInDbRepo = async (
   productSeoId,
   productId,
   productVariantId,
@@ -172,14 +172,14 @@ const deleteAllProductSeoRepo = async (productId, deletedAt) => {
 module.exports = {
   checkIfProductExistInDbRepo,
   checkIfProductVariantExistInDbRepo,
-  checkIfSeoDataAlreadyExistsInDbRepo,
+  checkIfSeoDataExistsInDbRepo,
   addProductSeoRepo,
   allActiveVariantsForProductSeoRepo,
   allProductSeosDataRepo,
   oneSeoDataRepo,
-  checkIfSeoDataAlreadyExistsForUpdateInDbRepo,
+  checkIfSeoDataExistsForUpdateInDbRepo,
   updateSeoDataRepo,
-  checkIfSeoDataAlreadyExistsForDeleteInDbRepo,
+  checkIfSeoDataExistsForDeleteInDbRepo,
   deleteProductSeoRepo,
   deleteAllProductSeoRepo,
 };

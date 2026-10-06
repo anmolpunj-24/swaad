@@ -18,7 +18,7 @@ const checkIfCustomerExistInDbRepo = async (customerUuid) => {
   });
 };
 
-const checkIfReviewAlreadyExistsInDbRepo = async (productId, customerUuid) => {
+const checkIfReviewExistsInDbRepo = async (productId, customerUuid) => {
   return await productReviewsModel.findOne({
     productId,
     customerUuid,
@@ -143,7 +143,7 @@ const deleteAllProductReviewsRepo = async (productId, deletedAt) => {
 module.exports = {
   checkIfProductExistsInDbRepo,
   checkIfCustomerExistInDbRepo,
-  checkIfReviewAlreadyExistsInDbRepo,
+  checkIfReviewExistsInDbRepo,
   checkIfCustomerReviewExistsInDbRepo,
   addReviewRepo,
   getAllReviewsDataRepo,

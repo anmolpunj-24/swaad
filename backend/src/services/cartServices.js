@@ -59,7 +59,7 @@ const addToCustomerCartService = async (customerUuid, cartData) => {
   }
 
   const existingCartItem =
-    await cartRepo.checkIfTheCartItemAlreadyExistsInDbRepo(
+    await cartRepo.checkIfTheCartItemExistsInDbRepo(
       customerUuid,
       productId,
       productVariantId,
