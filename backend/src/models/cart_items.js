@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const cartsSchema = new mongoose.Schema(
+const cartItemsSchema = new mongoose.Schema(
   {
     customerUuid: {
       type: String,
@@ -46,7 +46,7 @@ const cartsSchema = new mongoose.Schema(
   },
 );
 
-cartsSchema.index(
+cartItemsSchema.index(
   {
     customerUuid: 1,
     productId: 1,
@@ -57,4 +57,4 @@ cartsSchema.index(
   },
 );
 
-module.exports = mongoose.model("carts", cartsSchema);
+module.exports = mongoose.model("cart_items", cartItemsSchema);
