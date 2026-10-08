@@ -120,7 +120,7 @@ export default function CustomTable({
         </div>
       </div>
 
-      <div className="flex items-center justify-between border-t border-[#E5DED2] px-5 py-4">
+      <div className="flex items-center justify-between px-5 py-4">
         <div className="flex items-center gap-2 text-sm text-[#766B5F]">
           <span>Records per page</span>
 
