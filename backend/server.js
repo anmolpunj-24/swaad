@@ -88,6 +88,9 @@ const server = async () => {
   const pagesFaqRoutes = require("./src/routes/pagesFaqRoutes");
   app.use("/api/admin/faq", pagesFaqRoutes);
 
+  const testRoutes = require("./src/routes/testRoutes");
+  app.use("/api/test", testRoutes);
+
   app.use(errorHandlingMiddleware);
 
   PORT = process.env.PORT || 5000;
