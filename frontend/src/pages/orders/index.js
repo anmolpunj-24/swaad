@@ -26,8 +26,22 @@ export default function Orders() {
 
   const ordersColumns = [
     {
+      key: "_id",
+      label: "Order ID",
+    },
+    {
       key: "customerUuid",
       label: "Customer UUID",
+    },
+    {
+      key: "shippingAddress",
+      label: "Customer Name",
+      render: (row) => row.shippingAddress?.name || "-",
+    },
+    {
+      key: "shippingAddress",
+      label: "Customer Phone",
+      render: (row) => row.shippingAddress?.phone || "-",
     },
     {
       key: "status",
@@ -64,9 +78,75 @@ export default function Orders() {
       ),
     },
     {
+      key: "subtotal",
+      label: "Subtotal",
+      render: (row) => `₹${row.subtotal?.toFixed(2) ?? "0.00"}`,
+    },
+    {
+      key: "discount",
+      label: "Discount",
+      render: (row) => `₹${row.discount?.toFixed(2) ?? "0.00"}`,
+    },
+    {
+      key: "shippingAmount",
+      label: "Shipping Amount",
+      render: (row) => `₹${row.shippingAmount?.toFixed(2) ?? "0.00"}`,
+    },
+    {
       key: "totalAmount",
       label: "Total Amount",
       render: (row) => `₹${row.totalAmount?.toFixed(2) ?? "0.00"}`,
+    },
+    {
+      key: "currency",
+      label: "Currency",
+    },
+    {
+      key: "shippingProvider",
+      label: "Shipping Provider",
+      render: (row) => row.shippingProvider || "-",
+    },
+    {
+      key: "shipmentTrackingId",
+      label: "Tracking ID",
+      render: (row) => row.shipmentTrackingId || "-",
+    },
+    {
+      key: "shippingAddress",
+      label: "Shipping Address",
+      render: (row) => {
+        const address = row.shippingAddress;
+
+        if (!address) return "-";
+
+        return (
+          <div className="min-w-[260px] max-w-[300px] max-h-[50px] overflow-y-auto pr-2 text-sm leading-6">
+            <p>{address.addressLine1 || "-"}</p>
+
+            <p>
+              {address.addressLine2 && `${address.addressLine2}, `}
+              {address.city || "-"}, {address.state || "-"} -{" "}
+              {address.pincode || "-"}
+            </p>
+
+            <p>{address.country || "-"}</p>
+          </div>
+        );
+      },
+    },
+    {
+      key: "createdAt",
+      label: "Created At",
+      render: (row) =>
+        row.createdAt
+          ? new Date(row.createdAt).toLocaleString("en-IN", {
+              day: "2-digit",
+              month: "short",
+              year: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
+            })
+          : "-",
     },
   ];
 
