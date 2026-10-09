@@ -81,41 +81,6 @@ const blogSchema = new mongoose.Schema(
         type: [String],
         default: [],
       },
-
-      canonicalUrl: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-
-      ogTitle: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-
-      ogDescription: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-
-      ogImage: {
-        type: String,
-        trim: true,
-        default: "",
-      },
-
-      robots: {
-        type: String,
-        enum: [
-          "index,follow",
-          "noindex,follow",
-          "index,nofollow",
-          "noindex,nofollow",
-        ],
-        default: "index,follow",
-      },
     },
 
     isActive: {
