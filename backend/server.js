@@ -88,8 +88,20 @@ const server = async () => {
   const pagesFaqRoutes = require("./src/routes/pagesFaqRoutes");
   app.use("/api/admin/faq", pagesFaqRoutes);
 
+  const blogRoutes = require("./src/routes/blogRoutes");
+  app.use("/api/admin/blog", blogRoutes);
+
+  const tagRoutes = require("./src/routes/tagRoutes");
+  app.use("/api/admin/tag", tagRoutes);
+
+  const couponRoutes = require("./src/routes/couponRoutes");
+  app.use("/api/admin/coupon", couponRoutes);
+
   const testRoutes = require("./src/routes/testRoutes");
   app.use("/api/test", testRoutes);
+
+  const dashboardRoutes = require("./src/routes/dashboardRoutes");
+  app.use("/api/admin/dashboard", dashboardRoutes);
 
   app.use(errorHandlingMiddleware);
 
