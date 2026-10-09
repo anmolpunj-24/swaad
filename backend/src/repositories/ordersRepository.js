@@ -59,7 +59,7 @@ const updateCustomerOrderRepo = async (customerUuid, orderId, orderData) => {
   return await ordersModel.findOneAndUpdate(
     { customerUuid, _id: orderId },
     { $set: orderData },
-    { returnDocument: "after" },
+    { returnDocument: "after", runValidators: true },
   );
 };
 

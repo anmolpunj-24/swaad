@@ -32,6 +32,7 @@ const updateRoleRepo = async (roleId, roleData) => {
     { $set: roleData },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

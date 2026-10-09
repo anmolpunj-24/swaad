@@ -32,6 +32,7 @@ const updatePermissionRepo = async (permissionId, permissionData) => {
     { $set: permissionData },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

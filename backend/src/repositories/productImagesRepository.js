@@ -165,6 +165,7 @@ const checkForNextRecentImageAndUpdateIsPrimaryStatusRepo = async (
         createdAt: -1,
       },
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };
@@ -216,6 +217,7 @@ const checkForNextRecentImageAndUpdateIsPrimaryStatusForDeleteRepo = async (
         createdAt: -1,
       },
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

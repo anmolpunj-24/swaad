@@ -45,6 +45,7 @@ const updatePaymentRepo = async (paymentId, orderId, paymentData) => {
     },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

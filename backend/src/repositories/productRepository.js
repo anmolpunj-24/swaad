@@ -45,15 +45,10 @@ const checkIfProductExistInDbRepo = async (productId) => {
 };
 
 const updateProductRepo = async (productId, productData) => {
-  return await productModel.findByIdAndUpdate(
-    productId,
-    productData,
-    {
-      returnDocument: "after",
-      runValidators: true,
-    },
-    { returnDocument: "after" },
-  );
+  return await productModel.findByIdAndUpdate(productId, productData, {
+    returnDocument: "after",
+    runValidators: true,
+  });
 };
 
 const deleteProductRepo = async (productId, deletedAt) => {

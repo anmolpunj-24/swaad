@@ -22,6 +22,7 @@ const addShipmentRepo = async (orderId, shipmentData) => {
     },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

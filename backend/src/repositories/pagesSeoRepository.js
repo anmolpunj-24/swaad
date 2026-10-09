@@ -38,7 +38,7 @@ const updatePageSeoRepo = async (pageSeoSlug, pageSeoData) => {
     {
       $set: pageSeoData,
     },
-    { returnDocument: "after" },
+    { returnDocument: "after", runValidators: true },
   );
 };
 

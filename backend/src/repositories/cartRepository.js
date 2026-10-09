@@ -108,6 +108,7 @@ const updateCartItemQuantityInDbRepo = async (cartItemId, quantity) => {
     },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };
@@ -135,6 +136,7 @@ const updateCartItemInDbRepo = async (
     },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

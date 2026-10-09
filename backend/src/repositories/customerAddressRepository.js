@@ -114,6 +114,7 @@ const makeAddressDefault = async (customerUuid, addressId) => {
     },
     {
       returnDocument: "after",
+      runValidators: true,
     },
   );
 };

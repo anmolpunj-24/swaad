@@ -42,7 +42,7 @@ const updatePageFaqsRepo = async (faqId, pageSlug, pageFaqData) => {
     {
       $set: pageFaqData,
     },
-    { returnDocument: "after" },
+    { returnDocument: "after", runValidators: true },
   );
 };
 
