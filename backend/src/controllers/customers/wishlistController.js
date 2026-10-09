@@ -47,12 +47,9 @@ const deleteCustomerWishlistItem = async (req, res) => {
     return res.status(400).json({ message: deletedWishlistItem.errorMessage });
   }
 
-  return res
-    .status(200)
-    .json({
-      message: "Wishlist item deleted!",
-      wishlistItemItem: deletedWishlistItem,
-    });
+  return res.status(200).json({
+    message: "Wishlist item deleted!",
+  });
 };
 
 const clearCustomerWishlist = async (req, res) => {

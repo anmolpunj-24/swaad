@@ -69,9 +69,7 @@ const deletePermission = async (req, res) => {
     return res.status(400).json({ message: deletedPermission.errorMessage });
   }
 
-  return res
-    .status(200)
-    .json({ message: "Permission deleted!", permission: deletedPermission });
+  return res.status(200).json({ message: "Permission deleted!" });
 };
 
 module.exports = {

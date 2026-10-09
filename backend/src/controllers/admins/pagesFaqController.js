@@ -59,9 +59,7 @@ const deleteOnePageFaqs = async (req, res) => {
     return res.status(400).json({ message: deletedPageFaq.errorMessage });
   }
 
-  return res
-    .status(200)
-    .json({ message: "Page faq deleted!", faq: deletedPageFaq });
+  return res.status(200).json({ message: "Page faq deleted!" });
 };
 
 module.exports = {

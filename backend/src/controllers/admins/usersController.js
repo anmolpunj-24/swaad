@@ -36,7 +36,7 @@ const deleteUser = async (req, res) => {
 
   const deletedUser = await userService.deleteUserService(userId);
 
-  return res.status(200).json({ message: "User deleted!", user: deletedUser });
+  return res.status(200).json({ message: "User deleted!" });
 };
 
 const uploadProfile = async (req, res) => {

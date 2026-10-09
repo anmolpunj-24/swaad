@@ -63,9 +63,7 @@ const deleteCustomerCartItem = async (req, res) => {
     return res.status(400).json({ message: deletedCartItem.errorMessage });
   }
 
-  return res
-    .status(200)
-    .json({ message: "Cart item deleted!", cartItem: deletedCartItem });
+  return res.status(200).json({ message: "Cart item deleted!" });
 };
 
 const clearCustomerCart = async (req, res) => {

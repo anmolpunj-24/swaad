@@ -60,9 +60,7 @@ const deletePageSeo = async (req, res) => {
     return res.status(400).json({ message: deletedPageSeo.errorMessage });
   }
 
-  return res
-    .status(200)
-    .json({ message: "Page seo deleted!", seo: deletedPageSeo });
+  return res.status(200).json({ message: "Page seo deleted!" });
 };
 
 module.exports = {

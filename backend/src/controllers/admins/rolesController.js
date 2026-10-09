@@ -56,7 +56,7 @@ const deleteRole = async (req, res) => {
     return res.status(400).json({ message: deletedRole.errorMessage });
   }
 
-  return res.status(200).json({ message: "Role deleted!", role: deletedRole });
+  return res.status(200).json({ message: "Role deleted!" });
 };
 
 module.exports = {

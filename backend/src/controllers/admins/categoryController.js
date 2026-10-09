@@ -60,9 +60,7 @@ const deleteCategory = async (req, res) => {
     return res.status(400).json({ message: deletedCategory.errorMessage });
   }
 
-  return res
-    .status(200)
-    .json({ message: "Category deleted!", category: deletedCategory });
+  return res.status(200).json({ message: "Category deleted!" });
 };
 
 module.exports = {
