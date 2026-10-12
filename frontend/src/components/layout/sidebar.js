@@ -6,6 +6,8 @@ import {
   ScanSearch,
   CircleHelp,
   ShoppingBag,
+  TicketPercent,
+  Newspaper,
 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -37,6 +39,21 @@ const sidebarItems = [
     icon: Store,
   },
   {
+    label: "Tags",
+    href: "/tags",
+    icon: Tags,
+  },
+  {
+    label: "Coupons",
+    href: "/coupons",
+    icon: TicketPercent,
+  },
+  {
+    label: "Blogs",
+    href: "/blogs",
+    icon: Newspaper,
+  },
+  {
     label: "Pages Seo",
     href: "/page-seo",
     icon: ScanSearch,
@@ -57,7 +74,7 @@ export default function Sidebar() {
   const router = useRouter();
 
   return (
-    <aside className="shrink-0 bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] min-h-full p-4">
+    <aside className="shrink-0 bg-[#2A2622] text-[#F7F4EC] min-w-[13rem] h-full overflow-y-auto p-4">
       <nav className="flex flex-col gap-1.5">
         {sidebarItems.map(({ label, href, icon: Icon }) => {
           const isActive = router.pathname === href;

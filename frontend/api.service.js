@@ -93,20 +93,6 @@ const adminAuthApi = {
   },
 };
 
-const customerAuthApi = {
-  login: async () => {},
-
-  logoutCurrentDevice: async () => {},
-
-  logoutAllDevices: async () => {},
-
-  resetPassword: async () => {},
-
-  forgotPassword: async () => {},
-
-  updatePassword: async () => {},
-};
-
 const userApi = {
   add: async (userData) => {
     const response = await api.post("/api/admin/user/add", userData);
@@ -146,8 +132,6 @@ const customerApi = {
     );
     return response;
   },
-
-  delete: async () => {},
 };
 
 const customerAddressApi = {
@@ -277,9 +261,62 @@ const orderApi = {
   },
 };
 
+const tagApi = {
+  add: async (tagData) => {
+    const response = await api.post("/api/admin/tag/add", tagData);
+    return response;
+  },
+
+  getAll: async () => {
+    const response = await api.get("/api/admin/tag/getAll");
+    return response;
+  },
+
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/tag/get/${id}`);
+    return response;
+  },
+
+  update: async (id, updateTagData) => {
+    const response = await api.put(
+      `/api/admin/tag/update/${id}`,
+      updateTagData,
+    );
+    return response;
+  },
+
+  delete: async () => {},
+};
+
+const couponApi = {
+  add: async (couponData) => {
+    const response = await api.post("/api/admin/coupon/add", couponData);
+    return response;
+  },
+
+  getAll: async () => {
+    const response = await api.get("/api/admin/coupon/getAll");
+    return response;
+  },
+
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/coupon/get/${id}`);
+    return response;
+  },
+
+  update: async (id, updateCouponData) => {
+    const response = await api.put(
+      `/api/admin/coupon/update/${id}`,
+      updateCouponData,
+    );
+    return response;
+  },
+
+  delete: async () => {},
+};
+
 export {
   adminAuthApi,
-  customerAuthApi,
   userApi,
   customerApi,
   customerAddressApi,
@@ -288,4 +325,6 @@ export {
   pageSeoApi,
   pageFaqApi,
   orderApi,
+  tagApi,
+  couponApi,
 };
