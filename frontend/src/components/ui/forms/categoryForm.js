@@ -2,6 +2,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Check, ChevronDown, FolderTree, ShieldCheck, Tag } from "lucide-react";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import { useEffect } from "react";
+import GenericInput from "../genericInput";
 
 export default function CategoryForm({
   defaultValues = {
@@ -70,73 +71,38 @@ export default function CategoryForm({
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="min-w-0">
-            <div className="relative">
-              <label
-                htmlFor="name"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Category Name <span className="text-[#B28B4C]">*</span>
-              </label>
+          <GenericInput
+            id="name"
+            label="Category Name"
+            type="text"
+            required
+            disabled={loading}
+            error={errors.name?.message}
+            placeholder="Enter category name"
+            {...register("name", {
+              required: "Category name is required!",
+              onChange: (e) => {
+                setValue("slug", SlugifyHandler(e.target.value), {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              },
+            })}
+          />
 
-              <input
-                id="name"
-                type="text"
-                disabled={loading}
-                {...register("name", {
-                  required: "Category name is required!",
-                  onChange: (e) => {
-                    setValue("slug", SlugifyHandler(e.target.value), {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                  },
-                })}
-                placeholder="Enter category name"
-                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-
-            {errors.name && (
-              <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                {errors.name.message}
-              </p>
-            )}
-          </div>
-
-          <div className="min-w-0">
-            <div className="relative">
-              <label
-                htmlFor="slug"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Slug <span className="text-[#B28B4C]">*</span>
-              </label>
-
-              <input
-                id="slug"
-                type="text"
-                disabled={loading}
-                {...register("slug", {
-                  required: "Slug is required!",
-                })}
-                placeholder="category-slug"
-                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#806C52] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-
-            <div className="flex justify-between">
-              {errors.slug && (
-                <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                  {errors.slug.message}
-                </p>
-              )}
-
-              <p className="mt-2 px-1 text-right text-[10px] font-medium text-[#A29480]">
-                Automatically generated from category name
-              </p>
-            </div>
-          </div>
+          <GenericInput
+            id="slug"
+            label="Slug"
+            type="text"
+            required
+            disabled={loading}
+            error={errors.slug?.message}
+            placeholder="category-slug"
+            {...register("slug", {
+              required: "Slug is required!",
+            })}
+            extraText="Automatically generated from category name"
+          />
         </div>
       </div>
 

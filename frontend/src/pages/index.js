@@ -6,6 +6,7 @@ import { useState } from "react";
 import GlobalLoader from "../components/ui/globalLoader";
 import { toast } from "sonner";
 import { Eye, EyeOff, LoaderCircle, ArrowRight } from "lucide-react";
+import GenericInput from "@/components/ui/genericInput";
 
 export default function Login() {
   const { loading } = useAuth(false);
@@ -92,79 +93,40 @@ export default function Login() {
             className="flex flex-col gap-6"
             noValidate
           >
-            <div>
-              <div className="relative">
-                <label
-                  htmlFor="email"
-                  className="absolute -top-2.5 left-3 z-10 bg-[#F7E9C8] px-2 text-[0.8rem] font-bold tracking-wide text-[#4B3927] rounded-2xl px-3"
-                >
-                  Email
-                </label>
+            <GenericInput
+              id="email"
+              label="Email"
+              type="email"
+              variant="cream"
+              disabled={mainLoading}
+              error={errors.email?.message}
+              {...register("email", {
+                required: "Email is required!",
+              })}
+            />
 
-                <input
-                  id="email"
-                  type="email"
-                  disabled={mainLoading}
-                  {...register("email", {
-                    required: "Email is required!",
-                  })}
-                  className="w-full rounded-xl border border-[#9B7A43]/20 bg-[#F3E8D0]/40 px-4 py-3.5 text-sm text-[#3E3021] outline-none transition-all duration-300 placeholder:text-[#806C52]/40 focus:border-[#9B7A43]/50 focus:bg-[#F3E8D0]/70 disabled:cursor-not-allowed disabled:opacity-60"
-                />
-              </div>
+            <GenericInput
+              id="password"
+              label="Password"
+              type={showPassword ? "text" : "password"}
+              variant="cream"
+              disabled={mainLoading}
+              error={errors.password?.message}
+              button={showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+              onButtonClick={togglePassword}
+              {...register("password", {
+                required: "Password is required!",
+              })}
+            />
 
-              {errors.email && (
-                <p className="mt-2 min-h-[18px] px-1 text-[12px] text-[#963F32]">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <div className="relative">
-                <label
-                  htmlFor="password"
-                  className="absolute -top-2.5 left-3 z-10 bg-[#F7E9C8] px-2 text-[0.8rem] font-bold tracking-wide text-[#4B3927] rounded-2xl px-3"
-                >
-                  Password
-                </label>
-
-                <input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  disabled={mainLoading}
-                  {...register("password", {
-                    required: "Password is required!",
-                  })}
-                  className="w-full rounded-xl border border-[#9B7A43]/20 bg-[#F3E8D0]/40 px-4 py-3.5 pr-12 text-sm text-[#3E3021] outline-none transition-all duration-300 placeholder:text-[#806C52]/40 focus:border-[#9B7A43]/50 focus:bg-[#F3E8D0]/70 disabled:cursor-not-allowed disabled:opacity-60"
-                />
-
-                <button
-                  type="button"
-                  onClick={togglePassword}
-                  disabled={mainLoading}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52] transition-colors duration-200 hover:text-[#463421] disabled:cursor-not-allowed disabled:opacity-50 hover:cursor-pointer"
-                >
-                  {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
-                </button>
-              </div>
-
-              {errors.password && (
-                <p className="mt-2 min-h-[18px] px-1 text-[12px] text-[#963F32]">
-                  {errors.password.message}
-                </p>
-              )}
-
-              <div className="mt-2.5 flex justify-end">
-                <button
-                  type="button"
-                  disabled={mainLoading}
-                  onClick={() => router.push("/forgot-password")}
-                  className="text-xs font-medium text-[#806C52] transition-colors duration-200 hover:text-[#463421] hover:underline disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  Forgot password?
-                </button>
-              </div>
-            </div>
+            <button
+              type="button"
+              disabled={mainLoading}
+              onClick={() => router.push("/forgot-password")}
+              className="flex justify-end text-xs font-medium text-[#806C52] transition-colors duration-200 hover:text-[#463421] hover:underline disabled:cursor-not-allowed disabled:opacity-50 hover:cursor-pointer"
+            >
+              Forgot password?
+            </button>
 
             <button
               type="submit"

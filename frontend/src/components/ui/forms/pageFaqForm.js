@@ -9,6 +9,7 @@ import {
   Trash2,
 } from "lucide-react";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
+import GenericInput from "../genericInput";
 
 export default function PageFaqForm({
   defaultValues = {
@@ -83,73 +84,38 @@ export default function PageFaqForm({
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="min-w-0">
-            <div className="relative">
-              <label
-                htmlFor="pageName"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Page Name <span className="text-[#B28B4C]">*</span>
-              </label>
+          <GenericInput
+            id="pageName"
+            label="Page Name"
+            type="text"
+            required
+            disabled={loading}
+            error={errors.pageName?.message}
+            placeholder="Enter page name"
+            {...register("pageName", {
+              required: " is required!",
+              onChange: (e) => {
+                setValue("pageSlug", SlugifyHandler(e.target.value), {
+                  shouldDirty: true,
+                  shouldValidate: true,
+                });
+              },
+            })}
+          />
 
-              <input
-                id="pageName"
-                type="text"
-                disabled={loading}
-                {...register("pageName", {
-                  required: "Page name is required!",
-                  onChange: (e) => {
-                    setValue("pageSlug", SlugifyHandler(e.target.value), {
-                      shouldDirty: true,
-                      shouldValidate: true,
-                    });
-                  },
-                })}
-                placeholder="Enter page name"
-                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-
-            {errors.pageName && (
-              <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                {errors.pageName.message}
-              </p>
-            )}
-          </div>
-
-          <div className="min-w-0">
-            <div className="relative">
-              <label
-                htmlFor="pageSlug"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Page Slug <span className="text-[#B28B4C]">*</span>
-              </label>
-
-              <input
-                id="pageSlug"
-                type="text"
-                disabled={loading}
-                {...register("pageSlug", {
-                  required: "Page slug is required!",
-                })}
-                placeholder="page-slug"
-                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#806C52] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-
-            <div className="flex justify-between">
-              {errors.pageSlug && (
-                <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                  {errors.pageSlug.message}
-                </p>
-              )}
-
-              <p className="mt-2 ml-auto px-1 text-right text-[10px] font-medium text-[#A29480]">
-                Automatically generated from page name
-              </p>
-            </div>
-          </div>
+          <GenericInput
+            id="pageSlug"
+            label="Page Slug"
+            required
+            type="text"
+            disabled={loading}
+            placeholder="page-slug"
+            error={errors.pageSlug?.message}
+            extraText="Automatically generated from page name"
+            {...register("pageSlug", {
+              required: "Page slug is required!",
+            })}
+          />
         </div>
       </div>
 
@@ -205,77 +171,42 @@ export default function PageFaqForm({
               </div>
 
               <div className="space-y-6">
-                <div className="min-w-0">
-                  <div className="relative">
-                    <label
-                      htmlFor={`faqs.${index}.question`}
-                      className="absolute -top-2.5 left-3 z-10 bg-[#FDFBF7] px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                    >
-                      Question <span className="text-[#B28B4C]">*</span>
-                    </label>
-
-                    <input
-                      id={`faqs.${index}.question`}
-                      type="text"
-                      disabled={loading}
-                      {...register(`faqs.${index}.question`, {
-                        required: "Question is required!",
-                        onChange: (e) => {
-                          setValue(
-                            `faqs.${index}.questionSlug`,
-                            SlugifyHandler(e.target.value),
-                            {
-                              shouldDirty: true,
-                              shouldValidate: true,
-                            },
-                          );
+                <GenericInput
+                  id={`faqs.${index}.question`}
+                  label="Question"
+                  required
+                  type="text"
+                  disabled={loading}
+                  placeholder="Enter frequently asked question"
+                  error={errors.faqs?.[index]?.question?.message}
+                  {...register(`faqs.${index}.question`, {
+                    required: "Question is required!",
+                    onChange: (e) => {
+                      setValue(
+                        `faqs.${index}.questionSlug`,
+                        SlugifyHandler(e.target.value),
+                        {
+                          shouldDirty: true,
+                          shouldValidate: true,
                         },
-                      })}
-                      placeholder="Enter frequently asked question"
-                      className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
-                  </div>
+                      );
+                    },
+                  })}
+                />
 
-                  {errors.faqs?.[index]?.question && (
-                    <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                      {errors.faqs[index].question.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="min-w-0">
-                  <div className="relative">
-                    <label
-                      htmlFor={`faqs.${index}.questionSlug`}
-                      className="absolute -top-2.5 left-3 z-10 bg-[#FDFBF7] px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                    >
-                      Question Slug <span className="text-[#B28B4C]">*</span>
-                    </label>
-
-                    <input
-                      id={`faqs.${index}.questionSlug`}
-                      type="text"
-                      disabled={loading}
-                      {...register(`faqs.${index}.questionSlug`, {
-                        required: "Question slug is required!",
-                      })}
-                      placeholder="question-slug"
-                      className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white px-4 text-sm text-[#806C52] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
-                  </div>
-
-                  <div className="flex justify-between">
-                    {errors.faqs?.[index]?.questionSlug && (
-                      <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                        {errors.faqs[index].questionSlug.message}
-                      </p>
-                    )}
-
-                    <p className="mt-2 ml-auto px-1 text-right text-[10px] font-medium text-[#A29480]">
-                      Automatically generated from question
-                    </p>
-                  </div>
-                </div>
+                <GenericInput
+                  id={`faqs.${index}.questionSlug`}
+                  label="Question Slug"
+                  required
+                  type="text"
+                  disabled={loading}
+                  placeholder="question-slug"
+                  error={errors.faqs?.[index]?.questionSlug?.message}
+                  extraText="Automatically generated from question"
+                  {...register(`faqs.${index}.questionSlug`, {
+                    required: "Question slug is required!",
+                  })}
+                />
 
                 <div className="min-w-0">
                   <div className="relative">

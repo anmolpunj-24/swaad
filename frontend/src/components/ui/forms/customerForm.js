@@ -1,16 +1,9 @@
 import { useForm, Controller } from "react-hook-form";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/confetti.css";
-import {
-  CalendarDays,
-  Check,
-  Phone,
-  ShieldCheck,
-  UserRound,
-} from "lucide-react";
+import { Check, Phone, ShieldCheck, UserRound } from "lucide-react";
 import { useEffect } from "react";
 import GenericInput from "../genericInput";
 import GenericSelect from "../genericSelect";
+import GenericDateTimeInput from "../genericDateTimeInput";
 
 export default function CustomerForm({
   defaultValues = {
@@ -106,55 +99,17 @@ export default function CustomerForm({
             <option value="other">Other</option>
           </GenericSelect>
 
-          <div className="min-w-0">
-            <div className="relative w-full">
-              <label
-                htmlFor="dob"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Date of Birth <span className="text-[#B28B4C]">*</span>
-              </label>
-
-              <div className="relative w-full">
-                <CalendarDays
-                  size={17}
-                  className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[#9B7A43]"
-                />
-
-                <Controller
-                  name="dob"
-                  control={control}
-                  rules={{
-                    required: "Date of birth is required!",
-                  }}
-                  render={({ field }) => (
-                    <Flatpickr
-                      value={field.value}
-                      onChange={(dates) => {
-                        field.onChange(dates[0] || null);
-                      }}
-                      options={{
-                        dateFormat: "Y-m-d",
-                        altInput: true,
-                        altFormat: "F j, Y",
-                        maxDate: "today",
-                        minDate: "1900-01-01",
-                        static: true,
-                      }}
-                      disabled={loading}
-                      className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white pl-11 pr-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
-                  )}
-                />
-              </div>
-            </div>
-
-            {errors.dob && (
-              <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                {errors.dob.message}
-              </p>
-            )}
-          </div>
+          <GenericDateTimeInput
+            id="dob"
+            name="dob"
+            label="Date of Birth"
+            control={control}
+            required
+            disabled={loading}
+            maxDate="today"
+            minDate="1900-01-01"
+            error={errors.dob?.message}
+          />
         </div>
       </div>
 

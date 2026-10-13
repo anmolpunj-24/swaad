@@ -1,3 +1,4 @@
+import GenericInput from "@/components/ui/genericInput";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -48,89 +49,45 @@ export default function ResetPassword() {
             className="flex flex-col gap-7"
             noValidate
           >
-            <div>
-              <div className="relative">
-                <label
-                  htmlFor="newPassword"
-                  className="absolute -top-2.5 left-3 z-10 px-2 text-[0.9rem] font-bold tracking-wide text-[#4B3927]"
-                >
-                  New Password
-                </label>
+            <GenericInput
+              id="newPassword"
+              label="New Password"
+              type={showNewPassword ? "text" : "password"}
+              variant="cream"
+              disabled={isSubmitting}
+              error={errors.newPassword?.message}
+              button={
+                showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />
+              }
+              onButtonClick={() => setShowNewPassword((prev) => !prev)}
+              {...register("newPassword", {
+                required: "New password is required!",
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "Password must contain 8 characters, uppercase, lowercase, number and special character.",
+                },
+              })}
+            />
 
-                <input
-                  id="newPassword"
-                  type={showNewPassword ? "text" : "password"}
-                  disabled={isSubmitting}
-                  {...register("newPassword", {
-                    required: "New password is required!",
-                    pattern: {
-                      value:
-                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                      message:
-                        "Password must contain 8 characters, uppercase, lowercase, number and special character.",
-                    },
-                  })}
-                  className="w-full rounded-xl bg-[#F3E8D0]/70 px-4 py-4 pr-12 text-[#3E3021] outline-none transition-all duration-300 placeholder:text-[#806C52]/50 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowNewPassword((prev) => !prev)}
-                  disabled={isSubmitting}
-                  className="absolute top-1/2 right-4 -translate-y-1/2 text-[#806C52] transition-colors hover:text-[#3E3021]"
-                >
-                  {showNewPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-                </button>
-              </div>
-
-              {errors.newPassword && (
-                <p className="mt-2 px-1 text-[12px] text-[#963F32]">
-                  {errors.newPassword.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <div className="relative">
-                <label
-                  htmlFor="confirmNewPassword"
-                  className="absolute -top-2.5 left-3 z-10 px-2 text-[0.9rem] font-bold tracking-wide text-[#4B3927]"
-                >
-                  Confirm New Password
-                </label>
-
-                <input
-                  id="confirmNewPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  disabled={isSubmitting}
-                  {...register("confirmNewPassword", {
-                    required: "Please confirm your new password!",
-                    validate: (value) =>
-                      value === newPassword || "Passwords do not match!",
-                  })}
-                  className="w-full rounded-xl bg-[#F3E8D0]/70 px-4 py-4 pr-12 text-[#3E3021] outline-none transition-all duration-300 placeholder:text-[#806C52]/50 focus:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60"
-                />
-
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword((prev) => !prev)}
-                  disabled={isSubmitting}
-                  className="absolute top-1/2 right-4 -translate-y-1/2 text-[#806C52] transition-colors hover:text-[#3E3021]"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff size={20} />
-                  ) : (
-                    <Eye size={20} />
-                  )}
-                </button>
-              </div>
-
-              {errors.confirmNewPassword && (
-                <p className="mt-2 px-1 text-[12px] text-[#963F32]">
-                  {errors.confirmNewPassword.message}
-                </p>
-              )}
-            </div>
+            <GenericInput
+              id="confirmNewPassword"
+              label="Confirm New Password"
+              type={showConfirmPassword ? "text" : "password"}
+              variant="cream"
+              disabled={isSubmitting}
+              error={errors.confirmNewPassword?.message}
+              button={
+                showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />
+              }
+              onButtonClick={() => setShowConfirmPassword((prev) => !prev)}
+              {...register("confirmNewPassword", {
+                required: "Please confirm your new password!",
+                validate: (value) =>
+                  value === newPassword || "Passwords do not match!",
+              })}
+            />
 
             <button
               type="submit"

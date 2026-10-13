@@ -58,7 +58,7 @@ export default function EditPageSeo() {
       }
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || "Failed to update page Seo!",
+        error?.response?.data?.message || "Failed to update page seo!",
       );
     } finally {
       setUpdateLoading(false);

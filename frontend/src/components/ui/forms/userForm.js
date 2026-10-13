@@ -1,8 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/themes/confetti.css";
 import {
-  CalendarDays,
   Check,
   Eye,
   EyeOff,
@@ -15,6 +12,7 @@ import {
 import { useState } from "react";
 import GenericInput from "../genericInput";
 import GenericSelect from "../genericSelect";
+import GenericDateTimeInput from "../genericDateTimeInput";
 
 export default function UserForm({
   defaultValues = {
@@ -159,55 +157,17 @@ export default function UserForm({
             <option value="other">Other</option>
           </GenericSelect>
 
-          <div>
-            <div className="relative">
-              <label
-                htmlFor="dob"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Date of Birth <span className="text-[#B28B4C]">*</span>
-              </label>
-
-              <div className="relative">
-                <CalendarDays
-                  size={17}
-                  className="pointer-events-none absolute left-4 top-1/2 z-10 -translate-y-1/2 text-[#9B7A43]"
-                />
-
-                <Controller
-                  name="dob"
-                  control={control}
-                  rules={{
-                    required: "Date of birth is required!",
-                  }}
-                  render={({ field }) => (
-                    <Flatpickr
-                      value={field.value}
-                      onChange={(dates) => {
-                        field.onChange(dates[0] || null);
-                      }}
-                      options={{
-                        dateFormat: "Y-m-d",
-                        altInput: true,
-                        altFormat: "F j, Y",
-                        maxDate: "today",
-                        minDate: "1900-01-01",
-                        static: true,
-                      }}
-                      disabled={loading}
-                      className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white pl-11 pr-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
-                  )}
-                />
-              </div>
-            </div>
-
-            {errors.dob && (
-              <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                {errors.dob.message}
-              </p>
-            )}
-          </div>
+          <GenericDateTimeInput
+            id="dob"
+            name="dob"
+            label="Date of Birth"
+            control={control}
+            required
+            disabled={loading}
+            maxDate="today"
+            minDate="1900-01-01"
+            error={errors.dob?.message}
+          />
         </div>
       </div>
 
@@ -229,52 +189,26 @@ export default function UserForm({
         </div>
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-          <div>
-            <div className="relative">
-              <label
-                htmlFor="password"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Password <span className="text-[#B28B4C]">*</span>
-              </label>
-
-              <LockKeyhole
-                size={17}
-                className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9B7A43]"
-              />
-
-              <input
-                id="password"
-                type={showPassword ? "text" : "password"}
-                disabled={loading}
-                {...register("password", {
-                  required: "Password is required!",
-                  pattern: {
-                    value:
-                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-                    message:
-                      "Password must contain 8+ characters, uppercase, lowercase, number and special character!",
-                  },
-                })}
-                className="h-[52px] w-full rounded-xl border border-[#DDD3C1] bg-white pl-11 pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword((previous) => !previous)}
-                disabled={loading}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52] transition hover:text-[#463421] disabled:cursor-not-allowed"
-              >
-                {showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
-              </button>
-            </div>
-
-            {errors.password && (
-              <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
+          <GenericInput
+            id="password"
+            label="Password"
+            required
+            icon={LockKeyhole}
+            type={showPassword ? "text" : "password"}
+            disabled={loading}
+            error={errors.password?.message}
+            button={showPassword ? <EyeOff size={19} /> : <Eye size={19} />}
+            onButtonClick={() => setShowPassword((previous) => !previous)}
+            {...register("password", {
+              required: "Password is required!",
+              pattern: {
+                value:
+                  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                message:
+                  "Password must contain 8+ characters, uppercase, lowercase, number and special character!",
+              },
+            })}
+          />
 
           <div className="rounded-xl border border-[#E9DFC9] bg-[#FCF8EF] p-4">
             <div className="mb-3 flex items-center gap-2">
