@@ -17,7 +17,7 @@ export default function EditCoupon() {
   useEffect(() => {
     if (!router.isReady || !id) return;
 
-    const oneCoupon = async () => {
+    const oneCouponData = async () => {
       try {
         const res = await couponApi.getOne(id);
 
@@ -35,7 +35,7 @@ export default function EditCoupon() {
       }
     };
 
-    oneCoupon();
+    oneCouponData();
   }, [router.isReady, id]);
 
   const handleCouponUpdate = async (data) => {
@@ -48,7 +48,7 @@ export default function EditCoupon() {
         toast.success(res?.data?.message || "Coupon updated successfully!");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || "Failed to update Coupon!");
+      toast.error(error?.response?.data?.message || "Failed to update coupon!");
     } finally {
       setUpdateLoading(false);
     }
@@ -71,7 +71,6 @@ export default function EditCoupon() {
     [coupon],
   );
 
-  console.log(couponDefaultValues,"def val")
   return (
     <>
       {fetchLoading && <GlobalLoader />}
@@ -92,7 +91,7 @@ export default function EditCoupon() {
             </h1>
 
             <p className="mt-1 text-sm text-[#88765E]">
-              Edit an existing Coupon.
+              Edit an existing toupon.
             </p>
           </div>
         </div>
