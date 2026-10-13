@@ -2,6 +2,7 @@ import CustomTable from "@/components/ui/table/customTable";
 import { customerApi } from "../../../api.service";
 import { useEffect, useState } from "react";
 import { dateHandler } from "@/utils/dateHandler";
+import { toast } from "sonner";
 
 export default function Customers() {
   const [customers, setCustomers] = useState([]);

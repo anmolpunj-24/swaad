@@ -1,6 +1,7 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { userApi } from "../../../api.service";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
@@ -55,7 +56,13 @@ export default function Users() {
         <p className="mt-1 text-sm text-[#6f665d]">All users of SWAAD.</p>
       </div>
 
-      <CustomTable columns={userColumns} data={users} title="Users" addButtonText="Add User" onAdd="/users/add"/>
+      <CustomTable
+        columns={userColumns}
+        data={users}
+        title="Users"
+        addButtonText="Add User"
+        onAdd="/users/add"
+      />
     </>
   );
 }

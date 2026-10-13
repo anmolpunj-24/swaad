@@ -1,6 +1,7 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { tagApi } from "../../../api.service";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function Tags() {
   const [tags, setTags] = useState([]);

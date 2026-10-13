@@ -1,6 +1,7 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { pageSeoApi } from "../../../api.service";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export default function PageSeo() {
   const [pageSeos, setPageSeos] = useState([]);
