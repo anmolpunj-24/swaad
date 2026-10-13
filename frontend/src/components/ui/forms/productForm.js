@@ -19,6 +19,7 @@ import GenericInput from "../genericInput";
 import SectionHeaderProduct from "../sectionHeaderProduct";
 import VariantSectionHeaderProduct from "../variantSectionHeaderProduct";
 import GenericSelect from "../genericSelect";
+import GenericTextarea from "../genericTextArea";
 
 const DEFAULT_PRODUCT_VALUES = {
   name: "",
@@ -819,29 +820,22 @@ export default function ProductForm({
                           />
 
                           <div className="md:col-span-2">
-                            <div className="relative">
-                              <label
-                                htmlFor={`description-${variant.id}`}
-                                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                              >
-                                Description
-                              </label>
-
-                              <textarea
-                                id={`description-${variant.id}`}
-                                rows={6}
-                                value={variant.description}
-                                onChange={(e) =>
-                                  updateVariant(
-                                    variant.id,
-                                    "description",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="Describe this variant..."
-                                className="w-full resize-none rounded-xl border border-[#DDD3C1] bg-white px-4 py-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40"
-                              />
-                            </div>
+                            <GenericTextarea
+                              id={`description-${variant.id}`}
+                              label="Description"
+                              rows={6}
+                              minHeight="160px"
+                              resize="none"
+                              value={variant.description}
+                              onChange={(e) =>
+                                updateVariant(
+                                  variant.id,
+                                  "description",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="Describe this variant..."
+                            />
                           </div>
                         </div>
 
@@ -1059,29 +1053,22 @@ export default function ProductForm({
                               placeholder="SEO title"
                             />
 
-                            <div className="relative">
-                              <label
-                                htmlFor={`meta-description-${variant.id}`}
-                                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                              >
-                                Meta Description
-                              </label>
-
-                              <textarea
-                                id={`meta-description-${variant.id}`}
-                                rows={4}
-                                value={variant.seo.metaDescription}
-                                onChange={(e) =>
-                                  updateVariantSeo(
-                                    variant.id,
-                                    "metaDescription",
-                                    e.target.value,
-                                  )
-                                }
-                                placeholder="Describe this variant for search engines..."
-                                className="w-full resize-none rounded-xl border border-[#DDD3C1] bg-white px-4 py-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40"
-                              />
-                            </div>
+                            <GenericTextarea
+                              id={`meta-description-${variant.id}`}
+                              label="Meta Description"
+                              rows={4}
+                              minHeight="110px"
+                              resize="none"
+                              value={variant.seo.metaDescription}
+                              onChange={(e) =>
+                                updateVariantSeo(
+                                  variant.id,
+                                  "metaDescription",
+                                  e.target.value,
+                                )
+                              }
+                              placeholder="Describe this variant for search engines..."
+                            />
 
                             <GenericInput
                               id={`meta-keywords-${variant.id}`}

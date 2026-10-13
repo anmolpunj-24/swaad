@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { Check, FileText, Search, ShieldCheck } from "lucide-react";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import GenericInput from "../genericInput";
+import GenericTextarea from "../genericTextArea";
 
 export default function PageSeoForm({
   defaultValues = {
@@ -128,25 +129,16 @@ export default function PageSeoForm({
             {...register("metaTitle")}
           />
 
-          <div className="min-w-0">
-            <div className="relative">
-              <label
-                htmlFor="metaDescription"
-                className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-              >
-                Meta Description
-              </label>
-
-              <textarea
-                id="metaDescription"
-                rows={5}
-                disabled={loading}
-                {...register("metaDescription")}
-                placeholder="Enter meta description"
-                className="min-h-[130px] w-full resize-none rounded-xl border border-[#DDD3C1] bg-white px-4 py-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-              />
-            </div>
-          </div>
+          <GenericTextarea
+            id="metaDescription"
+            label="Meta Description"
+            register={register("metaDescription")}
+            placeholder="Enter meta description"
+            rows={5}
+            disabled={loading}
+            minHeight="130px"
+            resize="none"
+          />
 
           <GenericInput
             id="metaKeywords"

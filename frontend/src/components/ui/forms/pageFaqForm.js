@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import GenericInput from "../genericInput";
+import GenericTextarea from "../genericTextArea";
 
 export default function PageFaqForm({
   defaultValues = {
@@ -208,29 +209,18 @@ export default function PageFaqForm({
                   })}
                 />
 
-                <div className="min-w-0">
-                  <div className="relative">
-                    <label
-                      htmlFor={`faqs.${index}.answer`}
-                      className="absolute -top-2.5 left-3 z-10 bg-[#FDFBF7] px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                    >
-                      Answer
-                    </label>
-
-                    <textarea
-                      id={`faqs.${index}.answer`}
-                      rows={6}
-                      disabled={loading}
-                      {...register(`faqs.${index}.answer`)}
-                      placeholder="Enter the answer to this question"
-                      className="min-h-[160px] w-full resize-none rounded-xl border border-[#DDD3C1] bg-white px-4 py-4 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                    />
-                  </div>
-
-                  <p className="mt-2 px-1 text-[10px] font-medium text-[#A29480]">
-                    Provide a clear and helpful answer for customers.
-                  </p>
-                </div>
+                <GenericTextarea
+                  id={`faqs.${index}.answer`}
+                  label="Answer"
+                  register={register(`faqs.${index}.answer`)}
+                  placeholder="Enter the answer to this question"
+                  rows={6}
+                  minHeight="160px"
+                  resize="none"
+                  labelBackground="#FDFBF7"
+                  disabled={loading}
+                  helperText="Provide a clear and helpful answer for customers."
+                />
 
                 <div className="border-t border-[#ECE4D6] pt-6">
                   <div className="mb-4 flex items-start gap-4">
