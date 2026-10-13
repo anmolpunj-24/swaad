@@ -1,4 +1,4 @@
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, LoaderCircle } from "lucide-react";
 
 export default function GenericSelect({
   id,
@@ -6,11 +6,12 @@ export default function GenericSelect({
   required,
   error,
   icon: Icon,
+  loading = false,
   children,
   ...props
 }) {
   return (
-    <div>
+    <div className="min-w-0">
       <div className="relative">
         <label
           htmlFor={id}
@@ -29,15 +30,22 @@ export default function GenericSelect({
         <select
           id={id}
           {...props}
-          className="h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white pl-11 pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
+          className={`h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white ${Icon ? "pl-11" : "pl-5"} pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60`}
         >
           {children}
         </select>
 
-        <ChevronDown
-          size={17}
-          className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52]"
-        />
+        {loading ? (
+          <LoaderCircle
+            size={18}
+            className="absolute right-4 top-1/2 -translate-y-1/2 animate-spin text-[#806C52]"
+          />
+        ) : (
+          <ChevronDown
+            size={17}
+            className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52]"
+          />
+        )}
       </div>
 
       {error && (

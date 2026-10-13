@@ -12,13 +12,13 @@ import {
   Tag,
   Trash2,
   Upload,
-  LoaderCircle,
 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import GenericInput from "../genericInput";
 import SectionHeaderProduct from "../sectionHeaderProduct";
 import VariantSectionHeaderProduct from "../variantSectionHeaderProduct";
+import GenericSelect from "../genericSelect";
 
 const DEFAULT_PRODUCT_VALUES = {
   name: "",
@@ -534,76 +534,47 @@ export default function ProductForm({
                       placeholder="product-slug"
                     />
 
-                    <div className="min-w-0">
-                      <div className="relative">
-                        <label
-                          htmlFor="categoryId"
-                          className="absolute -top-2.5 left-3 z-10 bg-[#FDFBF7] px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                        >
-                          Category <span className="text-[#B28B4C]">*</span>
-                        </label>
+                    <GenericSelect
+                      id="categoryId"
+                      label="Category"
+                      required
+                      disabled={loading}
+                      loading={categoryLoading}
+                      error={errors.categoryId?.message}
+                      {...register("categoryId", {
+                        required: "Category is required!",
+                        onChange: (e) => {
+                          const selectedCategory = categories.find(
+                            (category) => category._id === e.target.value,
+                          );
 
-                        <div className="relative">
-                          <select
-                            id="categoryId"
-                            disabled={loading}
-                            {...register("categoryId", {
-                              required: "Category is required!",
+                          setValue("categoryId", e.target.value, {
+                            shouldValidate: true,
+                            shouldDirty: true,
+                          });
 
-                              onChange: (e) => {
-                                const selectedCategory = categories.find(
-                                  (category) => category._id === e.target.value,
-                                );
+                          setValue(
+                            "categoryName",
+                            selectedCategory?.name || "",
+                            {
+                              shouldValidate: true,
+                              shouldDirty: true,
+                            },
+                          );
+                        },
+                      })}
+                      onMouseDown={handleCategoryFocus}
+                    >
+                      <option value="" disabled>
+                        Select category
+                      </option>
 
-                                setValue("categoryId", e.target.value, {
-                                  shouldValidate: true,
-                                  shouldDirty: true,
-                                });
-
-                                setValue(
-                                  "categoryName",
-                                  selectedCategory?.name || "",
-                                  {
-                                    shouldValidate: true,
-                                    shouldDirty: true,
-                                  },
-                                );
-                              },
-                            })}
-                            onMouseDown={handleCategoryFocus}
-                            className="h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white px-4 pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 hover:cursor-pointer"
-                          >
-                            <option value="" disabled>
-                              Select category
-                            </option>
-
-                            {categories.map((item) => (
-                              <option key={item._id} value={item._id}>
-                                {item.name}
-                              </option>
-                            ))}
-                          </select>
-
-                          {categoryLoading ? (
-                            <LoaderCircle
-                              size={18}
-                              className="absolute right-4 top-1/2 -translate-y-1/2 animate-spin text-[#806C52]"
-                            />
-                          ) : (
-                            <ChevronDown
-                              size={18}
-                              className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52]"
-                            />
-                          )}
-                        </div>
-                      </div>
-
-                      {errors.categoryId && (
-                        <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                          {errors.categoryId.message}
-                        </p>
-                      )}
-                    </div>
+                      {categories.map((item) => (
+                        <option key={item._id} value={item._id}>
+                          {item.name}
+                        </option>
+                      ))}
+                    </GenericSelect>
                   </div>
                 </div>
 
@@ -785,41 +756,24 @@ export default function ProductForm({
                               placeholder="Enter size"
                             />
 
-                            <div className="min-w-0">
-                              <div className="relative">
-                                <label
-                                  htmlFor={`unit-${variant.id}`}
-                                  className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                                >
-                                  Unit <span className="text-[#B28B4C]">*</span>
-                                </label>
-
-                                <div className="relative">
-                                  <select
-                                    id={`unit-${variant.id}`}
-                                    value={variant.unit}
-                                    onChange={(e) =>
-                                      updateVariant(
-                                        variant.id,
-                                        "unit",
-                                        e.target.value,
-                                      )
-                                    }
-                                    className="h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white px-4 pr-10 text-sm text-[#4B3A29] outline-none transition focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40"
-                                  >
-                                    <option value="g">g</option>
-                                    <option value="kg">kg</option>
-                                    <option value="ml">ml</option>
-                                    <option value="L">L</option>
-                                  </select>
-
-                                  <ChevronDown
-                                    size={18}
-                                    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#806C52]"
-                                  />
-                                </div>
-                              </div>
-                            </div>
+                            <GenericSelect
+                              id={`unit-${variant.id}`}
+                              label="Unit"
+                              required
+                              value={variant.unit}
+                              onChange={(e) =>
+                                updateVariant(
+                                  variant.id,
+                                  "unit",
+                                  e.target.value,
+                                )
+                              }
+                            >
+                              <option value="g">g</option>
+                              <option value="kg">kg</option>
+                              <option value="ml">ml</option>
+                              <option value="L">L</option>
+                            </GenericSelect>
                           </div>
 
                           <GenericInput

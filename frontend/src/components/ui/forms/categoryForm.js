@@ -3,6 +3,7 @@ import { Check, ChevronDown, FolderTree, ShieldCheck, Tag } from "lucide-react";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import { useEffect } from "react";
 import GenericInput from "../genericInput";
+import GenericSelect from "../genericSelect";
 
 export default function CategoryForm({
   defaultValues = {
@@ -196,61 +197,36 @@ export default function CategoryForm({
           </div>
 
           {!isParent && (
-            <div className="min-w-0">
-              <div className="relative">
-                <label
-                  htmlFor="parentId"
-                  className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
-                >
-                  Parent Category <span className="text-[#B28B4C]">*</span>
-                </label>
+            <GenericSelect
+              id="parentId"
+              label="Parent Category"
+              required
+              disabled={loading}
+              error={errors.parentId?.message}
+              {...register("parentId", {
+                required: !isParent ? "Parent category is required!" : false,
+                onChange: (e) => {
+                  const selectedCategory = categories.find(
+                    (category) => category._id === e.target.value,
+                  );
 
-                <div className="relative">
-                  <select
-                    id="parentId"
-                    disabled={loading}
-                    {...register("parentId", {
-                      required: !isParent
-                        ? "Parent category is required!"
-                        : false,
+                  setValue("parentName", selectedCategory?.name || "");
+                },
+              })}
+              onFocus={handleCategoryDropdownOpen}
+            >
+              <option value="" disabled>
+                Select parent category
+              </option>
 
-                      onChange: (e) => {
-                        const selectedCategory = categories.find(
-                          (category) => category._id === e.target.value,
-                        );
-
-                        setValue("parentName", selectedCategory?.name || "");
-                      },
-                    })}
-                    onFocus={handleCategoryDropdownOpen}
-                    className="h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white px-4 pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60"
-                  >
-                    <option value="" disabled>
-                      Select parent category
-                    </option>
-
-                    {categories
-                      ?.filter((item) => item._id !== currentCategoryId)
-                      .map((item) => (
-                        <option key={item._id} value={item._id}>
-                          {item.name}
-                        </option>
-                      ))}
-                  </select>
-
-                  <ChevronDown
-                    size={18}
-                    className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#806C52]"
-                  />
-                </div>
-              </div>
-
-              {errors.parentId && (
-                <p className="mt-2 px-1 text-[12px] font-medium text-[#963F32]">
-                  {errors.parentId.message}
-                </p>
-              )}
-            </div>
+              {categories
+                ?.filter((item) => item._id !== currentCategoryId)
+                .map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.name}
+                  </option>
+                ))}
+            </GenericSelect>
           )}
         </div>
       </div>
