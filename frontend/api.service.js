@@ -315,6 +315,33 @@ const couponApi = {
   delete: async () => {},
 };
 
+const blogApi = {
+  add: async (blogData) => {
+    const response = await api.post("/api/admin/blog/add", blogData);
+    return response;
+  },
+
+  getAll: async () => {
+    const response = await api.get("/api/admin/blog/getAll");
+    return response;
+  },
+
+  getOne: async (id) => {
+    const response = await api.get(`/api/admin/blog/get/${id}`);
+    return response;
+  },
+
+  update: async (id, updateBlogData) => {
+    const response = await api.put(
+      `/api/admin/blog/update/${id}`,
+      updateBlogData,
+    );
+    return response;
+  },
+
+  delete: async () => {},
+};
+
 export {
   adminAuthApi,
   userApi,
@@ -327,4 +354,5 @@ export {
   orderApi,
   tagApi,
   couponApi,
+  blogApi,
 };
