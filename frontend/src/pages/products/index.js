@@ -60,6 +60,11 @@ export default function Products() {
       label: "Edit",
       link: `/products/edit/${row._id}`,
     },
+    {
+      type: "view",
+      label: "View",
+      link: `/products/${row._id}`,
+    },
   ];
 
   return (

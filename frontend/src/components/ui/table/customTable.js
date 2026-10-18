@@ -2,7 +2,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 import TableBody from "./tableBody";
 import TableHeader from "./tableHeader";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function CustomTable({
   columns = [],
@@ -16,12 +16,39 @@ export default function CustomTable({
 
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchValue, setSearchValue] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const totalPages = Math.ceil((data?.length || 0) / rowsPerPage);
+  const filteredData = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) return data;
+
+    return data.filter((item) =>
+      columns.some((column) => {
+        const value = column.key
+          .split(".")
+          .reduce((current, key) => current?.[key], item);
+
+        return String(value ?? "")
+          .toLowerCase()
+          .includes(query);
+      }),
+    );
+  }, [data, columns, searchQuery]);
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   const startIndex = (currentPage - 1) * rowsPerPage;
 
-  const paginatedData = data?.slice(startIndex, startIndex + rowsPerPage);
+  const paginatedData = filteredData.slice(
+    startIndex,
+    startIndex + rowsPerPage,
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, rowsPerPage]);
 
   const getPaginationPages = () => {
     if (totalPages <= 5) {
@@ -61,9 +88,16 @@ export default function CustomTable({
       <div className="w-full overflow-hidden rounded-2xl border border-[#9B7A43]/20 bg-[#FFF8E7] shadow-sm">
         <TableHeader
           title={title}
-          total={data.length}
-          searchValue=""
-          onSearch={(value) => console.log("Search:", value)}
+          total={filteredData.length}
+          searchValue={searchValue}
+          onSearch={(value) => {
+            setSearchValue(value);
+
+            if (!value.trim()) {
+              setSearchQuery("");
+            }
+          }}
+          onSearchSubmit={() => setSearchQuery(searchValue)}
           onAdd={() => router.push(onAdd)}
           addButtonText={addButtonText}
         />
@@ -104,10 +138,7 @@ export default function CustomTable({
 
           <select
             value={rowsPerPage}
-            onChange={(e) => {
-              setRowsPerPage(Number(e.target.value));
-              setCurrentPage(1);
-            }}
+            onChange={(e) => setRowsPerPage(Number(e.target.value))}
             className="h-9 rounded-lg border border-[#E5DED2] bg-white px-3 text-sm font-medium text-[#665A4B] outline-none transition-colors focus:border-[#9B7A43] focus:ring-1 focus:ring-[#9B7A43]/20"
           >
             <option value={10}>10</option>
@@ -120,8 +151,8 @@ export default function CustomTable({
         <div className="flex items-center gap-1.5">
           <button
             type="button"
-            onClick={() => setCurrentPage((prev) => prev - 1)}
-            disabled={currentPage === 1}
+            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+            disabled={currentPage === 1 || totalPages === 0}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5DED2] text-[#766B5F] transition-colors hover:bg-[#F3E8D0] hover:text-[#665A4B] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronLeft size={16} />
@@ -150,8 +181,10 @@ export default function CustomTable({
 
           <button
             type="button"
-            onClick={() => setCurrentPage((prev) => prev + 1)}
-            disabled={currentPage === totalPages || totalPages === 0}
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(totalPages, prev + 1))
+            }
+            disabled={currentPage >= totalPages || totalPages === 0}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-[#E5DED2] text-[#766B5F] transition-colors hover:bg-[#F3E8D0] hover:text-[#665A4B] disabled:cursor-not-allowed disabled:opacity-40"
           >
             <ChevronRight size={16} />

@@ -5,6 +5,7 @@ export default function TableHeader({
   total = 0,
   searchValue = "",
   onSearch,
+  onSearchSubmit,
   onAdd,
   addButtonText,
 }) {
@@ -20,26 +21,37 @@ export default function TableHeader({
         </div>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <div className="relative">
-            <Search
-              size={18}
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#806C52]"
-            />
+          <form
+            className="w-full sm:w-auto"
+            onSubmit={(e) => {
+              e.preventDefault();
+              onSearchSubmit?.();
+            }}
+          >
+            <div className="relative">
+              <input
+                type="text"
+                value={searchValue}
+                onChange={(e) => onSearch?.(e.target.value)}
+                placeholder={`Search ${title.toLowerCase()}...`}
+                className="w-full rounded-full border border-[#DDD3C1] bg-[#F3E8D0]/50 py-2.5 pl-4 pr-12 text-sm text-[#3E3021] outline-none transition-all duration-200 placeholder:text-[#806C52]/60 focus:border-[#B28B4C] focus:bg-[#F3E8D0] sm:w-64"
+              />
 
-            <input
-              type="text"
-              value={searchValue}
-              onChange={(e) => onSearch?.(e.target.value)}
-              placeholder={`Search ${title.toLowerCase()}...`}
-              className="w-full rounded-full bg-[#F3E8D0]/50 py-2.5 pl-10 pr-4 text-sm text-[#3E3021] outline-none transition-all duration-200 placeholder:text-[#806C52]/60 focus:bg-[#F3E8D0] sm:w-64"
-            />
-          </div>
+              <button
+                type="submit"
+                aria-label={`Search ${title.toLowerCase()}`}
+                className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-[#463421] text-[#FFF8E7] transition-colors hover:bg-[#59432C]"
+              >
+                <Search size={16} />
+              </button>
+            </div>
+          </form>
 
           {addButtonText && (
             <button
               type="button"
               onClick={onAdd}
-              className="flex items-center justify-center gap-2 rounded-full bg-[#463421] px-5 py-2.5 text-sm font-medium tracking-wide text-[#FFF8E7] transition-all duration-200 hover:bg-[#59432C] hover:cursor-pointer"
+              className="flex items-center justify-center gap-2 rounded-full bg-[#463421] px-5 py-2.5 text-sm font-medium tracking-wide text-[#FFF8E7] transition-all duration-200 hover:cursor-pointer hover:bg-[#59432C]"
             >
               {addButtonText}
             </button>
