@@ -50,6 +50,14 @@ export default function PageSeo() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/page-seo/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -64,6 +72,7 @@ export default function PageSeo() {
         title="SEO Pages"
         addButtonText="Add SEO Page"
         onAdd="/page-seo/add"
+        actions={actionsData}
       />
     </>
   );

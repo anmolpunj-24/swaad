@@ -54,6 +54,14 @@ export default function Products() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/products/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -68,6 +76,7 @@ export default function Products() {
         title="Products"
         addButtonText="Add Product"
         onAdd="/products/add"
+        actions={actionsData}
       />
     </>
   );

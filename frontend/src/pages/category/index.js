@@ -54,6 +54,14 @@ export default function Category() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/category/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -68,6 +76,7 @@ export default function Category() {
         title="Categories"
         addButtonText="Add Category"
         onAdd="/category/add"
+        actions={actionsData}
       />
     </>
   );

@@ -50,6 +50,14 @@ export default function PageFaq() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/page-faq/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -64,6 +72,7 @@ export default function PageFaq() {
         title="FAQ Pages"
         addButtonText="Add FAQ Page"
         onAdd="/page-faq/add"
+        actions={actionsData}
       />
     </>
   );

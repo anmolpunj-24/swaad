@@ -67,6 +67,14 @@ export default function Customers() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "delete",
+      label: "Delete",
+      link: ``,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -79,8 +87,7 @@ export default function Customers() {
         columns={customerColumns}
         data={customers}
         title="Customers"
-        addButtonText="Add Customer"
-        onAdd="/customers/add"
+        actions={actionsData}
       />
     </>
   );

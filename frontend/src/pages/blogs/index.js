@@ -122,6 +122,14 @@ export default function Blogs() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/blogs/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -136,6 +144,7 @@ export default function Blogs() {
         title="Blogs"
         addButtonText="Add Blog"
         onAdd="/blogs/add"
+        actions={actionsData}
       />
     </>
   );

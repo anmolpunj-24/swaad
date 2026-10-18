@@ -48,6 +48,14 @@ export default function Tags() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/tags/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -62,6 +70,7 @@ export default function Tags() {
         title="Tags"
         addButtonText="Add Tag"
         onAdd="/tags/add"
+        actions={actionsData}
       />
     </>
   );

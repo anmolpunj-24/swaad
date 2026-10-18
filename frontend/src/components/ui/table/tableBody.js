@@ -1,11 +1,6 @@
 import ActionButtons from "./actionButtons";
 
-export default function TableBody({
-  columns = [],
-  data = [],
-  actions = [],
-  onAction,
-}) {
+export default function TableBody({ columns = [], data = [], actions = [] }) {
   return (
     <tbody>
       {data.length > 0 ? (
@@ -29,9 +24,9 @@ export default function TableBody({
             {actions.length > 0 && (
               <td className="px-5 py-4">
                 <ActionButtons
-                  actions={actions}
-                  row={row}
-                  onAction={onAction}
+                  actions={
+                    typeof actions === "function" ? actions(row) : actions
+                  }
                 />
               </td>
             )}

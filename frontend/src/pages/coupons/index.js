@@ -80,6 +80,14 @@ export default function Coupons() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "edit",
+      label: "Edit",
+      link: `/coupons/edit/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -94,6 +102,7 @@ export default function Coupons() {
         title="Coupons"
         addButtonText="Add Coupon"
         onAdd="/coupons/add"
+        actions={actionsData}
       />
     </>
   );

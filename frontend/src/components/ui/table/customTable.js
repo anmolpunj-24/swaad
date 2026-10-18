@@ -8,7 +8,6 @@ export default function CustomTable({
   columns = [],
   data = [],
   actions = [],
-  onAction,
   addButtonText,
   title,
   onAdd,
@@ -23,26 +22,6 @@ export default function CustomTable({
   const startIndex = (currentPage - 1) * rowsPerPage;
 
   const paginatedData = data?.slice(startIndex, startIndex + rowsPerPage);
-
-  // Dummy actions for now
-  const dummyActions = [
-    {
-      type: "view",
-      label: "View",
-    },
-    {
-      type: "edit",
-      label: "Edit",
-    },
-    {
-      type: "delete",
-      label: "Delete",
-    },
-    {
-      type: "info",
-      label: "Info",
-    },
-  ];
 
   const getPaginationPages = () => {
     if (totalPages <= 5) {
@@ -102,7 +81,7 @@ export default function CustomTable({
                   </th>
                 ))}
 
-                {dummyActions.length > 0 && (
+                {actions.length > 0 && (
                   <th className="px-5 py-4 text-left text-xs font-bold uppercase tracking-wider text-[#4B3927]">
                     Actions
                   </th>
@@ -113,8 +92,7 @@ export default function CustomTable({
             <TableBody
               columns={columns}
               data={paginatedData}
-              actions={dummyActions}
-              onAction={(action, row) => {}}
+              actions={actions}
             />
           </table>
         </div>

@@ -150,6 +150,14 @@ export default function Orders() {
     },
   ];
 
+   const actionsData = (row) => [
+    {
+      type: "view",
+      label: "View",
+      link: `/orders/${row._id}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -160,7 +168,12 @@ export default function Orders() {
         </p>
       </div>
 
-      <CustomTable columns={ordersColumns} data={orders} title="Orders" />
+      <CustomTable
+        columns={ordersColumns}
+        data={orders}
+        title="Orders"
+        actions={actionsData}
+      />
     </>
   );
 }
