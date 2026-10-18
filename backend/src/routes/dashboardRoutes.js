@@ -6,7 +6,7 @@ const dashboardController = require("../controllers/admins/dashboardController")
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 
 routes.get(
-  "/get",
+  "",
   authenticateUserMiddleware,
   dashboardController.getDashboardData,
 );

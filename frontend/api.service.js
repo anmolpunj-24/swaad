@@ -49,6 +49,14 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+export const dashboardApi = async (month, year) => {
+  const response = await api.get("/api/admin/dashboard", {
+    params: { month, year },
+  });
+
+  return response;
+};
+
 const adminAuthApi = {
   login: async (loginData) => {
     const response = await api.post(`/api/admin/login`, loginData);
@@ -355,4 +363,5 @@ export {
   tagApi,
   couponApi,
   blogApi,
+  dashboardApi,
 };

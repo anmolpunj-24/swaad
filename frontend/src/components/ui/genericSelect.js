@@ -8,14 +8,23 @@ export default function GenericSelect({
   icon: Icon,
   loading = false,
   children,
+  variant = "default",
   ...props
 }) {
+  const isCream = variant === "cream";
+
   return (
     <div className="min-w-0">
       <div className="relative">
         <label
           htmlFor={id}
-          className="absolute -top-2.5 left-3 z-10 bg-white px-2 text-[12px] font-bold tracking-wide text-[#66533C]"
+          className={`absolute -top-2.5 left-3 z-10 font-bold tracking-wide px-2 text-[12px] 
+            ${
+              isCream
+                ? "bg-[#fff8e7] text-[#4B3927]"
+                : " bg-white text-[#66533C]"
+            }
+           `}
         >
           {label} {required && <span className="text-[#B28B4C]">*</span>}
         </label>
@@ -30,7 +39,7 @@ export default function GenericSelect({
         <select
           id={id}
           {...props}
-          className={`h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] bg-white ${Icon ? "pl-11" : "pl-5"} pr-12 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60`}
+          className={`h-[52px] w-full appearance-none rounded-xl border border-[#DDD3C1] ${Icon ? "pl-11" : "pl-5"} pr-12 text-sm ${isCream ? "bg-[#fff8e7] text-[#4B3927]" : "bg-white text-[#4B3A29]"}  outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60`}
         >
           {children}
         </select>

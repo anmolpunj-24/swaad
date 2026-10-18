@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Users,
   Package,
@@ -5,40 +6,89 @@ import {
   IndianRupee,
   Plus,
   FolderPlus,
-  FileText,
   UserPlus,
-  TrendingUp,
   Clock3,
   CheckCircle2,
   XCircle,
   ScanSearch,
+  Truck,
+  RefreshCcw,
 } from "lucide-react";
+import { dashboardApi } from "../../api.service";
 import Link from "next/link";
+import { toast } from "sonner";
+import GenericSelect from "@/components/ui/genericSelect";
 
 export default function Dashboard() {
+  const currentDate = new Date();
+
+  const [selectedMonth, setSelectedMonth] = useState(
+    String(currentDate.getMonth() + 1),
+  );
+  const [selectedYear, setSelectedYear] = useState(
+    String(currentDate.getFullYear()),
+  );
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const months = [
+    { label: "January", value: "1" },
+    { label: "February", value: "2" },
+    { label: "March", value: "3" },
+    { label: "April", value: "4" },
+    { label: "May", value: "5" },
+    { label: "June", value: "6" },
+    { label: "July", value: "7" },
+    { label: "August", value: "8" },
+    { label: "September", value: "9" },
+    { label: "October", value: "10" },
+    { label: "November", value: "11" },
+    { label: "December", value: "12" },
+  ];
+
+  const years = Array.from(
+    { length: 6 },
+    (_, index) => currentDate.getFullYear() - index,
+  );
+
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+
+      try {
+        const response = await dashboardApi(selectedMonth, selectedYear);
+        setDashboardData(response.data.data);
+      } catch (error) {
+        toast.error("Unable to load dashboard data. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, [selectedMonth, selectedYear]);
+  const summary = dashboardData?.summary;
+  const monthlyOrders = dashboardData?.monthlyOrders;
+
   const stats = [
     {
       title: "Total Customers",
-      value: "1,248",
-      change: "+12.4%",
+      value: summary?.totalCustomers ?? 0,
       icon: Users,
     },
     {
       title: "Total Products",
-      value: "86",
-      change: "+5.2%",
+      value: summary?.totalProducts ?? 0,
       icon: Package,
     },
     {
       title: "Total Orders",
-      value: "342",
-      change: "+18.2%",
+      value: summary?.totalOrders ?? 0,
       icon: ShoppingCart,
     },
     {
-      title: "Total Revenue",
-      value: "₹1,84,500",
-      change: "+21.5%",
+      title: "Delivered Orders",
+      value: monthlyOrders?.delivered ?? 0,
       icon: IndianRupee,
     },
   ];
@@ -53,25 +103,41 @@ export default function Dashboard() {
   const orderStats = [
     {
       title: "Completed",
-      value: 246,
+      value: monthlyOrders?.delivered ?? 0,
       icon: CheckCircle2,
     },
     {
       title: "Processing",
-      value: 42,
+      value: monthlyOrders?.processing ?? 0,
       icon: Clock3,
     },
     {
       title: "Pending",
-      value: 36,
+      value: monthlyOrders?.pending ?? 0,
       icon: Clock3,
     },
     {
+      title: "Shipped",
+      value: monthlyOrders?.shipped ?? 0,
+      icon: Truck,
+    },
+    {
       title: "Cancelled",
-      value: 18,
+      value: monthlyOrders?.cancelled ?? 0,
       icon: XCircle,
     },
+    {
+      title: "Returned",
+      value: monthlyOrders?.returned ?? 0,
+      icon: RefreshCcw,
+    },
   ];
+
+  const salesOverview = dashboardData?.salesOverview ?? [];
+  const maxOrders = Math.max(
+    ...salesOverview.map((item) => item.totalOrders),
+    1,
+  );
 
   return (
     <div className="space-y-7">
@@ -101,21 +167,13 @@ export default function Dashboard() {
                   </p>
 
                   <h2 className="mt-2 text-2xl font-bold tracking-wide text-[#4B3927]">
-                    {stat.value}
+                    {loading ? "..." : stat.value.toLocaleString("en-IN")}
                   </h2>
                 </div>
 
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#F3E8D0] text-[#806C52] transition-all duration-300 group-hover:bg-[#9B7A43]/20">
                   <Icon size={21} />
                 </div>
-              </div>
-
-              <div className="mt-4 flex items-center gap-1.5 text-xs font-semibold text-[#806C52]">
-                <TrendingUp size={14} />
-                <span>{stat.change}</span>
-                <span className="font-normal text-[#806C52]/60">
-                  from last month
-                </span>
               </div>
             </div>
           );
@@ -156,53 +214,97 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-3">
         <div className="rounded-2xl border border-[#9B7A43]/20 bg-[#FFF8E7] p-5 shadow-sm lg:col-span-2">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <h2 className="text-lg font-bold tracking-wide text-[#4B3927]">
                 Sales Overview
               </h2>
 
               <p className="mt-1 text-xs text-[#806C52]">
-                Monthly sales performance
+                Daily orders, excluding cancelled and returned orders
               </p>
             </div>
 
-            <span className="rounded-full bg-[#9B7A43]/15 px-3 py-1 text-xs font-semibold text-[#806C52]">
-              This Year
-            </span>
+            <div className="grid w-full grid-cols-2 gap-3 sm:w-[280px]">
+              <GenericSelect
+                id="dashboard-month"
+                variant="cream"
+                label="Month"
+                value={selectedMonth}
+                onChange={(event) => setSelectedMonth(event.target.value)}
+              >
+                {months.map((month) => (
+                  <option key={month.value} value={month.value}>
+                    {month.label}
+                  </option>
+                ))}
+              </GenericSelect>
+
+              <GenericSelect
+                id="dashboard-year"
+                variant="cream"
+                label="Year"
+                value={selectedYear}
+                onChange={(event) => setSelectedYear(event.target.value)}
+              >
+                {years.map((year) => (
+                  <option key={year} value={String(year)}>
+                    {year}
+                  </option>
+                ))}
+              </GenericSelect>
+            </div>
           </div>
 
-          <div className="mt-7 flex h-64 items-end gap-3 border-b border-[#9B7A43]/20 px-2 pb-0">
-            {[45, 60, 52, 72, 64, 82, 68, 91, 76, 88, 79, 96].map(
-              (height, index) => (
-                <div key={index} className="group flex h-full flex-1 items-end">
-                  <div
-                    className="w-full rounded-t-lg bg-[#9B7A43]/60 transition-all duration-300 group-hover:bg-[#463421]"
-                    style={{ height: `${height}%` }}
-                  />
-                </div>
-              ),
-            )}
-          </div>
+          {loading ? (
+            <div className="flex h-64 items-center justify-center text-sm text-[#806C52]">
+              Loading sales overview...
+            </div>
+          ) : salesOverview.length === 0 ? (
+            <div className="flex h-64 items-center justify-center text-sm text-[#806C52]">
+              No order data available for this month.
+            </div>
+          ) : (
+            <>
+              <div className="mt-7 flex h-64 items-end gap-2 overflow-x-auto border-b border-[#9B7A43]/20 px-2 pb-0">
+                {salesOverview.map((item) => {
+                  const height = Math.max(
+                    (item.totalOrders / maxOrders) * 100,
+                    3,
+                  );
 
-          <div className="mt-3 flex justify-between px-1 text-[10px] text-[#806C52]/70">
-            {[
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-              "Dec",
-            ].map((month) => (
-              <span key={month}>{month}</span>
-            ))}
-          </div>
+                  return (
+                    <div
+                      key={item.date}
+                      className="group flex h-full min-w-5 flex-1 items-end"
+                      title={`${item.date}: ${item.totalOrders} orders | ${item.shipped} shipped | ${item.delivered} delivered`}
+                    >
+                      <div
+                        className="w-full rounded-t-lg bg-[#9B7A43]/60 transition-all duration-300 group-hover:bg-[#463421]"
+                        style={{ height: `${height}%` }}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="mt-3 flex gap-2 overflow-x-auto px-1 text-[10px] text-[#806C52]/70">
+                {salesOverview.map((item) => (
+                  <span key={item.date} className="min-w-5 flex-1 text-center">
+                    {new Date(`${item.date}T12:00:00`).getDate()}
+                  </span>
+                ))}
+              </div>
+
+              <div className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-xs text-[#806C52]">
+                <span>
+                  <span className="mr-1.5 inline-block h-2.5 w-2.5 rounded-sm bg-[#9B7A43]/60" />
+                  Total orders
+                </span>
+                <span>Hover over a bar for order details</span>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="rounded-2xl border border-[#9B7A43]/20 bg-[#FFF8E7] p-5 shadow-sm">
@@ -210,8 +312,11 @@ export default function Dashboard() {
             <h2 className="text-lg font-bold tracking-wide text-[#4B3927]">
               Order Summary
             </h2>
-
-            <p className="mt-1 text-xs text-[#806C52]">Current order status</p>
+            <p className="mt-1 text-xs text-[#806C52]">
+              Orders for{" "}
+              {months.find((month) => month.value === selectedMonth)?.label}{" "}
+              {selectedYear}
+            </p>
           </div>
 
           <div className="mt-6 space-y-4">
@@ -232,7 +337,7 @@ export default function Dashboard() {
                   </div>
 
                   <span className="text-sm font-bold text-[#806C52]">
-                    {order.value}
+                    {loading ? "..." : order.value}
                   </span>
                 </div>
               );
@@ -242,10 +347,12 @@ export default function Dashboard() {
           <div className="mt-5 border-t border-[#9B7A43]/20 pt-4">
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-[#806C52]">
-                Total Orders
+                Total Orders for Selected Month
               </span>
 
-              <span className="text-lg font-bold text-[#4B3927]">342</span>
+              <span className="text-lg font-bold text-[#4B3927]">
+                {loading ? "..." : (monthlyOrders?.total ?? 0)}
+              </span>
             </div>
           </div>
         </div>

@@ -10,14 +10,17 @@ const useAuth = (requireAuth = false) => {
   const [authenticated, setAuthenticated] = useState(false);
 
   useEffect(() => {
+    if (!router.isReady) return;
+
     const checkAuth = async () => {
       const token = localStorage.getItem("accessToken");
+      const isAtRoot = router.asPath === "/";
 
       if (!token) {
         setAuthenticated(false);
         setLoading(false);
 
-        if (requireAuth) {
+        if (requireAuth && !isAtRoot) {
           toast.error("Please login to continue.");
           router.replace("/");
         }
@@ -28,7 +31,9 @@ const useAuth = (requireAuth = false) => {
       if (!requireAuth) {
         setAuthenticated(true);
         setLoading(false);
-        router.replace("/dashboard");
+        if (router.asPath !== "/dashboard") {
+          await router.replace("/dashboard");
+        }
         return;
       }
 
@@ -49,11 +54,11 @@ const useAuth = (requireAuth = false) => {
         setAuthenticated(false);
         localStorage.removeItem("accessToken");
 
-        if (requireAuth) {
+        if (requireAuth && !isAtRoot) {
           toast.error("Your session has expired. Please login again.", {
             id: "session-expired",
           });
-          router.replace("/");
+          await router.replace("/");
         }
       } finally {
         setLoading(false);
@@ -61,7 +66,7 @@ const useAuth = (requireAuth = false) => {
     };
 
     checkAuth();
-  }, [requireAuth, router]);
+  }, [requireAuth, router.isReady, router.asPath]);
 
   return {
     loading,
