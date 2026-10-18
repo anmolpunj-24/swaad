@@ -37,6 +37,17 @@ const updateTagService = async (tagId, tagData) => {
 };
 
 const deleteTagService = async (tagId) => {
+  const associatedBlog =
+    await tagsRepo.checkIfAnyBlogIsAssociatedWithTag(tagId);
+
+  if (associatedBlog) {
+    return {
+      success: false,
+      errorMessage:
+        "This tag cannot be deleted because it is associated with one or more blogs!",
+    };
+  }
+
   const deletedTagData = await tagsRepo.deleteTagRepo(tagId);
 
   if (!deletedTagData) {

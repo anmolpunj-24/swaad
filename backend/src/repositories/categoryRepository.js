@@ -1,4 +1,5 @@
 const categoryModel = require("../models/categories");
+const blogModel = require("../models/blogs");
 
 const getAllCategoriesRepo = async () => {
   return await categoryModel
@@ -103,6 +104,10 @@ const deleteCategoryRepo = async (id) => {
   );
 };
 
+const checkIfAnyBlogIsAssociatedWithCategory = async (categoryId) => {
+  return await blogModel.exists({ categoryId });
+};
+
 module.exports = {
   getAllCategoriesRepo,
   getOneCategoryRepo,
@@ -113,4 +118,5 @@ module.exports = {
   checkIfExistingCategoryForUpdate,
   updateCategoryRepo,
   deleteCategoryRepo,
+  checkIfAnyBlogIsAssociatedWithCategory,
 };

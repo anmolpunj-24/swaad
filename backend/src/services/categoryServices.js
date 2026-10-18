@@ -119,7 +119,10 @@ const deleteCategoryService = async (id) => {
   const associatedProduct =
     await productRepo.checkIfAnyProductIsAssociatedWithCategory(id);
 
-  if (associatedProduct) {
+  const associatedBlog =
+    await categoryRepo.checkIfAnyBlogIsAssociatedWithCategory(id);
+
+  if (associatedProduct || associatedBlog) {
     return {
       success: false,
       errorMessage:

@@ -1,4 +1,5 @@
 const tagModel = require("../models/tags");
+const blogModel = require("../models/blogs");
 
 const addTagRepo = async (tagData) => {
   const newTagData = new tagModel(tagData);
@@ -59,10 +60,15 @@ const deleteTagRepo = async (tagId) => {
   );
 };
 
+const checkIfAnyBlogIsAssociatedWithTag = async (tagId) => {
+  return await blogModel.exists({ tagIds: tagId });
+};
+
 module.exports = {
   addTagRepo,
   getAllTagsRepo,
   getOneTagRepo,
   updateTagRepo,
   deleteTagRepo,
+  checkIfAnyBlogIsAssociatedWithTag,
 };
