@@ -29,7 +29,7 @@ const getOnePageAllFaq = async (req, res) => {
 
   return res
     .status(200)
-    .json({ message: "Page faq fetched!", faq: pageFaqData });
+    .json({ message: "Page faqs fetched!", faq: pageFaqData });
 };
 
 const updateOnePageFaqs = async (req, res) => {
@@ -47,7 +47,7 @@ const updateOnePageFaqs = async (req, res) => {
 
   return res
     .status(200)
-    .json({ message: "Page faq updated!", faq: updatedPageFaq });
+    .json({ message: "Page faqs updated!", faq: updatedPageFaq });
 };
 
 const deleteOnePageFaqs = async (req, res) => {
@@ -59,7 +59,7 @@ const deleteOnePageFaqs = async (req, res) => {
     return res.status(400).json({ message: deletedPageFaq.errorMessage });
   }
 
-  return res.status(200).json({ message: "Page faq deleted!" });
+  return res.status(200).json({ message: "Page faqs deleted!" });
 };
 
 module.exports = {

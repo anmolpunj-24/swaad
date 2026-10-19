@@ -214,21 +214,21 @@ const pageSeoApi = {
     return response;
   },
 
-  getOne: async (id) => {
-    const response = await api.get(`/api/admin/seo/get/${id}`);
+  getOne: async (slug) => {
+    const response = await api.get(`/api/admin/seo/get/${slug}`);
     return response;
   },
 
-  update: async (id, updatePageSeoData) => {
+  update: async (slug, updatePageSeoData) => {
     const response = await api.put(
-      `/api/admin/seo/update/${id}`,
+      `/api/admin/seo/update/${slug}`,
       updatePageSeoData,
     );
     return response;
   },
 
-  delete: async (id) => {
-    const response = await api.delete(`/api/admin/seo/delete/${id}`);
+  delete: async (slug) => {
+    const response = await api.delete(`/api/admin/seo/delete/${slug}`);
     return response;
   },
 };
@@ -244,21 +244,21 @@ const pageFaqApi = {
     return response;
   },
 
-  getOne: async (id) => {
-    const response = await api.get(`/api/admin/faq/get/${id}`);
+  getOne: async (pageSlug) => {
+    const response = await api.get(`/api/admin/faq/get/${pageSlug}`);
     return response;
   },
 
-  update: async (id, updatePageFaqData) => {
+  update: async (pageSlug, updatePageFaqData) => {
     const response = await api.put(
-      `/api/admin/faq/update/${id}`,
+      `/api/admin/faq/update/${pageSlug}`,
       updatePageFaqData,
     );
     return response;
   },
 
-  delete: async (id) => {
-    const response = await api.delete(`/api/admin/faq/delete/${id}`);
+  delete: async (pageSlug) => {
+    const response = await api.delete(`/api/admin/faq/delete/${pageSlug}`);
     return response;
   },
 };

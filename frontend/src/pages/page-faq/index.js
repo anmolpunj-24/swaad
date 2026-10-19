@@ -24,13 +24,13 @@ export default function PageFaq() {
     fetchAllFaqPages();
   }, [fetchAllFaqPages]);
 
-  const handleDeletePageFaq = async (id) => {
+  const handleDeletePageFaq = async (pageSlug) => {
     try {
-      const res = await pageFaqApi.delete(id);
+      const res = await pageFaqApi.delete(pageSlug);
 
       if (res?.status === 200) {
         toast.success(res?.data?.message ?? "Page faqs deleted successfully!");
-        await fetchAllBlogs();
+        await fetchAllFaqPages();
       }
     } catch (error) {
       toast.error(
@@ -74,7 +74,7 @@ export default function PageFaq() {
     {
       type: "delete",
       label: "Delete",
-      onClick: () => handleDeletePageFaq(row._id),
+      onClick: () => handleDeletePageFaq(row.pageSlug),
       confirmTitle: "Delete page faqs?",
       confirmMessage: "Are you sure you want to delete this page faqs?",
     },

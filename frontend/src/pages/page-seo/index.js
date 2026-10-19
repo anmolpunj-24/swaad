@@ -24,9 +24,9 @@ export default function PageSeo() {
     fetchAllSeoPages();
   }, [fetchAllSeoPages]);
 
-  const handleDeletePageSeo = async (id) => {
+  const handleDeletePageSeo = async (slug) => {
     try {
-      const res = await pageSeoApi.delete(id);
+      const res = await pageSeoApi.delete(slug);
 
       if (res?.status === 200) {
         toast.success(res?.data?.message ?? "Page seo deleted successfully!");
@@ -74,7 +74,7 @@ export default function PageSeo() {
     {
       type: "delete",
       label: "Delete",
-      onClick: () => handleDeletePageSeo(row._id),
+      onClick: () => handleDeletePageSeo(row.slug),
       confirmTitle: "Delete page seo?",
       confirmMessage: "Are you sure you want to delete this page seo?",
     },

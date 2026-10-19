@@ -22,13 +22,13 @@ routes.post(
 );
 
 routes.put(
-  "/update/:id",
+  "/update/:uuid",
   authenticateUserMiddleware,
   userController.updateUser,
 );
 
 routes.delete(
-  "/delete/:id",
+  "/delete/:uuid",
   authenticateUserMiddleware,
   userController.deleteUser,
 );
