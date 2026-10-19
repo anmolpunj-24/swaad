@@ -1,28 +1,43 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { categoryApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Category() {
   const [categories, setCategories] = useState([]);
 
-  useEffect(() => {
-    const fetchAllCategories = async () => {
-      try {
-        const res = await categoryApi.getAll();
+  const fetchAllCategories = useCallback(async () => {
+    try {
+      const res = await categoryApi.getAll();
 
-        if (res?.status === 200) {
-          setCategories(res?.data?.categories);
-        }
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message ?? "Failed to fetch categories!",
-        );
+      if (res?.status === 200) {
+        setCategories(res?.data?.categories);
       }
-    };
-
-    fetchAllCategories();
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to fetch categories!",
+      );
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllCategories();
+  }, [fetchAllCategories]);
+
+  const handleDeleteCategory = async (id) => {
+    try {
+      const res = await categoryApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Category deleted successfully!");
+        await fetchAllCategories();
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to delete category!",
+      );
+    }
+  };
 
   const categoryColumn = [
     {
@@ -59,6 +74,13 @@ export default function Category() {
       type: "edit",
       label: "Edit",
       link: `/category/edit/${row._id}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeleteCategory(row._id),
+      confirmTitle: "Delete category?",
+      confirmMessage: "Are you sure you want to delete this category?",
     },
   ];
 

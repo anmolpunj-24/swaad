@@ -126,7 +126,7 @@ const deleteCategoryService = async (id) => {
     return {
       success: false,
       errorMessage:
-        "This category cannot be deleted because it is associated with one or more products!",
+        "This category cannot be deleted because it is associated with one or more products or blogs!",
     };
   }
 

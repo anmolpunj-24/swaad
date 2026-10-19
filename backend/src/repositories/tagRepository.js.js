@@ -61,7 +61,11 @@ const deleteTagRepo = async (tagId) => {
 };
 
 const checkIfAnyBlogIsAssociatedWithTag = async (tagId) => {
-  return await blogModel.exists({ tagIds: tagId });
+  return await blogModel.exists({
+    tagIds: tagId,
+    isActive: true,
+    deletedAt: null,
+  });
 };
 
 module.exports = {

@@ -1,34 +1,45 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { couponApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { dateHandler } from "@/utils/dateHandler";
 import { toast } from "sonner";
 
 export default function Coupons() {
   const [coupons, setCoupons] = useState([]);
 
-  useEffect(() => {
-    const fetchAllCoupons = async () => {
-      try {
-        const res = await couponApi.getAll();
+  const fetchAllCoupons = useCallback(async () => {
+    try {
+      const res = await couponApi.getAll();
 
-        if (res?.status === 200) {
-          const formattedCoupons = res?.data?.coupons.map((coupon) => ({
-            ...coupon,
-            startDate: dateHandler(coupon?.startDate),
-            endDate: dateHandler(coupon?.endDate),
-          }));
-          setCoupons(formattedCoupons);
-        }
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message ?? "Failed to fetch coupons!",
-        );
+      if (res?.status === 200) {
+        const formattedCoupons = res?.data?.coupons.map((coupon) => ({
+          ...coupon,
+          startDate: dateHandler(coupon?.startDate),
+          endDate: dateHandler(coupon?.endDate),
+        }));
+        setCoupons(formattedCoupons);
       }
-    };
-
-    fetchAllCoupons();
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to fetch coupons!");
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllCoupons();
+  }, [fetchAllCoupons]);
+
+  const handleDeleteCoupon = async (id) => {
+    try {
+      const res = await couponApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Coupon deleted successfully!");
+        await fetchAllCoupons();
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to delete coupon!");
+    }
+  };
 
   const couponsColumns = [
     {
@@ -85,6 +96,13 @@ export default function Coupons() {
       type: "edit",
       label: "Edit",
       link: `/coupons/edit/${row._id}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeleteCoupon(row._id),
+      confirmTitle: "Delete coupon?",
+      confirmMessage: "Are you sure you want to delete this coupon?",
     },
   ];
 

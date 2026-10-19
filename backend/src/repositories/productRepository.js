@@ -2,7 +2,11 @@ const productModel = require("../models/products");
 const categoryModel = require("../models/categories");
 
 const checkIfAnyProductIsAssociatedWithCategory = async (categoryId) => {
-  return await productModel.exists({ categoryId });
+  return await productModel.exists({
+    categoryId,
+    isActive: true,
+    deletedAt: null,
+  });
 };
 
 const updateCategoryNameForProductsRepo = async (categoryId, categoryName) => {

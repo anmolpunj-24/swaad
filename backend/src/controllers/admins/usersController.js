@@ -34,7 +34,7 @@ const updateUser = async (req, res) => {
 const deleteUser = async (req, res) => {
   const userId = req.params.uuid;
 
-  const deletedUser = await userService.deleteUserService(userId);
+  await userService.deleteUserService(userId);
 
   return res.status(200).json({ message: "User deleted!" });
 };

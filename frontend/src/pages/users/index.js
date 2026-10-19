@@ -1,26 +1,39 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { userApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    const fetchAllUsers = async () => {
-      try {
-        const res = await userApi.getAll();
+  const fetchAllUsers = useCallback(async () => {
+    try {
+      const res = await userApi.getAll();
 
-        if (res?.status === 200) {
-          setUsers(res?.data?.users);
-        }
-      } catch (error) {
-        toast.error(error?.response?.data?.message ?? "Failed to fetch users!");
+      if (res?.status === 200) {
+        setUsers(res?.data?.users);
       }
-    };
-
-    fetchAllUsers();
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to fetch users!");
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllUsers();
+  }, [fetchAllUsers]);
+
+  const handleDeleteUser = async (id) => {
+    try {
+      const res = await userApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "User deleted successfully!");
+        await fetchAllUsers();
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to delete user!");
+    }
+  };
 
   const userColumns = [
     {
@@ -48,6 +61,16 @@ export default function Users() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeleteUser(row.uuid),
+      confirmTitle: "Delete user?",
+      confirmMessage: "Are you sure you want to delete this user?",
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -62,6 +85,7 @@ export default function Users() {
         title="Users"
         addButtonText="Add User"
         onAdd="/users/add"
+        actions={actionsData}
       />
     </>
   );

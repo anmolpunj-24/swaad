@@ -1,28 +1,43 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { productApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Products() {
   const [products, setProducts] = useState([]);
 
-  useEffect(() => {
-    const fetchAllProducts = async () => {
-      try {
-        const res = await productApi.getAll();
+  const fetchAllProducts = useCallback(async () => {
+    try {
+      const res = await productApi.getAll();
 
-        if (res?.status === 200) {
-          setProducts(res?.data?.products);
-        }
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message ?? "Failed to fetch products!",
-        );
+      if (res?.status === 200) {
+        setProducts(res?.data?.products);
       }
-    };
-
-    fetchAllProducts();
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to fetch products!",
+      );
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllProducts();
+  }, [fetchAllProducts]);
+
+  const handleDeleteProduct = async (id) => {
+    try {
+      const res = await productApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Product deleted successfully!");
+        await fetchAllProducts();
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to delete product!",
+      );
+    }
+  };
 
   const productColumns = [
     {
@@ -64,6 +79,13 @@ export default function Products() {
       type: "view",
       label: "View",
       link: `/products/${row._id}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeleteProduct(row._id),
+      confirmTitle: "Delete product?",
+      confirmMessage: "Are you sure you want to delete this product?",
     },
   ];
 

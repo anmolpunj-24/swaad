@@ -360,7 +360,6 @@ export default function ProductDetails() {
 
                       {images.length > 0 && (
                         <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-5">
-                          {console.log(images, "images")}
                           {images.map((image, imageIndex) => (
                             <button
                               key={image._id || imageIndex}

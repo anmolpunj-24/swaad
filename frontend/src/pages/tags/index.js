@@ -1,26 +1,39 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { tagApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function Tags() {
   const [tags, setTags] = useState([]);
 
-  useEffect(() => {
-    const fetchAllTags = async () => {
-      try {
-        const res = await tagApi.getAll();
+  const fetchAllTags = useCallback(async () => {
+    try {
+      const res = await tagApi.getAll();
 
-        if (res?.status === 200) {
-          setTags(res?.data?.tags);
-        }
-      } catch (error) {
-        toast.error(error?.response?.data?.message ?? "Failed to fetch tags!");
+      if (res?.status === 200) {
+        setTags(res?.data?.tags);
       }
-    };
-
-    fetchAllTags();
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to fetch tags!");
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllTags();
+  }, [fetchAllTags]);
+
+  const handleDeleteTag = async (id) => {
+    try {
+      const res = await tagApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Tag deleted successfully!");
+        await fetchAllTags();
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to delete tag!");
+    }
+  };
 
   const tagsColumns = [
     {
@@ -53,6 +66,13 @@ export default function Tags() {
       type: "edit",
       label: "Edit",
       link: `/tags/edit/${row._id}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeleteTag(row._id),
+      confirmTitle: "Delete tag?",
+      confirmMessage: "Are you sure you want to delete this tag?",
     },
   ];
 

@@ -1,28 +1,43 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { pageSeoApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function PageSeo() {
   const [pageSeos, setPageSeos] = useState([]);
 
-  useEffect(() => {
-    const fetchAllSeoPages = async () => {
-      try {
-        const res = await pageSeoApi.getAll();
+  const fetchAllSeoPages = useCallback(async () => {
+    try {
+      const res = await pageSeoApi.getAll();
 
-        if (res?.status === 200) {
-          setPageSeos(res?.data?.seos);
-        }
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message ?? "Failed to fetch seo pages!",
-        );
+      if (res?.status === 200) {
+        setPageSeos(res?.data?.seos);
       }
-    };
-
-    fetchAllSeoPages();
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to fetch seo pages!",
+      );
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllSeoPages();
+  }, [fetchAllSeoPages]);
+
+  const handleDeletePageSeo = async (id) => {
+    try {
+      const res = await pageSeoApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Page seo deleted successfully!");
+        await fetchAllSeoPages();
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to delete page seo!",
+      );
+    }
+  };
 
   const seoPagesColumns = [
     {
@@ -54,7 +69,14 @@ export default function PageSeo() {
     {
       type: "edit",
       label: "Edit",
-      link: `/page-seo/edit/${row._id}`,
+      link: `/page-seo/edit/${row.slug}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeletePageSeo(row._id),
+      confirmTitle: "Delete page seo?",
+      confirmMessage: "Are you sure you want to delete this page seo?",
     },
   ];
 

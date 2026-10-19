@@ -105,7 +105,11 @@ const deleteCategoryRepo = async (id) => {
 };
 
 const checkIfAnyBlogIsAssociatedWithCategory = async (categoryId) => {
-  return await blogModel.exists({ categoryId });
+  return await blogModel.exists({
+    categoryId,
+    isActive: true,
+    deletedAt: null,
+  });
 };
 
 module.exports = {

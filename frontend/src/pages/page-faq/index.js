@@ -1,28 +1,43 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { pageFaqApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export default function PageFaq() {
   const [pageFaqs, setPageFaqs] = useState([]);
 
-  useEffect(() => {
-    const fetchAllFaqPages = async () => {
-      try {
-        const res = await pageFaqApi.getAll();
+  const fetchAllFaqPages = useCallback(async () => {
+    try {
+      const res = await pageFaqApi.getAll();
 
-        if (res?.status === 200) {
-          setPageFaqs(res?.data?.faqs);
-        }
-      } catch (error) {
-        toast.error(
-          error?.response?.data?.message ?? "Failed to fetch faq pages!",
-        );
+      if (res?.status === 200) {
+        setPageFaqs(res?.data?.faqs);
       }
-    };
-
-    fetchAllFaqPages();
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to fetch faq pages!",
+      );
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllFaqPages();
+  }, [fetchAllFaqPages]);
+
+  const handleDeletePageFaq = async (id) => {
+    try {
+      const res = await pageFaqApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Page faqs deleted successfully!");
+        await fetchAllBlogs();
+      }
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ?? "Failed to delete page faqs!",
+      );
+    }
+  };
 
   const faqPagesColumns = [
     {
@@ -54,7 +69,14 @@ export default function PageFaq() {
     {
       type: "edit",
       label: "Edit",
-      link: `/page-faq/edit/${row._id}`,
+      link: `/page-faq/edit/${row.pageSlug}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeletePageFaq(row._id),
+      confirmTitle: "Delete page faqs?",
+      confirmMessage: "Are you sure you want to delete this page faqs?",
     },
   ];
 

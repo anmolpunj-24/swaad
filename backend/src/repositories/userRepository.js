@@ -42,7 +42,12 @@ const updateUserRepo = async (uuid, userData) => {
 const deleteUserRepo = async (uuid) => {
   return await userModel.findOneAndUpdate(
     { uuid, deletedAt: null, isActive: true },
-    { deletedAt: new Date(), isActive: false },
+    {
+      $set: {
+        deletedAt: new Date(),
+        isActive: false,
+      },
+    },
     { returnDocument: "after" },
   );
 };

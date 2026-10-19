@@ -117,9 +117,10 @@ const userApi = {
     return response;
   },
 
-  update: async () => {},
-
-  delete: async () => {},
+  delete: async (uuid) => {
+    const response = await api.delete(`/api/admin/user/delete/${uuid}`);
+    return response;
+  },
 };
 
 const customerApi = {
@@ -140,10 +141,6 @@ const customerApi = {
     );
     return response;
   },
-};
-
-const customerAddressApi = {
-  getAll: async () => {},
 };
 
 const productApi = {
@@ -200,7 +197,10 @@ const categoryApi = {
     return response;
   },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/category/delete/${id}`);
+    return response;
+  },
 };
 
 const pageSeoApi = {
@@ -227,7 +227,10 @@ const pageSeoApi = {
     return response;
   },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/seo/delete/${id}`);
+    return response;
+  },
 };
 
 const pageFaqApi = {
@@ -254,7 +257,10 @@ const pageFaqApi = {
     return response;
   },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/faq/delete/${id}`);
+    return response;
+  },
 };
 
 const orderApi = {
@@ -293,7 +299,10 @@ const tagApi = {
     return response;
   },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/tag/delete/${id}`);
+    return response;
+  },
 };
 
 const couponApi = {
@@ -320,7 +329,10 @@ const couponApi = {
     return response;
   },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/coupon/delete/${id}`);
+    return response;
+  },
 };
 
 const blogApi = {
@@ -347,14 +359,16 @@ const blogApi = {
     return response;
   },
 
-  delete: async () => {},
+  delete: async (id) => {
+    const response = await api.delete(`/api/admin/blog/delete/${id}`);
+    return response;
+  },
 };
 
 export {
   adminAuthApi,
   userApi,
   customerApi,
-  customerAddressApi,
   productApi,
   categoryApi,
   pageSeoApi,
