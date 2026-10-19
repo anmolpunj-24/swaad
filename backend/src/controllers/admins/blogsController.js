@@ -2,18 +2,29 @@ const blogService = require("../../services/blogServices");
 
 const addBlog = async (req, res) => {
   const body = req.body;
+  const files = req.files || {};
 
-  const newBlogData = await blogService.addBlogService(body);
+  const blogData = await blogService.addBlogService(body, files || {});
 
-  return res.status(201).json({ message: "Blog created!", blog: newBlogData });
+  if (blogData?.success === false) {
+    return res.status(400).json({
+      message: blogData.errorMessage,
+    });
+  }
+
+  return res.status(201).json({
+    message: "Blog created!",
+    blog: blogData,
+  });
 };
 
 const getAllBlogs = async (req, res) => {
-  const allBlogs = await blogService.getAllBlogsService();
+  const blogs = await blogService.getAllBlogsService();
 
-  return res
-    .status(200)
-    .json({ message: "All blogs fetched!", blogs: allBlogs });
+  return res.status(200).json({
+    message: "All blogs fetched!",
+    blogs,
+  });
 };
 
 const getOneBlog = async (req, res) => {
@@ -31,8 +42,13 @@ const getOneBlog = async (req, res) => {
 const updateBlog = async (req, res) => {
   const blogId = req.params.id;
   const body = req.body;
+  const files = req.files || {};
 
-  const updatedBlogData = await blogService.updateBlogService(blogId, body);
+  const updatedBlogData = await blogService.updateBlogService(
+    blogId,
+    body,
+    files,
+  );
 
   if (updatedBlogData.success === false) {
     return res.status(400).json({ message: updatedBlogData.errorMessage });

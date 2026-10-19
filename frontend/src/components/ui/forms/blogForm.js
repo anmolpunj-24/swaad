@@ -15,11 +15,12 @@ import {
   Tags,
   AlertCircle,
 } from "lucide-react";
-import Image from "next/image";
+import { toast } from "sonner";
 import GenericInput from "../genericInput";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import GenericSelect from "../genericSelect";
 import GenericTextarea from "../genericTextArea";
+import ContentEditor from "@/components/ui/contentEditor";
 
 const inputClass =
   "w-full rounded-xl border border-[#DDD3C1] bg-white px-4 py-3 text-sm text-[#4B3A29] outline-none transition placeholder:text-[#B0A18B] focus:border-[#B99961] focus:ring-4 focus:ring-[#EADCC2]/40 disabled:cursor-not-allowed disabled:opacity-60";
@@ -30,32 +31,36 @@ const sectionHeadingClass = "text-lg font-bold text-[#463525]";
 
 const sectionDescriptionClass = "mt-1 text-xs leading-5 text-[#95846D]";
 
-export default function BlogForm({
-  defaultValues = {
-    title: "",
-    slug: "",
-    excerpt: "",
-    content: "",
-    featuredImage: "",
-    categoryId: "",
-    tagIds: [],
-    status: "draft",
-    isFeatured: false,
-    publishedAt: "",
-    seo: {
-      metaTitle: "",
-      metaDescription: "",
-      metaKeywords: [],
-    },
-    isActive: true,
+const EMPTY_BLOG_VALUES = {
+  title: "",
+  slug: "",
+  excerpt: "",
+  content: "",
+  featuredImage: "",
+  categoryId: "",
+  tagIds: [],
+  status: "draft",
+  isFeatured: false,
+  isActive: true,
+  publishedAt: "",
+  seo: {
+    metaTitle: "",
+    metaDescription: "",
+    metaKeywords: [],
   },
+};
+
+export default function BlogForm({
+  defaultValues = EMPTY_BLOG_VALUES,
+  onSubmit,
+  buttonText = "Save Blog",
+  loadingButtonText = "Saving Blog...",
+  loading = false,
   categories = [],
   tags = [],
-  onSubmit,
   onCreateTag,
-  buttonText = "Save Blog",
-  loading = false,
-  loadingButtonText = "Saving Blog...",
+  handleCategoryDropdownOpen,
+  categoryLoading,
 }) {
   const {
     register,
@@ -66,85 +71,61 @@ export default function BlogForm({
     watch,
     formState: { errors },
   } = useForm({
-    defaultValues,
+    defaultValues: {
+      ...defaultValues,
+      status: defaultValues?.status || "draft",
+    },
   });
 
   const [newTagName, setNewTagName] = useState("");
   const [creatingTag, setCreatingTag] = useState(false);
   const [tagError, setTagError] = useState("");
   const [tagSearch, setTagSearch] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
-  const [imageFile, setImageFile] = useState(null);
-  const [imageError, setImageError] = useState("");
 
-  const title = watch("title");
+  const [featuredImageFile, setFeaturedImageFile] = useState(null);
+  const [featuredImagePreview, setFeaturedImagePreview] = useState("");
+  const [contentImageFiles, setContentImageFiles] = useState([]);
+  const [removeFeaturedImage, setRemoveFeaturedImage] = useState(false);
+
   const selectedTagIds = watch("tagIds") || [];
   const currentFeaturedImage = watch("featuredImage");
 
   useEffect(() => {
     reset({
+      ...EMPTY_BLOG_VALUES,
       ...defaultValues,
-      title: defaultValues.title ?? "",
-      slug: defaultValues.slug ?? "",
-      excerpt: defaultValues.excerpt ?? "",
-      content: defaultValues.content ?? "",
-      featuredImage: defaultValues.featuredImage ?? "",
-      categoryId: defaultValues.categoryId?._id
-        ? String(defaultValues.categoryId._id)
-        : String(defaultValues.categoryId ?? ""),
-      tagIds: (defaultValues.tagIds ?? []).map((tag) =>
-        String(tag?._id ?? tag),
-      ),
-      status: defaultValues.status ?? "draft",
-      isFeatured: defaultValues.isFeatured ?? false,
-      publishedAt: defaultValues.publishedAt
-        ? new Date(defaultValues.publishedAt).toISOString().slice(0, 16)
-        : "",
       seo: {
-        metaTitle: defaultValues.seo?.metaTitle ?? "",
-        metaDescription: defaultValues.seo?.metaDescription ?? "",
+        ...EMPTY_BLOG_VALUES.seo,
+        ...defaultValues.seo,
         metaKeywords: Array.isArray(defaultValues.seo?.metaKeywords)
           ? defaultValues.seo.metaKeywords.join(", ")
-          : (defaultValues.seo?.metaKeywords ?? ""),
+          : defaultValues.seo?.metaKeywords || "",
       },
-      isActive: defaultValues.isActive ?? true,
+      status: defaultValues.status || "draft",
+      tagIds: defaultValues.tagIds || [],
     });
 
-    setImageFile(null);
-    setImagePreview("");
-  }, [reset, defaultValues]);
+    setFeaturedImageFile(null);
+    setContentImageFiles([]);
+    setRemoveFeaturedImage(false);
+  }, [defaultValues, reset]);
 
   useEffect(() => {
-    if (!imageFile) {
-      setImagePreview("");
+    if (!featuredImageFile) {
+      setFeaturedImagePreview("");
       return;
     }
 
-    const previewUrl = URL.createObjectURL(imageFile);
-    setImagePreview(previewUrl);
+    const previewUrl = URL.createObjectURL(featuredImageFile);
+    setFeaturedImagePreview(previewUrl);
 
     return () => URL.revokeObjectURL(previewUrl);
-  }, [imageFile]);
+  }, [featuredImageFile]);
 
-  const handleImageChange = (event) => {
-    const file = event.target.files?.[0];
-
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      setImageError("Please select a valid image file.");
-      event.target.value = "";
-      return;
+  const handleCategoryFocus = () => {
+    if (!categories.length && !categoryLoading) {
+      handleCategoryDropdownOpen();
     }
-
-    if (file.size > 5 * 1024 * 1024) {
-      setImageError("Image size must not exceed 5 MB.");
-      event.target.value = "";
-      return;
-    }
-
-    setImageError("");
-    setImageFile(file);
   };
 
   const handleCreateTag = async () => {
@@ -209,37 +190,114 @@ export default function BlogForm({
     });
   };
 
-  const submitForm = (data) => {
-    const payload = {
-      ...data,
-      title: data.title.trim(),
-      slug: SlugifyHandler(data.slug),
-      excerpt: data.excerpt.trim(),
-      categoryId: data.categoryId,
-      tagIds: data.tagIds,
-      status: data.status,
-      isFeatured: data.isFeatured,
-      publishedAt: data.publishedAt ? new Date(data.publishedAt) : null,
-      featuredImage: imageFile || data.featuredImage || "",
-      seo: {
-        metaTitle: data.seo.metaTitle.trim(),
-        metaDescription: data.seo.metaDescription.trim(),
-        metaKeywords: (Array.isArray(data.seo.metaKeywords)
-          ? data.seo.metaKeywords.join(",")
-          : data.seo.metaKeywords
-        )
-          .split(",")
-          .map((keyword) => keyword.trim())
-          .filter(Boolean),
-      },
-      isActive: data.isActive,
-    };
+  const buildBlogFormData = (data) => {
+    const formData = new FormData();
+    const html = data.content || "";
+    const documentNode = document.createElement("div");
 
-    onSubmit(payload);
+    documentNode.innerHTML = html;
+
+    const localImages = Array.from(
+      documentNode.querySelectorAll("img[data-local-image-id]"),
+    );
+
+    const imageFileMap = new Map(
+      contentImageFiles.map(({ id, file }) => [id, file]),
+    );
+
+    const imageIds = localImages.map((image) =>
+      image.getAttribute("data-local-image-id"),
+    );
+
+    for (const id of imageIds) {
+      if (!id || !imageFileMap.has(id)) {
+        throw new Error(
+          "An editor image is missing its file. Please remove it and insert it again.",
+        );
+      }
+    }
+
+    if (featuredImageFile) {
+      formData.append("featuredImage", featuredImageFile);
+    }
+
+    formData.append("removeFeaturedImage", String(removeFeaturedImage));
+
+    imageIds.forEach((id) => {
+      formData.append("contentImages", imageFileMap.get(id));
+    });
+
+    formData.append("contentImageIds", JSON.stringify(imageIds));
+    formData.append("title", data.title.trim());
+    formData.append("slug", SlugifyHandler(data.slug));
+    formData.append("excerpt", (data.excerpt || "").trim());
+    formData.append("content", html);
+    formData.append("categoryId", data.categoryId);
+    formData.append("tagIds", JSON.stringify(data.tagIds || []));
+    formData.append("status", data.status || "draft");
+    formData.append("isFeatured", String(Boolean(data.isFeatured)));
+    formData.append("isActive", String(data.isActive !== false));
+    formData.append("publishedAt", data.publishedAt || "");
+
+    formData.append(
+      "seo",
+      JSON.stringify({
+        metaTitle: (data.seo?.metaTitle || "").trim(),
+        metaDescription: (data.seo?.metaDescription || "").trim(),
+        metaKeywords: Array.isArray(data.seo?.metaKeywords)
+          ? data.seo.metaKeywords
+          : String(data.seo?.metaKeywords || "")
+              .split(",")
+              .map((keyword) => keyword.trim())
+              .filter(Boolean),
+      }),
+    );
+
+    return formData;
+  };
+
+  const handleFormSubmit = async (data) => {
+    try {
+      const formData = buildBlogFormData(data);
+      await onSubmit(formData);
+    } catch (error) {
+      toast.error(error?.message || "Unable to prepare blog data.");
+    }
+  };
+
+  const handleFeaturedImageChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    event.target.value = "";
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      toast.error("Please select a JPEG, PNG, or WebP image.");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Featured image cannot exceed 5 MB.");
+      return;
+    }
+
+    setFeaturedImageFile(file);
+    setRemoveFeaturedImage(false);
+  };
+
+  const handleRemoveFeaturedImage = () => {
+    setFeaturedImageFile(null);
+    setRemoveFeaturedImage(true);
+    setValue("featuredImage", "", { shouldDirty: true });
   };
 
   const filteredTags = tags.filter((tag) =>
     tag.name.toLowerCase().includes(tagSearch.toLowerCase()),
+  );
+
+  const activeFilteredTags = filteredTags.filter(
+    (tag) => tag.isActive !== false,
   );
 
   const selectedTags = tags.filter((tag) =>
@@ -248,7 +306,7 @@ export default function BlogForm({
 
   return (
     <form
-      onSubmit={handleSubmit(submitForm)}
+      onSubmit={handleSubmit(handleFormSubmit)}
       noValidate
       className="space-y-8 rounded-2xl border border-[#E6DDCD] bg-white p-5 shadow-[0_12px_40px_rgba(78,57,28,0.07)] sm:p-7"
     >
@@ -288,6 +346,7 @@ export default function BlogForm({
                 },
               })}
             />
+
             <GenericInput
               id="slug"
               label="Slug"
@@ -318,23 +377,41 @@ export default function BlogForm({
             helperText="A short introduction displayed in blog listings."
           />
 
-          <GenericTextarea
-            id="content"
-            label="Blog Content"
-            required
-            register={register("content", {
-              required: "Blog content is required!",
-              validate: (value) =>
-                value.trim().length > 0 || "Blog content cannot be empty!",
-            })}
-            rows={10}
-            minHeight="240px"
-            resize="y"
-            disabled={loading}
-            placeholder="Write your blog content here..."
-            error={errors.content?.message}
-            helperText="This is a plain-text content field. You can replace it with a rich text editor later."
-          />
+          <div>
+            <label htmlFor="blog-content-editor" className={labelClass}>
+              Blog Content <span className="text-[#963F32]">*</span>
+            </label>
+
+            <Controller
+              name="content"
+              control={control}
+              rules={{
+                required: "Blog content is required!",
+                validate: (value) =>
+                  value.replace(/<[^>]*>/g, "").trim().length > 0 ||
+                  "Blog content cannot be empty!",
+              }}
+              render={({ field }) => (
+                <ContentEditor
+                  value={field.value || ""}
+                  onChange={field.onChange}
+                  onImageFilesChange={setContentImageFiles}
+                  disabled={loading}
+                />
+              )}
+            />
+
+            {errors.content && (
+              <p className="mt-2 text-xs font-medium text-[#963F32]">
+                {errors.content.message}
+              </p>
+            )}
+
+            <p className="mt-2 text-xs leading-5 text-[#95846D]">
+              Format your blog with headings, lists, links, images, and text
+              styling.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -358,19 +435,29 @@ export default function BlogForm({
             label="Category"
             required
             disabled={loading}
+            loading={categoryLoading}
             error={errors.categoryId?.message}
             {...register("categoryId", {
               required: "Please select a category!",
+              onChange: (e) => {
+                const selectedCategory = categories.find(
+                  (category) => category._id === e.target.value,
+                );
+
+                setValue("categoryId", e.target.value, {
+                  shouldValidate: true,
+                  shouldDirty: true,
+                });
+              },
             })}
+            onMouseDown={handleCategoryFocus}
           >
             <option value="">Select a category</option>
-            {categories
-              .filter((category) => category.isActive !== false)
-              .map((category) => (
-                <option key={category._id} value={category._id}>
-                  {category.name}
-                </option>
-              ))}
+            {categories.map((category) => (
+              <option key={category._id} value={category._id}>
+                {category?.name}
+              </option>
+            ))}
           </GenericSelect>
 
           <div className="overflow-hidden rounded-2xl border border-[#E6DDCD] bg-[#FCFBF8] shadow-sm">
@@ -489,36 +576,31 @@ export default function BlogForm({
                 </div>
 
                 <div className="flex max-h-48 min-h-20 flex-wrap content-start gap-2 overflow-y-auto rounded-xl border border-[#E6DDCD] bg-white p-4">
-                  {filteredTags.filter((tag) => tag.isActive !== false).length >
-                  0 ? (
-                    filteredTags
-                      .filter((tag) => tag.isActive !== false)
-                      .map((tag) => {
-                        const selected = selectedTagIds.includes(
-                          String(tag._id),
-                        );
+                  {activeFilteredTags.length > 0 ? (
+                    activeFilteredTags.map((tag) => {
+                      const selected = selectedTagIds.includes(String(tag._id));
 
-                        return (
-                          <button
-                            key={tag._id}
-                            type="button"
-                            disabled={loading}
-                            onClick={() => toggleTag(tag._id)}
-                            className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition ${
-                              selected
-                                ? "border-[#B99961] bg-[#F4E7CF] text-[#674B28] shadow-sm"
-                                : "border-[#EAE2D5] bg-[#FCFBF8] text-[#806C52] hover:border-[#D5BD95] hover:bg-[#F8F0E2]"
-                            } disabled:cursor-not-allowed disabled:opacity-60`}
-                          >
-                            {selected ? (
-                              <Check size={13} strokeWidth={2.5} />
-                            ) : (
-                              <Plus size={13} />
-                            )}
-                            {tag.name}
-                          </button>
-                        );
-                      })
+                      return (
+                        <button
+                          key={tag._id}
+                          type="button"
+                          disabled={loading}
+                          onClick={() => toggleTag(tag._id)}
+                          className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-2 text-xs font-medium transition ${
+                            selected
+                              ? "border-[#B99961] bg-[#F4E7CF] text-[#674B28] shadow-sm"
+                              : "border-[#EAE2D5] bg-[#FCFBF8] text-[#806C52] hover:border-[#D5BD95] hover:bg-[#F8F0E2]"
+                          } disabled:cursor-not-allowed disabled:opacity-60`}
+                        >
+                          {selected ? (
+                            <Check size={13} strokeWidth={2.5} />
+                          ) : (
+                            <Plus size={13} />
+                          )}
+                          {tag.name}
+                        </button>
+                      );
+                    })
                   ) : (
                     <div className="flex w-full flex-col items-center justify-center py-4 text-center">
                       <div className="mb-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#F5EAD5] text-[#9B7A43]">
@@ -618,33 +700,20 @@ export default function BlogForm({
         </div>
 
         <div className="space-y-4">
-          {(imagePreview || currentFeaturedImage) && (
-            <div className="relative h-52 w-full max-w-md overflow-hidden rounded-2xl border border-[#E6DDCD] bg-[#F7F4EC]">
-              {imagePreview ? (
-                <img
-                  src={imagePreview}
-                  alt="Selected featured image preview"
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <Image
-                  src={currentFeaturedImage}
-                  alt="Current blog featured image"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 448px"
-                  className="object-cover"
-                />
-              )}
+          {(featuredImagePreview ||
+            (!removeFeaturedImage && currentFeaturedImage)) && (
+            <div className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#E6DDCD] bg-[#F7F4EC]">
+              <img
+                src={featuredImagePreview || currentFeaturedImage}
+                alt="Blog featured image preview"
+                className="max-h-72 w-full object-contain"
+              />
 
               <button
                 type="button"
                 disabled={loading}
-                onClick={() => {
-                  setImageFile(null);
-                  setValue("featuredImage", "", { shouldDirty: true });
-                  setImageError("");
-                }}
-                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#963F32] shadow-md"
+                onClick={handleRemoveFeaturedImage}
+                className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#963F32] shadow-md disabled:opacity-60"
                 aria-label="Remove featured image"
               >
                 <X size={16} />
@@ -652,33 +721,50 @@ export default function BlogForm({
             </div>
           )}
 
-          <label
-            htmlFor="featuredImageUpload"
-            className={`flex min-h-32 cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-[#DCC9A5] bg-[#FCFBF8] p-6 text-center transition hover:bg-[#F7F1E5] ${
-              loading ? "pointer-events-none opacity-60" : ""
-            }`}
-          >
-            <ImagePlus size={24} className="mb-2 text-[#9B783E]" />
-            <span className="text-sm font-bold text-[#4B3929]">
-              Click to upload a featured image
-            </span>
-            <span className="mt-1 text-xs text-[#95846D]">
-              Image files only, maximum 5 MB
-            </span>
+          <div className="space-y-3">
+            <label
+              htmlFor="featuredImage"
+              className="block text-sm font-semibold text-[#66533C]"
+            >
+              Featured Image
+            </label>
 
-            <input
-              id="featuredImageUpload"
-              type="file"
-              accept="image/*"
-              disabled={loading}
-              onChange={handleImageChange}
-              className="hidden"
-            />
-          </label>
+            {!featuredImageFile && !currentFeaturedImage && (
+              <input
+                id="featuredImage"
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                disabled={loading}
+                className="block w-full rounded-xl border border-[#DDD3C1] bg-white p-3 text-sm text-[#66533C]"
+                onChange={handleFeaturedImageChange}
+              />
+            )}
 
-          {imageError && (
-            <p className="text-xs font-medium text-[#963F32]">{imageError}</p>
-          )}
+            {(featuredImageFile || currentFeaturedImage) && (
+              <div className="flex items-center justify-between rounded-xl border border-[#DDD3C1] bg-[#FCFBF8] p-3">
+                <span className="truncate text-sm text-[#66533C]">
+                  {featuredImageFile?.name || "Featured image selected"}
+                </span>
+
+                <button
+                  type="button"
+                  disabled={loading}
+                  onClick={() => {
+                    setFeaturedImageFile(null);
+                    setValue("featuredImage", "");
+                    setRemoveFeaturedImage(true);
+                  }}
+                  className="ml-3 shrink-0 text-sm font-semibold text-[#963F32] hover:underline disabled:opacity-50"
+                >
+                  Remove
+                </button>
+              </div>
+            )}
+
+            <p className="text-xs leading-5 text-[#95846D]">
+              Supported formats: JPEG, PNG, and WebP. Maximum file size: 5 MB.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -722,6 +808,7 @@ export default function BlogForm({
                     </p>
                   </div>
                 </div>
+
                 <span
                   className={`relative h-7 w-12 shrink-0 rounded-full ${
                     field.value ? "bg-[#B18A4D]" : "bg-[#CFC7B9]"
@@ -762,6 +849,7 @@ export default function BlogForm({
                     </p>
                   </div>
                 </div>
+
                 <span
                   className={`relative h-7 w-12 shrink-0 rounded-full ${
                     field.value ? "bg-[#B18A4D]" : "bg-[#CFC7B9]"
@@ -809,45 +897,48 @@ export default function BlogForm({
                 },
               })}
             />
+
             <p className="mt-1 text-right text-xs text-[#95846D]">
               {(watch("seo.metaTitle") || "").length}/60
             </p>
           </div>
 
-          <GenericTextarea
-            id="seo.metaDescription"
-            label="Meta Description"
-            register={register("seo.metaDescription", {
-              maxLength: {
-                value: 160,
-                message: "Meta description cannot exceed 160 characters.",
-              },
-            })}
-            rows={3}
-            minHeight="110px"
-            resize="y"
-            disabled={loading}
-            placeholder="Describe this blog for search results..."
-            error={errors.seo?.metaDescription?.message}
-          />
+          <div>
+            <GenericTextarea
+              id="seo.metaDescription"
+              label="Meta Description"
+              register={register("seo.metaDescription", {
+                maxLength: {
+                  value: 160,
+                  message: "Meta description cannot exceed 160 characters.",
+                },
+              })}
+              rows={3}
+              minHeight="110px"
+              resize="y"
+              disabled={loading}
+              placeholder="Describe this blog for search results..."
+              error={errors.seo?.metaDescription?.message}
+            />
 
-          <p className="mt-1 text-right text-xs text-[#95846D]">
-            {(watch("seo.metaDescription") || "").length}/160
-          </p>
+            <p className="mt-1 text-right text-xs text-[#95846D]">
+              {(watch("seo.metaDescription") || "").length}/160
+            </p>
+          </div>
 
-          <GenericInput
-            id="seo.metaKeywords"
-            label="Meta Keywords"
-            // value={}
-            // onChange
-            placeholder="honey, health benefits, natural products"
-            disabled={loading}
-            {...register("seo.metaKeywords")}
-          />
+          <div>
+            <GenericInput
+              id="seo.metaKeywords"
+              label="Meta Keywords"
+              placeholder="honey, health benefits, natural products"
+              disabled={loading}
+              {...register("seo.metaKeywords")}
+            />
 
-          <p className="mt-1 text-xs text-[#95846D]">
-            Separate keywords with commas.
-          </p>
+            <p className="mt-1 text-xs text-[#95846D]">
+              Separate keywords with commas.
+            </p>
+          </div>
         </div>
       </section>
 
@@ -917,6 +1008,7 @@ export default function BlogForm({
                       Private
                     </span>
                   </div>
+
                   <p className="mt-1.5 text-xs leading-5 text-[#95846D]">
                     Save your progress and finish the blog whenever you're
                     ready.
@@ -970,6 +1062,7 @@ export default function BlogForm({
                       Go Live
                     </span>
                   </div>
+
                   <p className="mt-1.5 text-xs leading-5 text-[#95846D]">
                     Make your blog available to readers on your website.
                   </p>
@@ -1018,7 +1111,7 @@ export default function BlogForm({
               {loadingButtonText}
             </>
           ) : (
-            <>{buttonText}</>
+            buttonText
           )}
         </button>
       </div>

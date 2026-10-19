@@ -336,32 +336,24 @@ const couponApi = {
 };
 
 const blogApi = {
-  add: async (blogData) => {
-    const response = await api.post("/api/admin/blog/add", blogData);
-    return response;
+  add: async (formData) => {
+    return await api.post("/api/admin/blog/add", formData);
   },
 
   getAll: async () => {
-    const response = await api.get("/api/admin/blog/getAll");
-    return response;
+    return await api.get("/api/admin/blog/getAll");
   },
 
   getOne: async (id) => {
-    const response = await api.get(`/api/admin/blog/get/${id}`);
-    return response;
+    return await api.get(`/api/admin/blog/get/${id}`);
   },
 
-  update: async (id, updateBlogData) => {
-    const response = await api.put(
-      `/api/admin/blog/update/${id}`,
-      updateBlogData,
-    );
-    return response;
+  update: async (id, formData) => {
+    return await api.put(`/api/admin/blog/update/${id}`, formData);
   },
 
   delete: async (id) => {
-    const response = await api.delete(`/api/admin/blog/delete/${id}`);
-    return response;
+    return await api.delete(`/api/admin/blog/delete/${id}`);
   },
 };
 

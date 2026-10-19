@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@next/swc-wasm-nodejs": "^16.3.1",
+    "@tiptap/extension-image": "^3.32.0",
     "@tiptap/extension-link": "^3.32.0",
     "@tiptap/extension-underline": "^3.32.0",
     "@tiptap/pm": "^3.32.0",

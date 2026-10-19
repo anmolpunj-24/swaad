@@ -1,6 +1,6 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { blogApi } from "../../../api.service";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { dateHandler } from "@/utils/dateHandler";
 import Image from "next/image";
@@ -8,28 +8,41 @@ import Image from "next/image";
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);
 
-  useEffect(() => {
-    const fetchAllBlogs = async () => {
-      try {
-        const res = await blogApi.getAll();
+  const fetchAllBlogs = useCallback(async () => {
+    try {
+      const res = await blogApi.getAll();
 
-        if (res?.status === 200) {
-          setTags(res?.data?.tags);
-        }
-      } catch (error) {
-        toast.error(error?.response?.data?.message ?? "Failed to fetch blogs!");
+      if (res?.status === 200) {
+        setBlogs(res?.data?.blogs);
       }
-    };
-
-    fetchAllBlogs();
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to fetch blogs!");
+    }
   }, []);
+
+  useEffect(() => {
+    fetchAllBlogs();
+  }, [fetchAllBlogs]);
+
+  const handleDeleteBlog = async (id) => {
+    try {
+      const res = await blogApi.delete(id);
+
+      if (res?.status === 200) {
+        toast.success(res?.data?.message ?? "Blog deleted successfully!");
+        await fetchAllBlogs();
+      }
+    } catch (error) {
+      toast.error(error?.response?.data?.message ?? "Failed to delete blog!");
+    }
+  };
 
   const blogsColumns = [
     {
       key: "featuredImage",
       label: "Featured Image",
       render: (row) =>
-        row.featuredImage ? (
+        row?.featuredImage ? (
           <div className="relative h-14 w-20 overflow-hidden rounded-lg border border-[#E6DDCD] bg-[#F7F4EC]">
             <Image
               src={row.featuredImage}
@@ -58,7 +71,7 @@ export default function Blogs() {
       label: "Category",
       render: (row) => (
         <span className="text-sm font-medium text-[#4B3929]">
-          {row.categoryName || "-"}
+          {row.categoryId?.name || "-"}
         </span>
       ),
     },
@@ -66,14 +79,14 @@ export default function Blogs() {
       key: "tagNames",
       label: "Tags",
       render: (row) =>
-        row.tagNames?.length > 0 ? (
+        row.tagIds?.length > 0 ? (
           <div className="flex flex-wrap gap-2">
-            {row.tagNames.map((tag, index) => (
+            {row.tagIds.map((tag, index) => (
               <span
-                key={tag._id || tag.id || `${tag.name}-${index}`}
+                key={tag._id || `${tag.name}-${index}`}
                 className="rounded-full border border-[#DCC9A5] bg-[#F3E6CC]/60 px-3 py-1 text-xs font-semibold text-[#806C52]"
               >
-                {tag.name || tag}
+                {tag?.name}
               </span>
             ))}
           </div>
@@ -127,6 +140,13 @@ export default function Blogs() {
       type: "edit",
       label: "Edit",
       link: `/blogs/edit/${row._id}`,
+    },
+    {
+      type: "delete",
+      label: "Delete",
+      onClick: () => handleDeleteBlog(row._id),
+      confirmTitle: "Delete blog?",
+      confirmMessage: "Are you sure you want to delete this blog?",
     },
   ];
 

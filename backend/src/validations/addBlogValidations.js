@@ -1,4 +1,3 @@
-
 const { body } = require("express-validator");
 
 const addBlogRules = [
@@ -24,13 +23,9 @@ const addBlogRules = [
     .isLength({ max: 500 })
     .withMessage("Excerpt cannot exceed 500 characters!"),
 
-  body("content")
-    .notEmpty()
-    .withMessage("Blog content is required!"),
+  body("content").notEmpty().withMessage("Blog content is required!"),
 
-  body("featuredImage")
-    .optional()
-    .trim(),
+  body("featuredImage").optional().trim(),
 
   body("categoryId")
     .notEmpty()
@@ -38,14 +33,26 @@ const addBlogRules = [
     .isMongoId()
     .withMessage("Invalid category ID!"),
 
-  body("tagIds")
-    .optional()
-    .isArray()
-    .withMessage("Tag IDs must be an array!"),
+  body("tagIds").optional().isArray().withMessage("Tag IDs must be an array!"),
 
   body("tagIds.*")
     .isMongoId()
     .withMessage("Each tag ID must be a valid MongoDB ObjectId!"),
+
+  body("contentImageIds")
+    .optional()
+    .isArray()
+    .withMessage("Content image IDs must be an array!"),
+
+  body("contentImageIds.*")
+    .isString()
+    .matches(/^[a-zA-Z0-9-]+$/)
+    .withMessage("Invalid content image ID!"),
+
+  body("isActive")
+    .optional()
+    .isBoolean()
+    .withMessage("Active status must be a boolean!"),
 
   body("status")
     .optional()
@@ -57,10 +64,7 @@ const addBlogRules = [
     .isBoolean()
     .withMessage("Featured status must be a boolean!"),
 
-  body("seo")
-    .optional()
-    .isObject()
-    .withMessage("SEO must be an object!"),
+  body("seo").optional().isObject().withMessage("SEO must be an object!"),
 
   body("seo.metaTitle")
     .optional()
@@ -92,17 +96,11 @@ const addBlogRules = [
     .isURL({ protocols: ["http", "https"], require_protocol: true })
     .withMessage("Canonical URL must be a valid HTTP or HTTPS URL!"),
 
-  body("seo.ogTitle")
-    .optional()
-    .trim(),
+  body("seo.ogTitle").optional().trim(),
 
-  body("seo.ogDescription")
-    .optional()
-    .trim(),
+  body("seo.ogDescription").optional().trim(),
 
-  body("seo.ogImage")
-    .optional()
-    .trim(),
+  body("seo.ogImage").optional().trim(),
 
   body("seo.robots")
     .optional()
@@ -113,7 +111,6 @@ const addBlogRules = [
       "noindex,nofollow",
     ])
     .withMessage("Invalid robots directive!"),
-
 ];
 
 module.exports = addBlogRules;

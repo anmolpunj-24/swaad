@@ -21,10 +21,10 @@ const storage = multer.memoryStorage();
 
 const types = {
   image: {
-    fileSize: 10 * 1024 * 1024, // 10 MB
-    fileTypes: /jpeg|jpg|png/,
-    mimeType: ["image/jpeg", "image/png"],
-    errorMessage: "Only images are allowed!",
+    fileSize: 10 * 1024 * 1024,
+    fileTypes: /jpeg|jpg|png|webp/,
+    mimeType: ["image/jpeg", "image/png", "image/webp"],
+    errorMessage: "Only JPEG, PNG, and WebP images are allowed!",
   },
 
   file: {
