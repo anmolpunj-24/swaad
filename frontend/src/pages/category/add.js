@@ -25,12 +25,19 @@ export default function AddCategory() {
       const res = await categoryApi.add(categoryData);
       if (res?.status === 201) {
         toast.success(res?.data?.message);
-        router.push("/category")
+        router.push("/category");
       } else {
         toast.error(res?.data?.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message ?? "An error occurred");
+      const errors = error.response?.data?.error;
+      if (Array.isArray(errors) && errors.length > 0) {
+        errors.forEach((err) => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message ?? "An error occurred");
+      }
     } finally {
       setAddingCategory(false);
     }
@@ -50,7 +57,14 @@ export default function AddCategory() {
         toast.error(res?.data?.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message ?? "An error occurred");
+      const errors = error.response?.data?.error;
+      if (Array.isArray(errors) && errors.length > 0) {
+        errors.forEach((err) => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message ?? "An error occurred");
+      }
     }
   };
 

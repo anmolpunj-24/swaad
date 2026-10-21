@@ -153,10 +153,10 @@ export default function CategoryForm({
                         setValue("parentName", "");
                       }
                     }}
-                    className={`flex h-[52px] w-full items-center justify-between rounded-xl border px-4 text-left outline-none transition-all duration-300 ${
+                    className={`flex h-[52px] w-full items-center justify-between rounded-xl bg-white border px-4 text-left outline-none transition-all duration-300 ${
                       field.value
-                        ? "border-[#DCC9A5] bg-[#FCF8EF]"
-                        : "border-[#DDD3C1] bg-white"
+                        ? "border-[#DCC9A5]"
+                        : "border-[#DDD3C1]"
                     } disabled:cursor-not-allowed disabled:opacity-60`}
                   >
                     <div className="flex items-center gap-3">

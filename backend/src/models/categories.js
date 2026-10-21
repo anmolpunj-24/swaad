@@ -34,6 +34,14 @@ const categorySchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-categorySchema.index({ name: 1, parentId: 1 }, { unique: true });
+categorySchema.index(
+  { name: 1, parentId: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
+);
 
 module.exports = mongoose.model("categories", categorySchema);

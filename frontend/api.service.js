@@ -116,11 +116,6 @@ const userApi = {
     const response = await api.get(`/api/admin/user/get/${uuid}`);
     return response;
   },
-
-  delete: async (uuid) => {
-    const response = await api.delete(`/api/admin/user/delete/${uuid}`);
-    return response;
-  },
 };
 
 const customerApi = {

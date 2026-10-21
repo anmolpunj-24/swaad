@@ -19,12 +19,19 @@ export default function AddProduct() {
 
       if (res?.status === 201) {
         toast.success(res?.data?.message);
-        router.push("/products")
+        router.push("/products");
       } else {
         toast.error(res?.data?.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message ?? "An error occurred");
+      const errors = error.response?.data?.error;
+      if (Array.isArray(errors) && errors.length > 0) {
+        errors.forEach((err) => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message ?? "An error occurred");
+      }
     } finally {
       setAddingProduct(false);
     }
@@ -46,7 +53,14 @@ export default function AddProduct() {
         toast.error(res?.data?.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message ?? "An error occurred");
+      const errors = error.response?.data?.error;
+      if (Array.isArray(errors) && errors.length > 0) {
+        errors.forEach((err) => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message ?? "An error occurred");
+      }
     } finally {
       setCategoryLoading(false);
     }

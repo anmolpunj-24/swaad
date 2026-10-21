@@ -13,7 +13,6 @@ const blogSchema = new mongoose.Schema(
       required: true,
       trim: true,
       lowercase: true,
-      unique: true,
     },
 
     excerpt: {
@@ -95,6 +94,16 @@ const blogSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+  },
+);
+
+blogSchema.index(
+  { slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
   },
 );
 

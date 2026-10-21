@@ -99,6 +99,10 @@ export default function UserForm({
             icon={UserRound}
             {...register("name", {
               required: "Name is required!",
+              pattern: {
+                value: /^[a-zA-Z ]+$/,
+                message: "Name must contain only letters!",
+              },
             })}
           />
 
@@ -113,7 +117,7 @@ export default function UserForm({
             {...register("email", {
               required: "Email is required!",
               pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                value: /^[a-zA-Z0-9._%+-]+@gmail\.com$/i,
                 message: "Enter a valid email!",
               },
             })}
@@ -123,13 +127,11 @@ export default function UserForm({
             id="phone"
             label="Phone"
             type="tel"
-            required
             disabled={loading}
             error={errors.phone?.message}
             icon={Phone}
             maxLength={10}
             {...register("phone", {
-              required: "Phone is required!",
               pattern: {
                 value: /^[0-9]{10}$/,
                 message: "Phone number must contain 10 digits!",
@@ -140,13 +142,10 @@ export default function UserForm({
           <GenericSelect
             id="gender"
             label="Gender"
-            required
             disabled={loading}
             error={errors.gender?.message}
             icon={UserRound}
-            {...register("gender", {
-              required: "Gender is required!",
-            })}
+            {...register("gender", {})}
           >
             <option value="" disabled>
               Select gender
@@ -162,7 +161,6 @@ export default function UserForm({
             name="dob"
             label="Date of Birth"
             control={control}
-            required
             disabled={loading}
             maxDate="today"
             minDate="1900-01-01"

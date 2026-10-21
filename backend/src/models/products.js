@@ -36,4 +36,14 @@ const productSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
+productSchema.index(
+  { slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
+  },
+);
+
 module.exports = mongoose.model("products", productSchema);

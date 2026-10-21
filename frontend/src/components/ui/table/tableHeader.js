@@ -40,7 +40,7 @@ export default function TableHeader({
               <button
                 type="submit"
                 aria-label={`Search ${title.toLowerCase()}`}
-                className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-[#463421] text-[#FFF8E7] transition-colors hover:bg-[#59432C]"
+                className="absolute right-1 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-full bg-[#463421] text-[#FFF8E7] transition-colors hover:bg-[#59432C] hover:cursor-pointer"
               >
                 <Search size={16} />
               </button>

@@ -9,13 +9,6 @@ const addUserService = async (userData) => {
 
   const savedUser = await userRepo.addUserRepo({ name, email, password });
 
-  await userRepo.addCustomerRepo({
-    userId: savedUser._id,
-    gender,
-    dob,
-    phone,
-  });
-
   return savedUser;
 };
 

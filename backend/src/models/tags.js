@@ -13,7 +13,6 @@ const tagSchema = new mongoose.Schema(
       required: true,
       trim: true,
       lowercase: true,
-      unique: true,
     },
 
     isActive: {
@@ -28,6 +27,16 @@ const tagSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+  },
+);
+
+tagSchema.index(
+  { slug: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
   },
 );
 

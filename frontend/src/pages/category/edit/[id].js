@@ -64,7 +64,7 @@ export default function EditCategory() {
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Category updated successfully!");
-        router.push("/category")
+        router.push("/category");
       }
     } catch (error) {
       toast.error(
@@ -89,7 +89,14 @@ export default function EditCategory() {
         toast.error(res?.data?.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message ?? "An error occurred");
+      const errors = error.response?.data?.error;
+      if (Array.isArray(errors) && errors.length > 0) {
+        errors.forEach((err) => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message ?? "An error occurred");
+      }
     }
   };
 

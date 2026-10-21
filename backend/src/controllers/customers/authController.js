@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 const user = require("../../models/users");
+const customer = require("../../models/customers");
 const accessTokensModel = require("../../models/access_tokens");
 
 const userLogin = async (req, res) => {
@@ -46,7 +47,7 @@ const userLogin = async (req, res) => {
 };
 
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, gender, dob, phone } = req.body;
 
   const token = jwt.sign(
     {
@@ -65,11 +66,20 @@ const registerUser = async (req, res) => {
     password,
   });
 
-  const registeredUser = await newUser.save();
+  const registeredCustomer = await newUser.save();
+
+  const newCustomer = new customer({
+    userId: registeredCustomer._id,
+    gender,
+    dob,
+    phone,
+  });
+
+  await newCustomer.save();
 
   return res.status(201).json({
     message: "Registration succesfull!",
-    user: registeredUser,
+    user: registeredCustomer,
     token,
   });
 };

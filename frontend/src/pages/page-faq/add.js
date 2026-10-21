@@ -17,12 +17,19 @@ export default function AddPageFaq() {
 
       if (res?.status === 201) {
         toast.success(res?.data?.message);
-        router.push("/page-faq")
+        router.push("/page-faq");
       } else {
         toast.error(res?.data?.message);
       }
     } catch (error) {
-      toast.error(error.response?.data?.message ?? "An error occurred");
+      const errors = error.response?.data?.error;
+      if (Array.isArray(errors) && errors.length > 0) {
+        errors.forEach((err) => {
+          toast.error(`${err.field}: ${err.message}`);
+        });
+      } else {
+        toast.error(error.response?.data?.message ?? "An error occurred");
+      }
     } finally {
       setAddingPageFaq(false);
     }

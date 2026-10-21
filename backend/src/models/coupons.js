@@ -7,7 +7,6 @@ const couponSchema = new mongoose.Schema(
       required: true,
       trim: true,
       uppercase: true,
-      unique: true,
     },
 
     description: {
@@ -84,6 +83,16 @@ const couponSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+  },
+);
+
+couponSchema.index(
+  { code: 1 },
+  {
+    unique: true,
+    partialFilterExpression: {
+      deletedAt: null,
+    },
   },
 );
 

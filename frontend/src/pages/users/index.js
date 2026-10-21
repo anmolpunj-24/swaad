@@ -22,19 +22,6 @@ export default function Users() {
     fetchAllUsers();
   }, [fetchAllUsers]);
 
-  const handleDeleteUser = async (id) => {
-    try {
-      const res = await userApi.delete(id);
-
-      if (res?.status === 200) {
-        toast.success(res?.data?.message ?? "User deleted successfully!");
-        await fetchAllUsers();
-      }
-    } catch (error) {
-      toast.error(error?.response?.data?.message ?? "Failed to delete user!");
-    }
-  };
-
   const userColumns = [
     {
       key: "name",
@@ -61,16 +48,6 @@ export default function Users() {
     },
   ];
 
-  const actionsData = (row) => [
-    {
-      type: "delete",
-      label: "Delete",
-      onClick: () => handleDeleteUser(row.uuid),
-      confirmTitle: "Delete user?",
-      confirmMessage: "Are you sure you want to delete this user?",
-    },
-  ];
-
   return (
     <>
       <div className="mb-6">
@@ -85,7 +62,6 @@ export default function Users() {
         title="Users"
         addButtonText="Add User"
         onAdd="/users/add"
-        actions={actionsData}
       />
     </>
   );
