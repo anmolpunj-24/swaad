@@ -91,7 +91,7 @@ export default function EditBlog() {
       const errors = error.response?.data?.error;
       if (Array.isArray(errors) && errors.length > 0) {
         errors.forEach((err) => {
-          toast.error(`${err.field}: ${err.message}`);
+          toast.error(`${err.message}`);
         });
       } else {
         toast.error(error.response?.data?.message ?? "An error occurred");
@@ -122,7 +122,7 @@ export default function EditBlog() {
       const errors = error.response?.data?.error;
       if (Array.isArray(errors) && errors.length > 0) {
         errors.forEach((err) => {
-          toast.error(`${err.field}: ${err.message}`);
+          toast.error(`${err.message}`);
         });
       } else {
         toast.error(error.response?.data?.message ?? "An error occurred");
