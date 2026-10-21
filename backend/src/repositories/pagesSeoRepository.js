@@ -1,4 +1,4 @@
-const pageSeoModel = require("../models/pages_seo");
+const pageSeoModel = require("../models/page_seos");
 
 const addPageSeoRepo = async (pageSeoData) => {
   const newPageSeo = new pageSeoModel(pageSeoData);

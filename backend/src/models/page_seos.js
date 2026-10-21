@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
 
-const faqSchema = new mongoose.Schema(
+const seoSchema = new mongoose.Schema(
   {
-    pageSlug: {
+    slug: {
       type: String,
       required: true,
       trim: true,
@@ -15,22 +15,19 @@ const faqSchema = new mongoose.Schema(
       trim: true,
     },
 
-    questionSlug: {
+    metaTitle: {
       type: String,
-      required: true,
-      trim: true,
-      lowercase: true,
-    },
-
-    question: {
-      type: String,
-      required: true,
       trim: true,
     },
 
-    answer: {
+    metaDescription: {
       type: String,
       trim: true,
+    },
+
+    metaKeywords: {
+      type: [String],
+      default: [],
     },
 
     isActive: {
@@ -46,8 +43,8 @@ const faqSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-faqSchema.index(
-  { pageSlug: 1, questionSlug: 1 },
+seoSchema.index(
+  { slug: 1 },
   {
     unique: true,
     partialFilterExpression: {
@@ -56,4 +53,4 @@ faqSchema.index(
   },
 );
 
-module.exports = mongoose.model("pages_faq", faqSchema);
+module.exports = mongoose.model("page_seos", seoSchema);

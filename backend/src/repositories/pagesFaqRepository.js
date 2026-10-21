@@ -1,4 +1,4 @@
-const pageFaqModel = require("../models/pages_faq");
+const pageFaqModel = require("../models/page_faqs");
 
 const addPageFaqRepo = async (pageFaqData) => {
   const newPageFaq = new pageFaqModel(pageFaqData);
