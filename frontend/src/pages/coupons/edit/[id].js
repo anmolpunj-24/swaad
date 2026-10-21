@@ -46,6 +46,7 @@ export default function EditCoupon() {
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Coupon updated successfully!");
+        router.push("/coupons");
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to update coupon!");

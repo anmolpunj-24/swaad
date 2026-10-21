@@ -12,7 +12,7 @@ const userLogin = async (req, res) => {
     deletedAt: null,
     isActive: true,
   });
- 
+
   if (!existingUser) {
     return res.status(401).json({ message: "Invalid email or password!" });
   }

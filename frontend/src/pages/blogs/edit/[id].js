@@ -181,9 +181,8 @@ export default function EditBlog() {
     try {
       const response = await blogApi.update(blogId, formData);
 
-      if (response.status >= 200 && response.status < 300) {
+      if (response.status === 200) {
         toast.success(response.data?.message || "Blog updated successfully!");
-
         router.push("/blogs");
       }
     } catch (error) {

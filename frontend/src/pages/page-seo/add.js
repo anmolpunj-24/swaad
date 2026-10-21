@@ -28,6 +28,7 @@ export default function AddPageSeo() {
       const res = await pageSeoApi.add(pageSeoData);
       if (res?.status === 201) {
         toast.success(res?.data?.message);
+        router.push("/page-seo")
       } else {
         toast.error(res?.data?.message);
       }

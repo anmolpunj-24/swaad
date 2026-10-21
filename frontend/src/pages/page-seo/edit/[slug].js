@@ -55,6 +55,7 @@ export default function EditPageSeo() {
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Page seo updated successfully!");
+         router.push("/page-seo")
       }
     } catch (error) {
       toast.error(

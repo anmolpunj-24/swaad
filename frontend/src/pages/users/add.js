@@ -26,6 +26,7 @@ export default function AddUser() {
       const res = await userApi.add(userData);
       if (res?.status === 201) {
         toast.success(res?.data?.message);
+        router.push("/users")
       } else {
         toast.error(res?.data?.message);
       }

@@ -44,6 +44,7 @@ export default function EditTag() {
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Tag updated successfully!");
+        router.push("/tags");
       }
     } catch (error) {
       toast.error(error?.response?.data?.message || "Failed to update tag!");

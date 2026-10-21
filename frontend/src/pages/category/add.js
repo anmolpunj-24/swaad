@@ -25,6 +25,7 @@ export default function AddCategory() {
       const res = await categoryApi.add(categoryData);
       if (res?.status === 201) {
         toast.success(res?.data?.message);
+        router.push("/category")
       } else {
         toast.error(res?.data?.message);
       }

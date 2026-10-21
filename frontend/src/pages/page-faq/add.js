@@ -17,6 +17,7 @@ export default function AddPageFaq() {
 
       if (res?.status === 201) {
         toast.success(res?.data?.message);
+        router.push("/page-faq")
       } else {
         toast.error(res?.data?.message);
       }

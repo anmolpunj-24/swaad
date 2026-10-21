@@ -16,6 +16,7 @@ export default function AddTag() {
       const res = await tagApi.add(data);
       if (res?.status === 201) {
         toast.success(res?.data?.message);
+        router.push("/tags")
       } else {
         toast.error(res?.data?.message);
       }

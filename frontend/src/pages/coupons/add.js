@@ -16,6 +16,7 @@ export default function AddCoupon() {
       const res = await couponApi.add(data);
       if (res?.status === 201) {
         toast.success(res?.data?.message);
+        router.push("/coupons")
       } else {
         toast.error(res?.data?.message);
       }

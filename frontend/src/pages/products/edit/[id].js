@@ -53,6 +53,7 @@ export default function EditProduct() {
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Product updated successfully!");
+        router.push("/products");
       }
     } catch (error) {
       toast.error(

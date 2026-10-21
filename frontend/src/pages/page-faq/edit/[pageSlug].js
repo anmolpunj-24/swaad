@@ -46,6 +46,7 @@ export default function EditPageFaq() {
 
       if (res?.status === 200) {
         toast.success(res?.data?.message || "Page faqs updated successfully!");
+        router.push("/page-faq");
       }
     } catch (error) {
       toast.error(
