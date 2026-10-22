@@ -3,7 +3,10 @@ const routes = express.Router();
 
 const pagesFaqController = require("../controllers/admins/pagesFaqController");
 
+const validationMiddleware = require("../middlewares/globalValidationMiddleware");
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
+
+const addPagesFaqRules = require("../validations/addPageFaqValiidations");
 
 routes.get(
   "/getAll",
@@ -17,7 +20,13 @@ routes.get(
   pagesFaqController.getOnePageAllFaq,
 );
 
-routes.post("/add", authenticateUserMiddleware, pagesFaqController.addPageFaq);
+routes.post(
+  "/add",
+  authenticateUserMiddleware,
+  addPagesFaqRules,
+  validationMiddleware,
+  pagesFaqController.addPageFaq,
+);
 
 routes.put(
   "/update/:pageSlug",

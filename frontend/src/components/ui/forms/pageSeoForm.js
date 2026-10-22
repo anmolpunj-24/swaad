@@ -76,6 +76,11 @@ export default function PageSeoForm({
             error={errors.pageName?.message}
             {...register("pageName", {
               required: "Page name is required!",
+              pattern: {
+                value: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+                message:
+                  "Page name can contain only uppercase and lowercase letters with single spaces!",
+              },
               onChange: (e) => {
                 setValue("slug", SlugifyHandler(e.target.value), {
                   shouldDirty: true,
@@ -96,6 +101,11 @@ export default function PageSeoForm({
             extraText="Automatically generated from page name"
             {...register("slug", {
               required: "Slug is required!",
+              pattern: {
+                value: /^[a-z]+(?:-[a-z]+)*$/,
+                message:
+                  "Slug can contain only lowercase letters and single hyphens between words!",
+              },
             })}
           />
         </div>

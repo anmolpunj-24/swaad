@@ -5,15 +5,22 @@ const addPageSeoRules = [
     .trim()
     .notEmpty()
     .withMessage("Slug is required!")
-    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+    .bail()
+    .matches(/^[a-z]+(?:-[a-z]+)*$/)
     .withMessage(
-      "Slug must contain only lowercase letters, numbers, and hyphens.",
+      "Slug can contain only lowercase letters and single hyphens between words!",
     ),
 
   body("pageName")
     .trim()
     .notEmpty()
     .withMessage("Page name is required!")
+    .bail()
+    .matches(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
+    .withMessage(
+      "Page name can contain only uppercase and lowercase letters with single spaces!",
+    )
+    .bail()
     .isLength({ max: 100 })
     .withMessage("Page name cannot exceed 100 characters!"),
 

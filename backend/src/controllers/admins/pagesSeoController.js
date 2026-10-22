@@ -15,7 +15,7 @@ const getAllPagesSeo = async (req, res) => {
 
   return res
     .status(200)
-    .json({ message: "All pages seos fetched!", seos: allPagesSeo });
+    .json({ message: "All page seos fetched!", seos: allPagesSeo });
 };
 
 const getOnePageSeo = async (req, res) => {

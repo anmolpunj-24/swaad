@@ -9,7 +9,7 @@ const authenticateUserMiddleware = require("../middlewares/authMiddleware");
 const addPagesSeoRules = require("../validations/addPageSeoValidations");
 
 routes.get(
-  "/getAll",
+  "/getAll", 
   authenticateUserMiddleware,
   pagesSeoController.getAllPagesSeo,
 );

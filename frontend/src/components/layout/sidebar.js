@@ -34,11 +34,6 @@ const sidebarItems = [
     icon: Tags,
   },
   {
-    label: "Products",
-    href: "/products",
-    icon: Store,
-  },
-  {
     label: "Tags",
     href: "/tags",
     icon: Tags,
@@ -49,17 +44,23 @@ const sidebarItems = [
     icon: TicketPercent,
   },
   {
+    label: "Products",
+    href: "/products",
+    icon: Store,
+  },
+
+  {
     label: "Blogs",
     href: "/blogs",
     icon: Newspaper,
   },
   {
-    label: "Pages Seo",
+    label: "Page Seos",
     href: "/page-seo",
     icon: ScanSearch,
   },
   {
-    label: "Pages Faqs",
+    label: "Page Faqs",
     href: "/page-faq",
     icon: CircleHelp,
   },

@@ -95,6 +95,11 @@ export default function PageFaqForm({
             placeholder="Enter page name"
             {...register("pageName", {
               required: " is required!",
+              pattern: {
+                value: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+                message:
+                  "Page name can contain only uppercase and lowercase letters with single spaces!",
+              },
               onChange: (e) => {
                 setValue("pageSlug", SlugifyHandler(e.target.value), {
                   shouldDirty: true,
@@ -115,6 +120,11 @@ export default function PageFaqForm({
             extraText="Automatically generated from page name"
             {...register("pageSlug", {
               required: "Page slug is required!",
+              pattern: {
+                value: /^[a-z]+(?:-[a-z]+)*$/,
+                message:
+                  "Slug can contain only lowercase letters and single hyphens between words!",
+              },
             })}
           />
         </div>

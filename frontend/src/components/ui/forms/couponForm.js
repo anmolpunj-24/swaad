@@ -144,6 +144,11 @@ export default function CouponForm({
               buttonDisabled={loading}
               {...register("code", {
                 required: "Coupon code is required!",
+                pattern: {
+                  value: /^[A-Za-z0-9_-]+$/,
+                  message:
+                    "Coupon code can contain only letters, numbers, hyphens, and underscores!",
+                },
                 validate: (value) =>
                   value.trim().length > 0 || "Coupon code cannot be empty!",
                 onChange: (e) => {

@@ -11,7 +11,7 @@ const addCouponRules = [
     .withMessage(
       "Coupon code can contain only letters, numbers, hyphens, and underscores!",
     )
-    .toUpperCase(),
+    .toUpperCase(), 
 
   body("description")
     .optional()
