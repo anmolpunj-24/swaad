@@ -94,7 +94,7 @@ export default function PageFaqForm({
             error={errors.pageName?.message}
             placeholder="Enter page name"
             {...register("pageName", {
-              required: " is required!",
+              required: "Page name is required!",
               pattern: {
                 value: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
                 message:
