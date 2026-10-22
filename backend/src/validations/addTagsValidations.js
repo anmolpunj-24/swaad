@@ -5,6 +5,10 @@ const addBlogTagRules = [
     .trim()
     .notEmpty()
     .withMessage("Tag name is required!")
+    .bail()
+    .matches(/^[a-zA-Z]+(?: [a-zA-Z]+)*$/)
+    .withMessage("Tag name can contain only letters and single spaces!")
+    .bail()
     .isLength({ max: 100 })
     .withMessage("Tag name cannot exceed 100 characters!"),
 
@@ -12,10 +16,9 @@ const addBlogTagRules = [
     .trim()
     .notEmpty()
     .withMessage("Slug is required!")
-    .matches(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
-    .withMessage(
-      "Slug must contain only lowercase letters, numbers, and hyphens.",
-    ),
+    .bail()
+    .matches(/^[a-z]+(?:-[a-z]+)*$/)
+    .withMessage("Slug must contain only lowercase letters and hyphens!"),
 ];
 
 module.exports = addBlogTagRules;

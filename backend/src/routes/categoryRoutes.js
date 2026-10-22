@@ -3,7 +3,10 @@ const routes = express.Router();
 
 const categoryController = require("../controllers/admins/categoryController");
 
+const validationMiddleware = require("../middlewares/globalValidationMiddleware");
 const authenticateUserMiddleware = require("../middlewares/authMiddleware");
+
+const addCategoryRules = require("../validations/addCategoryValidations");
 
 routes.get(
   "/getAll",
@@ -17,7 +20,13 @@ routes.get(
   categoryController.getOneCategory,
 );
 
-routes.post("/add", authenticateUserMiddleware, categoryController.addCategory);
+routes.post(
+  "/add",
+  authenticateUserMiddleware,
+  addCategoryRules,
+  validationMiddleware,
+  categoryController.addCategory,
+);
 
 routes.put(
   "/update/:id",

@@ -1,5 +1,5 @@
 import { useForm, Controller } from "react-hook-form";
-import { Check, ChevronDown, FolderTree, ShieldCheck, Tag } from "lucide-react";
+import { Check, FolderTree, ShieldCheck, Tag } from "lucide-react";
 import { SlugifyHandler } from "@/utils/slugifyHandler";
 import { useEffect } from "react";
 import GenericInput from "../genericInput";
@@ -82,6 +82,11 @@ export default function CategoryForm({
             placeholder="Enter category name"
             {...register("name", {
               required: "Category name is required!",
+              pattern: {
+                value: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+                message:
+                  "Category name can contain only letters and single spaces!",
+              },
               onChange: (e) => {
                 setValue("slug", SlugifyHandler(e.target.value), {
                   shouldDirty: true,
@@ -101,6 +106,11 @@ export default function CategoryForm({
             placeholder="category-slug"
             {...register("slug", {
               required: "Slug is required!",
+              pattern: {
+                value: /^[a-z]+(?:-[a-z]+)*$/,
+                message:
+                  "Slug can contain only lowercase letters separated by single hyphens!",
+              },
             })}
             extraText="Automatically generated from category name"
           />
@@ -154,9 +164,7 @@ export default function CategoryForm({
                       }
                     }}
                     className={`flex h-[52px] w-full items-center justify-between rounded-xl bg-white border px-4 text-left outline-none transition-all duration-300 ${
-                      field.value
-                        ? "border-[#DCC9A5]"
-                        : "border-[#DDD3C1]"
+                      field.value ? "border-[#DCC9A5]" : "border-[#DDD3C1]"
                     } disabled:cursor-not-allowed disabled:opacity-60`}
                   >
                     <div className="flex items-center gap-3">

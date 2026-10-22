@@ -15,13 +15,13 @@ export default function App({ Component, pageProps }) {
 
   return pagesToNotShowHeaderFooterSidebar ? (
     <>
-      <Toaster />
+      <Toaster position="bottom-right" gap={12} visibleToasts={5} />
       <Component {...pageProps} />
     </>
   ) : (
     <>
       {/* <GlobalLoader /> */}
-      <Toaster />
+      <Toaster position="bottom-right" gap={12} visibleToasts={5} />{" "}
       <BaseLayout>
         <Component {...pageProps} />
       </BaseLayout>

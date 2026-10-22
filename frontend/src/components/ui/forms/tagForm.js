@@ -78,6 +78,10 @@ export default function TagForm({
             error={errors.name?.message}
             {...register("name", {
               required: "Tag name is required!",
+              pattern: {
+                value: /^[a-zA-Z]+(?: [a-zA-Z]+)*$/,
+                message: "Tag name can contain only letters and single spaces!",
+              },
               onChange: (e) => {
                 setValue("slug", SlugifyHandler(e.target.value), {
                   shouldDirty: true,
@@ -98,6 +102,11 @@ export default function TagForm({
             extraText="Automatically generated from tag name"
             {...register("slug", {
               required: "Slug is required!",
+              pattern: {
+                value: /^[a-z]+(?:-[a-z]+)*$/,
+                message:
+                  "Slug must contain only lowercase letters and hyphens!",
+              },
             })}
           />
         </div>
