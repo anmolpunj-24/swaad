@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Cropper from "react-easy-crop";
 import { useForm, Controller } from "react-hook-form";
 import {
   Check,
@@ -30,6 +31,52 @@ const labelClass = "mb-2 block text-xs font-bold tracking-wide text-[#66533C]";
 const sectionHeadingClass = "text-lg font-bold text-[#463525]";
 
 const sectionDescriptionClass = "mt-1 text-xs leading-5 text-[#95846D]";
+
+const createCroppedImage = (imageSrc, pixelCrop) =>
+  new Promise((resolve, reject) => {
+    const image = new Image();
+
+    image.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = pixelCrop.width;
+      canvas.height = pixelCrop.height;
+
+      const context = canvas.getContext("2d");
+
+      if (!context) {
+        reject(new Error("Unable to crop this image."));
+        return;
+      }
+
+      context.drawImage(
+        image,
+        pixelCrop.x,
+        pixelCrop.y,
+        pixelCrop.width,
+        pixelCrop.height,
+        0,
+        0,
+        pixelCrop.width,
+        pixelCrop.height,
+      );
+
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Unable to prepare the cropped image."));
+            return;
+          }
+
+          resolve(blob);
+        },
+        "image/jpeg",
+        0.92,
+      );
+    };
+
+    image.onerror = () => reject(new Error("Unable to load this image."));
+    image.src = imageSrc;
+  });
 
 const EMPTY_BLOG_VALUES = {
   title: "",
@@ -87,6 +134,12 @@ export default function BlogForm({
   const [contentImageFiles, setContentImageFiles] = useState([]);
   const [removeFeaturedImage, setRemoveFeaturedImage] = useState(false);
 
+  const [cropImage, setCropImage] = useState("");
+  const [cropSourceFile, setCropSourceFile] = useState(null);
+  const [cropPosition, setCropPosition] = useState({ x: 0, y: 0 });
+  const [cropZoom, setCropZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+
   const selectedTagIds = watch("tagIds") || [];
   const currentFeaturedImage = watch("featuredImage");
 
@@ -108,6 +161,11 @@ export default function BlogForm({
     setFeaturedImageFile(null);
     setContentImageFiles([]);
     setRemoveFeaturedImage(false);
+    setCropImage("");
+    setCropSourceFile(null);
+    setCropPosition({ x: 0, y: 0 });
+    setCropZoom(1);
+    setCroppedAreaPixels(null);
   }, [defaultValues, reset]);
 
   useEffect(() => {
@@ -282,8 +340,59 @@ export default function BlogForm({
       return;
     }
 
-    setFeaturedImageFile(file);
-    setRemoveFeaturedImage(false);
+    setCropSourceFile(file);
+    setCropImage(URL.createObjectURL(file));
+    setCropPosition({ x: 0, y: 0 });
+    setCropZoom(1);
+    setCroppedAreaPixels(null);
+  };
+
+  const handleCancelCrop = () => {
+    setCropImage("");
+    setCropSourceFile(null);
+    setCroppedAreaPixels(null);
+    setCropPosition({ x: 0, y: 0 });
+    setCropZoom(1);
+  };
+
+  const handleApplyCrop = async () => {
+    if (!cropImage || !cropSourceFile || !croppedAreaPixels) {
+      toast.error("Please position the image before applying the crop.");
+      return;
+    }
+
+    try {
+      const croppedBlob = await createCroppedImage(
+        cropImage,
+        croppedAreaPixels,
+      );
+
+      if (croppedBlob.size > 5 * 1024 * 1024) {
+        toast.error("Cropped image cannot exceed 5 MB.");
+        return;
+      }
+
+      const originalName = cropSourceFile.name.replace(/\.[^.]+$/, "");
+      const croppedFile = new File(
+        [croppedBlob],
+        `${originalName}-cropped.jpg`,
+        {
+          type: "image/jpeg",
+          lastModified: Date.now(),
+        },
+      );
+
+      setFeaturedImageFile(croppedFile);
+      setRemoveFeaturedImage(false);
+      setCropImage("");
+      setCropSourceFile(null);
+      setCroppedAreaPixels(null);
+      setCropPosition({ x: 0, y: 0 });
+      setCropZoom(1);
+      toast.success("Featured image cropped successfully.");
+    } catch (error) {
+      toast.error(error?.message || "Unable to crop the featured image.");
+    }
   };
 
   const handleRemoveFeaturedImage = () => {
@@ -440,10 +549,6 @@ export default function BlogForm({
             {...register("categoryId", {
               required: "Please select a category!",
               onChange: (e) => {
-                const selectedCategory = categories.find(
-                  (category) => category._id === e.target.value,
-                );
-
                 setValue("categoryId", e.target.value, {
                   shouldValidate: true,
                   shouldDirty: true,
@@ -729,7 +834,7 @@ export default function BlogForm({
               Featured Image
             </label>
 
-            {!featuredImageFile && !currentFeaturedImage && (
+            {!featuredImageFile && (
               <input
                 id="featuredImage"
                 type="file"
@@ -767,6 +872,96 @@ export default function BlogForm({
           </div>
         </div>
       </section>
+
+      {cropImage && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/60 p-3 sm:p-5"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="featured-image-crop-title"
+        >
+          <div className="flex max-h-[calc(100dvh-24px)] w-full max-w-3xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:max-h-[calc(100dvh-40px)]">
+            <div className="flex shrink-0 items-start justify-between gap-3 border-b border-[#ECE4D6] px-4 py-3 sm:px-6 sm:py-4">
+              <div>
+                <h2
+                  id="featured-image-crop-title"
+                  className="text-base font-bold text-[#463525] sm:text-lg"
+                >
+                  Crop Featured Image
+                </h2>
+                <p className="mt-1 text-xs text-[#95846D]">
+                  Adjust the image to fit a 16:9 landscape frame.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={handleCancelCrop}
+                className="shrink-0 rounded-full p-2 text-[#806C52] transition hover:bg-[#F3E8D0] hover:cursor-pointer"
+                aria-label="Cancel cropping"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto p-4 sm:p-6">
+              <div className="relative h-[min(42dvh,320px)] min-h-[160px] overflow-hidden rounded-xl bg-[#211E1B] sm:h-[min(48dvh,400px)]">
+                <Cropper
+                  image={cropImage}
+                  crop={cropPosition}
+                  zoom={cropZoom}
+                  aspect={16 / 9}
+                  objectFit="contain"
+                  onCropChange={setCropPosition}
+                  onZoomChange={setCropZoom}
+                  onCropComplete={(_, areaPixels) =>
+                    setCroppedAreaPixels(areaPixels)
+                  }
+                  minZoom={1}
+                  maxZoom={3}
+                  showGrid
+                />
+              </div>
+
+              <div className="mt-4">
+                <div className="mb-2 flex items-center justify-between text-xs font-semibold text-[#66533C]">
+                  <label htmlFor="featured-image-zoom">Zoom</label>
+                  <span>{cropZoom.toFixed(1)}×</span>
+                </div>
+
+                <input
+                  id="featured-image-zoom"
+                  type="range"
+                  min="1"
+                  max="3"
+                  step="0.1"
+                  value={cropZoom}
+                  onChange={(event) => setCropZoom(Number(event.target.value))}
+                  className="w-full accent-[#B28B4C]"
+                />
+              </div>
+            </div>
+
+            <div className="flex shrink-0 flex-col-reverse gap-3 border-t border-[#ECE4D6] bg-white px-4 py-3 sm:flex-row sm:justify-end sm:px-6">
+              <button
+                type="button"
+                onClick={handleCancelCrop}
+                className="rounded-3xl border border-[#DDD3C1] px-5 py-2.5 text-xs font-bold text-[#66533C] transition hover:bg-[#FCFBF8] hover:cursor-pointer"
+              >
+                Cancel
+              </button>
+
+              <button
+                type="button"
+                onClick={handleApplyCrop}
+                className="rounded-3xl bg-[#463421] px-6 py-2.5 text-xs font-bold text-white transition hover:bg-[#59432C] hover:cursor-pointer"
+              >
+                Apply Crop
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <section className="border-t border-[#ECE4D6] pt-8">
         <div className="mb-6 flex items-start gap-4">

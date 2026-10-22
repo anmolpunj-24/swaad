@@ -4,6 +4,7 @@ import { ArrowLeft, LoaderCircle } from "lucide-react";
 import { toast } from "sonner";
 import BlogForm from "@/components/ui/forms/blogForm";
 import { blogApi, categoryApi, tagApi } from "../../../../api.service";
+import GlobalLoader from "@/components/ui/globalLoader";
 
 export default function EditBlog() {
   const router = useRouter();
@@ -211,12 +212,7 @@ export default function EditBlog() {
   };
 
   if (fetchingBlog) {
-    return (
-      <div className="flex min-h-[50vh] flex-col items-center justify-center gap-3">
-        <LoaderCircle size={30} className="animate-spin text-[#B28B4C]" />
-        <p className="text-sm text-[#88765E]">Loading blog details...</p>
-      </div>
-    );
+    return <GlobalLoader />;
   }
 
   if (!blog || !defaultValues) {

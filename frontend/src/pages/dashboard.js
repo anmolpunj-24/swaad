@@ -95,7 +95,7 @@ export default function Dashboard() {
 
   const quickActions = [
     { title: "Add Product", icon: Plus, href: "/products/add" },
-    { title: "Add Category", icon: FolderPlus, href: "/category/add" },
+    { title: "Add Blog", icon: FolderPlus, href: "/blogs/add" },
     { title: "Add FAQ", icon: ScanSearch, href: "/page-faq/add" },
     { title: "Add User", icon: UserPlus, href: "/users/add" },
   ];
