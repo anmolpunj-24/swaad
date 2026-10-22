@@ -170,7 +170,7 @@ export default function ProductDetails() {
           type="button"
           onClick={() => router.back()}
           aria-label="Go back"
-          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#E7DDCA] bg-white text-[#6B5841] shadow-sm transition hover:border-[#C9A96A] hover:bg-[#FBF7EE]"
+          className="flex h-10 w-10 shrink-0 items-center justify-center rounded-3xl border border-[#E7DDCA] bg-white text-[#6B5841] shadow-sm transition hover:border-[#C9A96A] hover:bg-[#FBF7EE]"
         >
           <ArrowLeft size={18} />
         </button>
