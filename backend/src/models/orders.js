@@ -39,6 +39,12 @@ const orderSchema = new mongoose.Schema(
       default: null,
     },
 
+    shipmentTrackingUrl: {
+      type: String,
+      trim: true,
+      default: null,
+    },
+
     subtotal: {
       type: Number,
       required: true,
@@ -115,6 +121,14 @@ const orderSchema = new mongoose.Schema(
       country: {
         type: String,
         required: true,
+        trim: true,
+      },
+      landmark: {
+        type: String,
+        trim: true,
+      },
+      deliveryInstructions: {
+        type: String,
         trim: true,
       },
     },

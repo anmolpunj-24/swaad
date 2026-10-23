@@ -172,6 +172,7 @@ const trackShipmentService = async (orderId) => {
   return {
     shippingProvider: checkIfOrderExist.shippingProvider,
     shipmentTrackingId: checkIfOrderExist.shipmentTrackingId,
+    shipmentTrackingUrl: checkIfOrderExist.shipmentTrackingUrl,
     status: checkIfOrderExist.status,
   };
 };

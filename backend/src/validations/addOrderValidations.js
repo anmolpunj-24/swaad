@@ -61,6 +61,16 @@ const addOrderValidations = [
     .withMessage("Country is required.")
     .isLength({ max: 100 })
     .withMessage("Country cannot exceed 100 characters."),
+
+  body("shippingAddress.landmark")
+    .optional({ checkFalsy: true })
+    .trim()
+    .isLength({ max: 200 })
+    .withMessage("Landmark cannot exceed 200 characters."),
+
+  body("shippingAddress.deliveryInstructions")
+    .optional({ checkFalsy: true })
+    .trim(),
 ];
 
 module.exports = addOrderValidations;

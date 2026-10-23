@@ -5,7 +5,9 @@ const checkIfOrderExistInDbRepo = async (orderId) => {
     .findOne({
       _id: orderId,
     })
-    .select("_id status shippingProvider shipmentTrackingId")
+    .select(
+      "_id status shippingProvider shipmentTrackingId shipmentTrackingUrl",
+    )
     .lean();
 };
 
@@ -18,6 +20,7 @@ const addShipmentRepo = async (orderId, shipmentData) => {
       $set: {
         shippingProvider: shipmentData.shippingProvider,
         shipmentTrackingId: shipmentData.shipmentTrackingId,
+        shipmentTrackingUrl: shipmentData.shipmentTrackingUrl,
       },
     },
     {
@@ -32,7 +35,9 @@ const oneShipmentDataRepo = async (orderId) => {
     .findOne({
       _id: orderId,
     })
-    .select("_id shippingProvider shipmentTrackingId status")
+    .select(
+      "_id shippingProvider shipmentTrackingId status shipmentTrackingUrl",
+    )
     .lean();
 };
 
@@ -45,6 +50,7 @@ const updateShipmentDataRepo = async (orderId, shipmentData) => {
       $set: {
         shippingProvider: shipmentData?.shippingProvider,
         shipmentTrackingId: shipmentData?.shipmentTrackingId,
+        shipmentTrackingUrl: shipmentData?.shipmentTrackingUrl,
         status: shipmentData?.status,
       },
     },

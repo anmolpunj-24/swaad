@@ -130,6 +130,23 @@ export default function Orders() {
             </p>
 
             <p>{address.country || "-"}</p>
+            {address.landmark && (
+              <p>
+                <span className="font-semibold text-[#806C52]">Landmark:</span>{" "}
+                {address.landmark}
+              </p>
+            )}
+
+            {address.deliveryInstructions && (
+              <div className="mt-2 border-t border-[#E6DDCD] pt-2">
+                <p className="text-xs font-bold text-[#806C52]">
+                  Delivery Instructions
+                </p>
+                <p className="whitespace-pre-wrap break-words text-xs leading-5 text-[#95846D]">
+                  {address.deliveryInstructions}
+                </p>
+              </div>
+            )}
           </div>
         );
       },
@@ -150,7 +167,7 @@ export default function Orders() {
     },
   ];
 
-   const actionsData = (row) => [
+  const actionsData = (row) => [
     {
       type: "view",
       label: "View",

@@ -31,6 +31,10 @@ export default function Customers() {
 
   const customerColumns = [
     {
+      key: "uuid",
+      label: "UUID",
+    },
+    {
       key: "name",
       label: "Name",
     },
