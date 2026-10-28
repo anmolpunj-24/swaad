@@ -1,4 +1,4 @@
-const htmlHandler = (value = "") => {
+const htmlHandler = (value = "") =>
   String(value).replace(/[&<>"']/g, (char) => {
     const entities = {
       "&": "&amp;",
@@ -10,6 +10,5 @@ const htmlHandler = (value = "") => {
 
     return entities[char];
   });
-};
 
 module.exports = htmlHandler;

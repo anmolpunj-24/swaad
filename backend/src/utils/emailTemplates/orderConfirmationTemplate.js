@@ -3,43 +3,39 @@ const currencyHandler = require("../helperFuntions/currencyHandler");
 const htmlHandler = require("../helperFuntions/htmlHandler");
 
 const OrderConfirmationTemplate = (order) => {
-  const shippingAddress = order.shippingAddress || {};
-  const items = order.items || order.orderItems || [];
+  const shippingAddress = order?.shippingAddress;
+  const items = order?.orderItems || [];
 
-  const customerName = shippingAddress.name || order.customerName || "Customer";
+  const customerName = shippingAddress?.name;
 
-  const customerEmail = order.customerEmail || "";
-  const customerPhone = shippingAddress.phone || order.customerPhone || "";
+  const customerEmail = order?.customerEmail || "";
+  const customerPhone = shippingAddress?.phone || "";
 
-  const orderId = order.orderNumber || order.orderId || order._id || "N/A";
-  const orderDate = dateHandler(order.createdAt || order.orderDate);
-  const paymentStatus = String(order.paymentStatus || "pending").toUpperCase();
+  const orderId = order?._id || "N/A";
+  const orderDate = dateHandler(order?.createdAt);
+  const paymentStatus = String(order?.paymentStatus || "pending").toUpperCase();
 
   const subtotal = Number(
-    order.subtotal ??
+    order?.subtotal ??
       items.reduce(
         (sum, item) =>
-          sum + Number(item.price || 0) * Number(item.quantity || 0),
+          sum + Number(item?.price || 0) * Number(item?.quantity || 0),
         0,
       ),
   );
 
-  const discount = Number(order.discount || 0);
-  const shippingAmount = Number(order.shippingAmount || 0);
+  const discount = Number(order?.discount || 0);
+  const shippingAmount = Number(order?.shippingAmount || 0);
 
   const total = Number(
-    order.total ?? order.totalAmount ?? subtotal - discount + shippingAmount,
+    order?.totalAmount ?? subtotal - discount + shippingAmount,
   );
 
   const addressLines = [
-    shippingAddress.addressLine1 || shippingAddress.address || "",
-    shippingAddress.addressLine2 || "",
-    shippingAddress.landmark || "",
-    [
-      shippingAddress.city,
-      shippingAddress.state,
-      shippingAddress.pincode || shippingAddress.postalCode,
-    ]
+    shippingAddress?.addressLine1 || "",
+    shippingAddress?.addressLine2 || "",
+    shippingAddress?.landmark || "",
+    [shippingAddress?.city, shippingAddress?.state, shippingAddress?.pincode]
       .filter(Boolean)
       .join(", "),
     shippingAddress.country || "",
@@ -49,18 +45,18 @@ const OrderConfirmationTemplate = (order) => {
   const itemsHtml = items.length
     ? items
         .map((item) => {
-          const quantity = Number(item.quantity || 0);
-          const price = Number(item.price || 0);
+          const quantity = Number(item?.quantity || 0);
+          const price = Number(item?.price || 0);
           const lineTotal = price * quantity;
 
           return `
             <tr style="border-bottom:1px solid #f0ebe2;">
               <td style="padding:17px 12px;">
                 <div style="font-size:13px;font-weight:700;">
-                  ${htmlHandler(item.productName || "Product")}
+                  ${htmlHandler(item?.productName || "Product")}
                 </div>
                 ${
-                  item.productVariantName
+                  item?.productVariantName
                     ? `<div style="margin-top:5px;color:#978b7c;font-size:11px;">Variant: ${htmlHandler(`${item.productVariantName}`)}</div>`
                     : ""
                 }
@@ -171,14 +167,14 @@ const OrderConfirmationTemplate = (order) => {
               </tr>
 
               ${
-                 customerEmail
-                   ? `
+                customerEmail
+                  ? `
               <tr>
                 <td style="padding:5px 0;color:#766b5e;font-size:13px;">Email</td>
                 <td style="padding:5px 0;text-align:right;font-size:13px;">${htmlHandler(customerEmail)}</td>
               </tr>`
-                   : ""
-               }
+                  : ""
+              }
 
               ${
                 customerPhone

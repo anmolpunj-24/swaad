@@ -1,33 +1,27 @@
 const dateHandler = require("../helperFuntions/dateHandler");
 const htmlHandler = require("../helperFuntions/htmlHandler");
 
-const OrderShippedTemplate = (order = {}) => {
-  const shippingAddress = order.shippingAddress || {};
+const OrderShippedTemplate = (order) => {
+  const shippingAddress = order?.shippingAddress || {};
 
-  const orderId = order.orderNumber || order.orderId || order._id || "N/A";
+  const orderId = order._id || "N/A";
   const shippingProvider = order.shippingProvider || "Not specified";
   const trackingId = order.shipmentTrackingId || "";
-  const shippedOn = dateHandler(
-    order.shippedAt || order.updatedAt || order.createdAt,
-  );
+  const shippedOn = dateHandler(order.updatedAt || order.createdAt);
 
-  const customerName = shippingAddress.name || order.customerName || "Customer";
+  const customerName = shippingAddress.name || "Customer";
 
-  const customerPhone = shippingAddress.phone || order.customerPhone || "";
+  const customerPhone = shippingAddress.phone || "";
 
   const addressLines = [
     customerName,
-    shippingAddress.addressLine1 || shippingAddress.address || "",
-    shippingAddress.addressLine2 || "",
-    shippingAddress.landmark || "",
-    [
-      shippingAddress.city,
-      shippingAddress.state,
-      shippingAddress.pincode || shippingAddress.postalCode,
-    ]
+    shippingAddress?.addressLine1 || "",
+    shippingAddress?.addressLine2 || "",
+    shippingAddress?.landmark || "",
+    [shippingAddress?.city, shippingAddress?.state, shippingAddress?.pincode]
       .filter(Boolean)
       .join(", "),
-    shippingAddress.country || "",
+    shippingAddress?.country || "",
     customerPhone,
   ].filter(Boolean);
 
@@ -72,8 +66,8 @@ const OrderShippedTemplate = (order = {}) => {
     .join("");
 
   return `
-    <div style="margin:0;padding:40px 20px;background:#f3efe6;font-family:Arial,Helvetica,sans-serif;color:#2a2622;">
-      <div style="max-width:680px;margin:0 auto;background:#ffffff;border:1px solid #e5ddcf;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(42,38,34,0.08);">
+   <div style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:#2a2622;">
+      <div style="max-width:680px;margin:40px auto;background:#ffffff;border:1px solid #e5ddcf;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(42,38,34,0.08);">
 
         <div style="padding:30px 34px;background:#2a2622;color:#fffdf8;">
           <table style="width:100%;border-collapse:collapse;">
