@@ -1,20 +1,8 @@
-import { Document, Page, View, Text, StyleSheet } from "@react-pdf/renderer";
-
 const dateHandler = require("../helperFuntions/dateHandler");
 const currencyHandler = require("../helperFuntions/currencyHandler");
+const htmlHandler = require("../helperFuntions/htmlHandler");
 
-const formatText = (value, fallback = "N/A") => {
-  if (value === null || value === undefined || value === "") {
-    return fallback;
-  }
-
-  return String(value);
-};
-
-const formatStatus = (value) =>
-  formatText(value, "Pending").replace(/_/g, " ").toUpperCase();
-
-const OrderReceiptPDF = (order = {}) => {
+const OrderConfirmationTemplate = (order) => {
   const shippingAddress = order.shippingAddress || {};
   const items = order.items || order.orderItems || [];
 
@@ -24,9 +12,8 @@ const OrderReceiptPDF = (order = {}) => {
   const customerPhone = shippingAddress.phone || order.customerPhone || "";
 
   const orderId = order.orderNumber || order.orderId || order._id || "N/A";
-
   const orderDate = dateHandler(order.createdAt || order.orderDate);
-  const paymentStatus = formatStatus(order.paymentStatus);
+  const paymentStatus = String(order.paymentStatus || "pending").toUpperCase();
 
   const subtotal = Number(
     order.subtotal ??
@@ -59,232 +46,266 @@ const OrderReceiptPDF = (order = {}) => {
     customerPhone,
   ].filter(Boolean);
 
-  return (
-    <Document
-      title={`SWAAD Receipt - ${orderId}`}
-      author="SWAAD - Taste of Punjab"
-      subject="Order Receipt"
-    >
-      <Page size="A4" style={styles.page} wrap>
-        <View style={styles.header}>
-          <View>
-            <Text style={styles.brand}>SWAAD</Text>
-            <Text style={styles.tagline}>Taste of Punjab</Text>
-            <Text style={styles.tagline}>
-              Authentic flavours. Honest goodness.
-            </Text>
-          </View>
+  const itemsHtml = items.length
+    ? items
+        .map((item) => {
+          const quantity = Number(item.quantity || 0);
+          const price = Number(item.price || 0);
+          const lineTotal = price * quantity;
 
-          <View>
-            <Text style={styles.receiptLabel}>ORDER RECEIPT</Text>
-            <Text style={styles.receiptSubtitle}>
-              Your purchase, beautifully documented.
-            </Text>
-            <Text style={styles.status}>{paymentStatus}</Text>
-          </View>
-        </View>
+          return `
+            <tr style="border-bottom:1px solid #f0ebe2;">
+              <td style="padding:17px 12px;">
+                <div style="font-size:13px;font-weight:700;">
+                  ${htmlHandler(item.productName || "Product")}
+                </div>
+                ${
+                  item.productVariantName
+                    ? `<div style="margin-top:5px;color:#978b7c;font-size:11px;">Variant: ${htmlHandler(`${item.productVariantName}`)}</div>`
+                    : ""
+                }
+              </td>
 
-        <View style={styles.orderBanner}>
-          <View style={styles.bannerItem}>
-            <Text style={styles.label}>Order ID</Text>
-            <Text style={styles.value}>#{formatText(orderId)}</Text>
-          </View>
+              <td style="padding:17px 8px;text-align:center;font-size:13px;">
+                ${quantity}
+              </td>
 
-          <View style={styles.bannerItem}>
-            <Text style={styles.label}>Order Date</Text>
-            <Text style={styles.value}>{formatText(orderDate)}</Text>
-          </View>
+              <td style="padding:17px 8px;text-align:right;font-size:13px;white-space:nowrap;">
+                ${currencyHandler(price)}
+              </td>
 
-          <View style={styles.bannerItem}>
-            <Text style={styles.label}>Order Status</Text>
-            <Text style={styles.value}>{formatStatus(order.status)}</Text>
-          </View>
-        </View>
+              <td style="padding:17px 12px;text-align:right;font-size:13px;font-weight:700;white-space:nowrap;">
+                ${currencyHandler(lineTotal)}
+              </td>
+            </tr>
+          `;
+        })
+        .join("")
+    : `
+      <tr>
+        <td colspan="4" style="padding:20px;text-align:center;color:#766b5e;font-size:13px;">
+          No order items available.
+        </td>
+      </tr>
+    `;
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Customer Details</Text>
+  const addressHtml = addressLines.length
+    ? addressLines.map(htmlHandler).join("<br>")
+    : "Delivery address not available.";
 
-          <View style={styles.customerGrid}>
-            <View style={styles.customerColumn}>
-              <Text style={styles.label}>Customer</Text>
-              <Text style={styles.detail}>{customerName}</Text>
+  return `
+    <div style="margin:0;padding:0;font-family:Arial,Helvetica,sans-serif;color:#2a2622;">
+      <div style="max-width:680px;margin:40px auto;background:#ffffff;border:1px solid #e5ddcf;border-radius:20px;overflow:hidden;box-shadow:0 8px 30px rgba(42,38,34,0.08);">
 
-              {customerEmail ? (
-                <Text style={styles.detail}>{customerEmail}</Text>
-              ) : null}
+        <div style="padding:30px 34px;background:#2a2622;color:#fffdf8;">
+          <table style="width:100%;border-collapse:collapse;">
+            <tr>
+              <td style="vertical-align:middle;">
+                <div style="font-size:30px;font-weight:700;letter-spacing:2px;">
+                  SWAAD
+                </div>
+                <div style="margin-top:5px;color:#d8d0c4;font-size:13px;letter-spacing:0.5px;">
+                  Taste of Punjab
+                </div>
+              </td>
 
-              {customerPhone ? (
-                <Text style={styles.detail}>{customerPhone}</Text>
-              ) : null}
+              <td style="text-align:right;vertical-align:middle;">
+                <div style="display:inline-block;padding:8px 13px;border:1px solid #806c52;border-radius:20px;color:#e5d2aa;font-size:11px;font-weight:600;letter-spacing:0.5px;">
+                  ORDER RECEIPT
+                </div>
+              </td>
+            </tr>
+          </table>
+        </div>
 
-              {order.customerUuid ? (
-                <Text style={styles.detail}>
-                  Customer ID: {order.customerUuid}
-                </Text>
-              ) : null}
-            </View>
+        <div style="height:4px;background:#b3925a;"></div>
 
-            <View style={styles.customerColumn}>
-              <Text style={styles.label}>Delivery Address</Text>
+        <div style="padding:34px;">
 
-              {addressLines.length ? (
-                addressLines.map((line, index) => (
-                  <Text key={index} style={styles.detail}>
-                    {line}
-                  </Text>
-                ))
-              ) : (
-                <Text style={styles.detail}>
-                  Delivery address not available.
-                </Text>
-              )}
+          <div style="text-align:center;margin-bottom:32px;">
+            <div style="margin:0 auto 14px;width:48px;height:48px;border-radius:50%;background:#f3ead8;text-align:center;line-height:48px;font-size:23px;">
+              ✓
+            </div>
 
-              {shippingAddress.deliveryInstructions ? (
-                <Text style={styles.detail}>
-                  Instructions: {shippingAddress.deliveryInstructions}
-                </Text>
-              ) : null}
-            </View>
-          </View>
-        </View>
+            <h2 style="margin:0 0 8px;font-size:24px;color:#2a2622;">
+              Order Confirmed
+            </h2>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Order Items</Text>
+            <p style="margin:0;color:#766b5e;font-size:14px;line-height:1.7;">
+              Thank you for your order! Your order has been successfully confirmed and we're preparing it for you.
+            </p>
+          </div>
 
-          <View style={styles.table}>
-            <View style={styles.tableHeader} fixed>
-              <Text style={[styles.tableHeaderText, styles.productColumn]}>
-                PRODUCT
-              </Text>
-              <Text style={[styles.tableHeaderText, styles.qtyColumn]}>
-                QTY
-              </Text>
-              <Text style={[styles.tableHeaderText, styles.priceColumn]}>
-                PRICE
-              </Text>
-              <Text style={[styles.tableHeaderText, styles.totalColumn]}>
-                TOTAL
-              </Text>
-            </View>
+          <div style="padding:20px;background:#f8f5ee;border:1px solid #ebe3d5;border-radius:14px;margin-bottom:30px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Order ID</td>
+                <td style="padding:5px 0;text-align:right;font-weight:700;font-size:13px;">#${htmlHandler(orderId)}</td>
+              </tr>
 
-            {items.length ? (
-              items.map((item, index) => {
-                const quantity = Number(item.quantity || 0);
-                const price = Number(item.price || 0);
-                const lineTotal = price * quantity;
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Order Date</td>
+                <td style="padding:5px 0;text-align:right;font-size:13px;">${htmlHandler(orderDate)}</td>
+              </tr>
 
-                const productName = item.productName || "Product";
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Payment Status</td>
+                <td style="padding:5px 0;text-align:right;">
+                  <span style="display:inline-block;padding:5px 10px;border-radius:20px;background:#e9f3e7;color:#4d7547;font-size:11px;font-weight:700;">
+                    ${htmlHandler(paymentStatus)}
+                  </span>
+                </td>
+              </tr>
+            </table>
+          </div>
 
-              
+          <h3 style="margin:0 0 14px;font-size:17px;color:#2a2622;">
+            Customer Details
+          </h3>
 
-                const variantLabel = item.productVariantName
+          <div style="padding:18px;border:1px solid #e7dfd1;border-radius:14px;margin-bottom:30px;">
+          <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Name</td>
+                <td style="padding:5px 0;text-align:right;font-weight:700;font-size:13px;">${htmlHandler(customerName)}</td>
+              </tr>
 
-                return (
-                  <View
-                    key={item._id || `${productName}-${index}`}
-                    style={styles.tableRow}
-                    wrap={false}
-                  >
-                    <View style={styles.productColumn}>
-                      <Text style={styles.productName}>{productName}</Text>
+              ${
+                 customerEmail
+                   ? `
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Email</td>
+                <td style="padding:5px 0;text-align:right;font-size:13px;">${htmlHandler(customerEmail)}</td>
+              </tr>`
+                   : ""
+               }
 
-                      {variantLabel ? (
-                        <Text style={styles.productVariant}>
-                          {variantLabel}
-                        </Text>
-                      ) : null}
-                    </View>
+              ${
+                customerPhone
+                  ? `
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Phone</td>
+                <td style="padding:5px 0;text-align:right;">
+                    ${htmlHandler(customerPhone)}
+                </td>
+              </tr>`
+                  : ""
+              }
+            </table>
 
-                    <Text style={[styles.cellText, styles.qtyColumn]}>
-                      {quantity}
-                    </Text>
+            
+          </div>
 
-                    <Text style={[styles.cellText, styles.priceColumn]}>
-                      {currencyHandler(price)}
-                    </Text>
+          <h3 style="margin:0 0 14px;font-size:17px;color:#2a2622;">
+            Order Items
+          </h3>
 
-                    <Text style={[styles.cellText, styles.totalColumn]}>
-                      {currencyHandler(lineTotal)}
-                    </Text>
-                  </View>
-                );
-              })
-            ) : (
-              <Text style={styles.emptyState}>No order items available.</Text>
-            )}
-          </View>
-        </View>
+          <div style="border:1px solid #e7dfd1;border-radius:14px;overflow:hidden;margin-bottom:24px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <thead>
+                <tr style="background:#f8f5ee;border-bottom:1px solid #e7dfd1;">
+                  <th style="padding:13px 12px;text-align:left;font-size:11px;color:#766b5e;letter-spacing:0.4px;">PRODUCT</th>
+                  <th style="padding:13px 8px;text-align:center;font-size:11px;color:#766b5e;letter-spacing:0.4px;">QTY</th>
+                  <th style="padding:13px 8px;text-align:right;font-size:11px;color:#766b5e;letter-spacing:0.4px;">PRICE</th>
+                  <th style="padding:13px 12px;text-align:right;font-size:11px;color:#766b5e;letter-spacing:0.4px;">TOTAL</th>
+                </tr>
+              </thead>
 
-        <View style={styles.summaryWrapper} wrap={false}>
-          <View style={styles.summary}>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Subtotal</Text>
-              <Text style={styles.summaryValue}>
-                {currencyHandler(subtotal)}
-              </Text>
-            </View>
+              <tbody>
+                ${itemsHtml}
+              </tbody>
+            </table>
+          </div>
 
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Discount</Text>
-              <Text style={styles.summaryValue}>
-                − {currencyHandler(discount)}
-              </Text>
-            </View>
+          <div style="padding:20px;background:#fbfaf7;border:1px solid #eee7da;border-radius:14px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Subtotal</td>
+                <td style="padding:5px 0;text-align:right;font-size:13px;">${currencyHandler(subtotal)}</td>
+              </tr>
 
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Shipping</Text>
-              <Text style={styles.summaryValue}>
-                {currencyHandler(shippingAmount)}
-              </Text>
-            </View>
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Discount</td>
+                <td style="padding:5px 0;text-align:right;color:#66805d;font-size:13px;">− ${currencyHandler(discount)}</td>
+              </tr>
 
-            <View style={[styles.summaryRow, styles.grandTotal]}>
-              <Text style={styles.grandTotalLabel}>Grand Total</Text>
-              <Text style={styles.grandTotalValue}>
-                {currencyHandler(total)}
-              </Text>
-            </View>
-          </View>
-        </View>
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">Shipping</td>
+                <td style="padding:5px 0;text-align:right;font-size:13px;">${currencyHandler(shippingAmount)}</td>
+              </tr>
 
-        <View style={styles.paymentBox} wrap={false}>
-          <Text style={styles.paymentTitle}>Payment Information</Text>
+              <tr>
+                <td style="padding:5px 0;color:#766b5e;font-size:13px;">GST</td>
+                <td style="padding:5px 0;text-align:right;font-size:13px;">5%</td>
+              </tr>
 
-          <Text style={styles.detail}>Payment Status: {paymentStatus}</Text>
+              <tr>
+                <td colspan="2" style="padding-top:14px;">
+                  <div style="height:1px;background:#e7dfd1;"></div>
+                </td>
+              </tr>
 
-          {order.paymentMethod ? (
-            <Text style={styles.detail}>
-              Payment Method: {formatText(order.paymentMethod)}
-            </Text>
-          ) : null}
+              <tr>
+                <td style="padding:16px 0 2px;font-size:18px;font-weight:700;">Total</td>
+                <td style="padding:16px 0 2px;text-align:right;font-size:20px;font-weight:700;color:#8a6b3f;">${currencyHandler(total)}</td>
+              </tr>
 
-          {order.paymentId || order.transactionId ? (
-            <Text style={styles.detail}>
-              Transaction Reference:{" "}
-              {formatText(order.paymentId || order.transactionId)}
-            </Text>
-          ) : null}
-        </View>
+              <tr>
+                <td colspan="2" style="padding-top:4px;text-align:right;color:#978b7c;font-size:10px;">
+                  Inclusive of applicable taxes
+                </td>
+              </tr>
+            </table>
+          </div>
 
-        <View style={styles.footer}>
-          <Text style={styles.footerTitle}>Thank you for choosing SWAAD!</Text>
-          <Text style={styles.footerText}>
-            Taste of Punjab, delivered to your doorstep.
-            {"\n"}
-            This is a computer-generated receipt.
-          </Text>
-        </View>
+          <div style="margin-top:30px;padding:20px;background:#f8f5ee;border:1px solid #ebe3d5;border-radius:14px;">
+            <table style="width:100%;border-collapse:collapse;">
+              <tr>
+                <td style="vertical-align:top;width:28px;">
+                  <div style="font-size:18px;">⌖</div>
+                </td>
 
-        <Text
-          style={styles.pageNumber}
-          render={({ pageNumber, totalPages }) =>
-            `Page ${pageNumber} of ${totalPages}`
-          }
-          fixed
-        />
-      </Page>
-    </Document>
-  );
+                <td>
+                  <h3 style="margin:0 0 10px;font-size:15px;">Delivery Address</h3>
+                  <p style="margin:0;color:#766b5e;font-size:13px;line-height:1.7;">
+                    ${addressHtml}
+                  </p>
+
+                  ${
+                    shippingAddress.deliveryInstructions
+                      ? `<p style="margin:12px 0 0;color:#766b5e;font-size:12px;line-height:1.6;"><strong>Delivery Instructions:</strong> ${htmlHandler(shippingAddress.deliveryInstructions)}</p>`
+                      : ""
+                  }
+                </td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="margin-top:34px;padding-top:28px;border-top:1px solid #eee7da;text-align:center;">
+            <p style="margin:0 0 7px;font-size:15px;font-weight:700;">
+              Thank you for choosing SWAAD!
+            </p>
+
+            <p style="margin:0;color:#978b7c;font-size:12px;line-height:1.6;">
+              Taste of Punjab, delivered to your doorstep.
+            </p>
+          </div>
+
+        </div>
+
+        <div style="padding:22px 32px;background:#211e1b;text-align:center;">
+          <p style="margin:0 0 5px;color:#d8d0c4;font-size:12px;">
+            SWAAD · Taste of Punjab
+          </p>
+
+          <p style="margin:0;color:#81786e;font-size:10px;">
+            This is an automated order confirmation. Please do not reply to this email.
+          </p>
+        </div>
+
+      </div>
+    </div>
+  `;
 };
 
-export default OrderReceiptPDF;
+module.exports = OrderConfirmationTemplate;
