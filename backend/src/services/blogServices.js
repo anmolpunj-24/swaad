@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const blogsRepo = require("../repositories/blogRepository");
 const blogImagesService = require("../services/blogImagesServices");
-const htmlHandler = require("../helperFuntions/htmlHandler");
+const htmlHandler = require("../utils/helperFuntions/htmlHandler");
 
 const getAllBlogsService = async () => {
   const allBlogsData = await blogsRepo.getAllBlogsRepo();

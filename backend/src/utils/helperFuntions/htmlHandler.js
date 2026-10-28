@@ -1,4 +1,4 @@
-export default function htmlHandler(value = "") {
+const htmlHandler = (value = "") => {
   String(value).replace(/[&<>"']/g, (char) => {
     const entities = {
       "&": "&amp;",
@@ -10,4 +10,6 @@ export default function htmlHandler(value = "") {
 
     return entities[char];
   });
-}
+};
+
+module.exports = htmlHandler;

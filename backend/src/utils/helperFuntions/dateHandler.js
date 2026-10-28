@@ -1,4 +1,4 @@
-export function dateHandler(inputDate) {
+const dateHandler = (inputDate) => {
   if (!inputDate) {
     return "-";
   }
@@ -15,4 +15,6 @@ export function dateHandler(inputDate) {
     year: "numeric",
     timeZone: "Asia/Kolkata",
   }).format(date);
-}
+};
+
+module.exports = dateHandler;
