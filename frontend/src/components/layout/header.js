@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { adminAuthApi } from "../../../api.service";
 import { toast } from "sonner";
-import capitaliseFirstLetter from "@/utils/capitaliseFirstLetter";
+import capitaliseFirstLetter from "@/utils/helperFunctions/capitaliseFirstLetter";
 import Image from "next/image";
 import GenericModal from "../ui/genericModal";
 

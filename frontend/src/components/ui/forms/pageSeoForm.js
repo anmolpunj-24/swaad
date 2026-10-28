@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Check, FileText, Search, ShieldCheck } from "lucide-react";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { SlugifyHandler } from "@/utils/helperFunctions/slugifyHandler";
 import GenericInput from "../genericInput";
 import GenericTextarea from "../genericTextArea";
 

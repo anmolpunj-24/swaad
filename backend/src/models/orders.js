@@ -23,8 +23,8 @@ const orderSchema = new mongoose.Schema(
 
     paymentStatus: {
       type: String,
-      enum: ["pending", "paid", "failed"],
-      default: "pending",
+      enum: ["paid", "failed"],
+      default: "paid",
     },
 
     shippingProvider: {
@@ -137,5 +137,12 @@ const orderSchema = new mongoose.Schema(
     timestamps: true,
   },
 );
+
+orderSchema.virtual("customer", {
+  ref: "customers",
+  localField: "customerUuid",
+  foreignField: "uuid",
+  justOne: true,
+});
 
 module.exports = mongoose.model("orders", orderSchema);

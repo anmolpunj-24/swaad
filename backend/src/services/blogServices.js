@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const blogsRepo = require("../repositories/blogRepository");
 const blogImagesService = require("../services/blogImagesServices");
+const htmlHandler = require("../helperFuntions/htmlHandler");
 
 const getAllBlogsService = async () => {
   const allBlogsData = await blogsRepo.getAllBlogsRepo();
@@ -65,14 +66,6 @@ const normalizePublishedAt = (status, publishedAt, existingDate = null) => {
   return existingDate || new Date();
 };
 
-const escapeHtmlAttribute = (value) => {
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/"/g, "&quot;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-};
-
 const replaceLocalImageUrls = (html, imageMap) => {
   const updatedHtml = html.replace(/<img\b[^>]*>/gi, (imageTag) => {
     const match = imageTag.match(/\bdata-local-image-id=(["'])(.*?)\1/i);
@@ -90,12 +83,12 @@ const replaceLocalImageUrls = (html, imageMap) => {
     if (/\bsrc=(["']).*?\1/i.test(updatedTag)) {
       updatedTag = updatedTag.replace(
         /\bsrc=(["']).*?\1/i,
-        `src="${escapeHtmlAttribute(permanentUrl)}"`,
+        `src="${htmlHandler(permanentUrl)}"`,
       );
     } else {
       updatedTag = updatedTag.replace(
         /<img\b/i,
-        `<img src="${escapeHtmlAttribute(permanentUrl)}"`,
+        `<img src="${htmlHandler(permanentUrl)}"`,
       );
     }
 

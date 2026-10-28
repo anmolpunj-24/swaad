@@ -12,13 +12,18 @@ import {
   RefreshCw,
   Truck,
   UserRound,
-  Save,
+  Mail,
 } from "lucide-react";
 import { toast } from "sonner";
 import GenericSelect from "@/components/ui/genericSelect";
 import GenericInput from "@/components/ui/genericInput";
 import { orderApi } from "../../../api.service";
-import { dateHandler } from "@/utils/dateHandler";
+import { dateHandler } from "@/utils/helperFunctions/dateHandler";
+import GlobalLoader from "@/components/ui/globalLoader";
+import { currencyHandler } from "@/utils/helperFunctions/currencyHandler";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import { Download } from "lucide-react";
+import orderReceiptPdf from "@/utils/orderRecipt/orderReciptPdf";
 
 const ORDER_STATUSES = [
   "pending",
@@ -29,35 +34,8 @@ const ORDER_STATUSES = [
   "cancelled",
 ];
 
-const PAYMENT_STATUSES = ["pending", "paid", "failed"];
-
-const formatCurrency = (amount, currency = "INR") =>
-  new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency,
-    maximumFractionDigits: 2,
-  }).format(Number(amount || 0));
-
 const formatLabel = (value) =>
   value ? value.charAt(0).toUpperCase() + value.slice(1) : "-";
-
-function SectionCard({ title, icon: Icon, children, action }) {
-  return (
-    <section className="min-w-0 rounded-2xl border border-[#E6DDCD] bg-[#FCFBF8] p-5 sm:p-6">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <div className="flex min-w-0 items-center gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#F3E8D0] text-[#8B6937]">
-            <Icon size={19} />
-          </div>
-          <h2 className="text-base font-bold text-[#463525]">{title}</h2>
-        </div>
-        {action}
-      </div>
-
-      {children}
-    </section>
-  );
-}
 
 function DetailItem({ label, value, className = "" }) {
   return (
@@ -79,6 +57,7 @@ export default function OrderDetails() {
   const [savingStatus, setSavingStatus] = useState(false);
   const [savingPayment, setSavingPayment] = useState(false);
   const [savingShipment, setSavingShipment] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
 
   const [shipmentForm, setShipmentForm] = useState({
     shippingProvider: "",
@@ -109,7 +88,7 @@ export default function OrderDetails() {
       toast.error(
         error?.response?.data?.message ||
           error.message ||
-          "Failed to fetch order details.",
+          "Failed to fetch order details!",
       );
     } finally {
       setLoading(false);
@@ -134,7 +113,7 @@ export default function OrderDetails() {
     }
 
     try {
-      const response = await orderApi.updatedOrder(order._id, {
+      const response = await orderApi.update(order.customerUuid, order._id, {
         [field]: value,
       });
 
@@ -150,13 +129,13 @@ export default function OrderDetails() {
 
       toast.success(
         isStatus
-          ? "Order status updated successfully."
-          : "Payment status updated successfully.",
+          ? "Order status updated successfully!"
+          : "Payment status updated successfully!",
       );
     } catch (error) {
       toast.error(
         error?.response?.data?.message ||
-          `Failed to update ${isStatus ? "order" : "payment"} status.`,
+          `Failed to update ${isStatus ? "order" : "payment"} status!`,
       );
     } finally {
       setSavingStatus(false);
@@ -187,14 +166,18 @@ export default function OrderDetails() {
       payload.shipmentTrackingId === (order.shipmentTrackingId || null) &&
       payload.shipmentTrackingUrl === (order.shipmentTrackingUrl || null)
     ) {
-      toast.info("No order changes to save.");
+      toast.info("No order changes to save!");
       return;
     }
 
     try {
       setSavingShipment(true);
 
-      const response = await orderApi.update(order._id, payload);
+      const response = await orderApi.update(
+        order.customerUuid,
+        order._id,
+        payload,
+      );
       const updatedOrder = response.data?.order;
 
       setOrder((previous) => ({
@@ -210,10 +193,12 @@ export default function OrderDetails() {
           updatedOrder?.shipmentTrackingUrl ?? payload.shipmentTrackingUrl,
       }));
 
-      toast.success("Order changes saved successfully.");
+      toast.success("Order changes saved successfully!");
+
+      router.push("/orders");
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || "Failed to save order changes.",
+        error?.response?.data?.message || "Failed to save order changes!",
       );
     } finally {
       setSavingShipment(false);
@@ -221,14 +206,7 @@ export default function OrderDetails() {
   };
 
   if (loading) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="flex items-center gap-3 text-sm font-medium text-[#806C52]">
-          <RefreshCw size={19} className="animate-spin" />
-          Loading order details...
-        </div>
-      </div>
-    );
+    return <GlobalLoader />;
   }
 
   if (!order) {
@@ -254,7 +232,7 @@ export default function OrderDetails() {
   }
 
   const address = order.shippingAddress || {};
-  const currency = order.currency || "INR";
+  const orderItems = Array.isArray(order.orderItems) ? order.orderItems : [];
 
   const fullAddress = [
     address.addressLine1,
@@ -264,6 +242,64 @@ export default function OrderDetails() {
     [address.pincode, address.country].filter(Boolean).join(" "),
   ].filter(Boolean);
 
+  const getDisabledOrderStatuses = (currentStatus) => {
+    const statusOrder = [
+      "pending",
+      "confirmed",
+      "processing",
+      "shipped",
+      "delivered",
+    ];
+    const currentIndex = statusOrder.indexOf(currentStatus);
+
+    if (currentIndex === -1) return [];
+
+    return statusOrder.slice(0, currentIndex);
+  };
+
+  const handleSendStatusEmail = async () => {
+    if (!order?.customerEmail) {
+      toast.error("Customer email address not found!");
+      return;
+    }
+
+    const emailConfig = {
+      confirmed: {
+        subject: "Order Confirmed",
+        label: "Confirmation",
+      },
+      shipped: {
+        subject: "Order Shipped",
+        label: "Shipped",
+      },
+      delivered: {
+        subject: "Order Delivered",
+        label: "Delivered",
+      },
+    };
+
+    const config = emailConfig[order.status];
+
+    if (!config) {
+      toast.error("Email is not available for this order status!");
+      return;
+    }
+
+    try {
+      setSendingEmail(true);
+
+      await orderApi.sendEmail(order._id, {
+        status: order.status,
+      });
+
+      toast.success(`${config.label} email sent successfully!`);
+    } catch (error) {
+      toast.error(error?.response?.data?.message || "Failed to send email!");
+    } finally {
+      setSendingEmail(false);
+    }
+  };
+
   return (
     <div className="mx-auto w-full max-w-[1600px] space-y-7 pb-10">
       <div className="flex flex-col justify-between gap-5 border-b border-[#E6DDCD] pb-6 sm:flex-row sm:items-center">
@@ -271,7 +307,7 @@ export default function OrderDetails() {
           <Link
             href="/dashboard/orders"
             aria-label="Back to orders"
-            className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#E6DDCD] bg-white text-[#66533C] transition hover:bg-[#F3E8D0]"
+            className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-3xl border border-[#E6DDCD] bg-white text-[#66533C] transition hover:bg-[#F3E8D0]"
           >
             <ArrowLeft size={19} />
           </Link>
@@ -292,6 +328,30 @@ export default function OrderDetails() {
               Placed on {dateHandler(order.createdAt)}
             </p>
           </div>
+        </div>
+
+        <div className="flex justify-end">
+          <PDFDownloadLink
+            document={<orderReceiptPdf order={order} />}
+            fileName={`SWAAD-Order-${order._id}-Receipt.pdf`}
+            className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#463421] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#59432C] sm:w-auto"
+          >
+            {({ loading: pdfLoading, error }) => (
+              <>
+                {pdfLoading ? (
+                  <RefreshCw size={17} className="animate-spin" />
+                ) : (
+                  <Download size={17} />
+                )}
+
+                {pdfLoading
+                  ? "Preparing Receipt..."
+                  : error
+                    ? "Retry Download"
+                    : "Download Order Receipt"}
+              </>
+            )}
+          </PDFDownloadLink>
         </div>
       </div>
 
@@ -338,7 +398,7 @@ export default function OrderDetails() {
             </span>
           </div>
           <p className="text-2xl font-extrabold tracking-tight text-[#6F5028]">
-            {formatCurrency(order.totalAmount, order.currency || "INR")}
+            {currencyHandler(order.totalAmount)}
           </p>
           <p className="mt-1 text-xs text-[#95846D]">
             Including shipping and discounts
@@ -382,6 +442,123 @@ export default function OrderDetails() {
           </section>
 
           <section className="overflow-hidden rounded-2xl border border-[#E6DDCD] bg-white">
+            <div className="flex items-center justify-between gap-3 border-b border-[#EEE6D9] px-5 py-4 sm:px-6">
+              <div className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F7F4EC] text-[#8B6937]">
+                  <Package size={19} />
+                </div>
+                <div>
+                  <h2 className="font-bold text-[#35291E]">Order Items</h2>
+                  <p className="mt-0.5 text-xs text-[#95846D]">
+                    Products included in this order
+                  </p>
+                </div>
+              </div>
+
+              <span className="rounded-full bg-[#F3E8D0] px-3 py-1.5 text-xs font-bold text-[#6F5028]">
+                {orderItems.length} {orderItems.length === 1 ? "Item" : "Items"}
+              </span>
+            </div>
+
+            {orderItems.length === 0 ? (
+              <div className="flex flex-col items-center justify-center px-5 py-10 text-center">
+                <Package size={30} className="mb-3 text-[#B28B4C]" />
+                <p className="text-sm font-semibold text-[#463525]">
+                  No items found
+                </p>
+                <p className="mt-1 text-xs text-[#95846D]">
+                  No order items are associated with this order.
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-[#EEE6D9]">
+                {orderItems.map((item, index) => (
+                  <div
+                    key={item._id || `${item.productVariantId}-${index}`}
+                    className="p-5 transition-colors hover:bg-[#FCFBF8] sm:p-6"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#E6DDCD] bg-[#F7F4EC] text-[#8B6937]">
+                        <Package size={21} />
+                      </div>
+
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-start">
+                          <div className="min-w-0">
+                            <h3 className="text-lg font-bold text-[#463525]">
+                              {item.productName || "Product unavailable"}
+                            </h3>
+
+                            <p className="mt-1 text-sm text-[#8B7355]">
+                              Variant:{" "}
+                              {item.productVariantName || "Variant unavailable"}
+                            </p>
+
+                            <p className="mt-1 break-all text-xs text-[#95846D]">
+                              Product ID: {item.productId}
+                            </p>
+
+                            <p className="mt-1 break-all text-xs text-[#95846D]">
+                              Variant ID: {item.productVariantId}
+                            </p>
+                          </div>
+
+                          <p className="shrink-0 text-base font-extrabold text-[#8B6937]">
+                            {currencyHandler(item.subtotal)}
+                          </p>
+                        </div>
+
+                        <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl bg-[#FAF8F3] p-3 sm:grid-cols-3">
+                          <div>
+                            <p className="text-xs text-[#95846D]">Unit Price</p>
+                            <p className="mt-1 text-sm font-semibold text-[#463525]">
+                              {currencyHandler(item.price)}
+                            </p>
+                          </div>
+
+                          <div>
+                            <p className="text-xs text-[#95846D]">Quantity</p>
+                            <p className="mt-1 text-sm font-semibold text-[#463525]">
+                              {item.quantity ?? 0}
+                            </p>
+                          </div>
+
+                          <div className="col-span-2 border-t border-[#E6DDCD] pt-3 sm:col-span-1 sm:border-l sm:border-t-0 sm:pl-3 sm:pt-0">
+                            <p className="text-xs text-[#95846D]">
+                              Item Subtotal
+                            </p>
+                            <p className="mt-1 text-sm font-bold text-[#6F5028]">
+                              {currencyHandler(item.subtotal)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {orderItems.length > 0 && (
+              <div className="border-t border-[#E6DDCD] bg-[#F7F4EC] px-5 py-4 sm:px-6">
+                <div className="flex items-center justify-between gap-3">
+                  <span className="text-sm font-semibold text-[#66533C]">
+                    Items Subtotal
+                  </span>
+                  <span className="text-lg font-extrabold text-[#6F5028]">
+                    {currencyHandler(
+                      orderItems.reduce(
+                        (total, item) => total + Number(item.subtotal || 0),
+                        0,
+                      ),
+                    )}
+                  </span>
+                </div>
+              </div>
+            )}
+          </section>
+
+          <section className="overflow-hidden rounded-2xl border border-[#E6DDCD] bg-white">
             <div className="flex items-center gap-3 border-b border-[#EEE6D9] px-5 py-4 sm:px-6">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#F7F4EC] text-[#8B6937]">
                 <UserRound size={19} />
@@ -398,6 +575,7 @@ export default function OrderDetails() {
               <DetailItem label="Customer Name" value={address.name} />
               <DetailItem label="Phone Number" value={address.phone} />
               <DetailItem label="Customer UUID" value={order.customerUuid} />
+              <DetailItem label="Customer Email" value={order.customerEmail} />
             </div>
           </section>
 
@@ -519,29 +697,40 @@ export default function OrderDetails() {
                   updateOrderField("status", event.target.value)
                 }
               >
-                {ORDER_STATUSES.map((status) => (
-                  <option key={status} value={status}>
-                    {formatLabel(status)}
-                  </option>
-                ))}
-              </GenericSelect>
+                {ORDER_STATUSES.map((status) => {
+                  const disabledStatuses = getDisabledOrderStatuses(
+                    order.status,
+                  );
 
-              <GenericSelect
-                id="paymentStatus"
-                label="Payment Status"
-                value={order.paymentStatus}
-                disabled={savingPayment}
-                loading={savingPayment}
-                onChange={(event) =>
-                  updateOrderField("paymentStatus", event.target.value)
-                }
-              >
-                {PAYMENT_STATUSES.map((status) => (
-                  <option key={status} value={status}>
-                    {formatLabel(status)}
-                  </option>
-                ))}
+                  return (
+                    <option
+                      key={status}
+                      value={status}
+                      disabled={disabledStatuses.includes(status)}
+                    >
+                      {formatLabel(status)}
+                    </option>
+                  );
+                })}
               </GenericSelect>
+              {["confirmed", "shipped", "delivered"].includes(order.status) && (
+                <button
+                  type="button"
+                  onClick={handleSendStatusEmail}
+                  disabled={sendingEmail || !order.customerEmail}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#D9C7A6] bg-[#F7F4EC] px-4 py-3 text-sm font-semibold text-[#6F5028] transition hover:bg-[#F3E8D0] disabled:cursor-not-allowed disabled:opacity-60 hover:cursor-pointer"
+                >
+                  {sendingEmail ? (
+                    <RefreshCw size={16} className="animate-spin" />
+                  ) : (
+                    <Mail size={16} />
+                  )}
+
+                  {sendingEmail
+                    ? "Sending Email..."
+                    : `Send ${formatLabel(order.status)} Email`}
+                </button>
+              )}
             </div>
           </section>
 
@@ -562,21 +751,21 @@ export default function OrderDetails() {
               <div className="flex items-center justify-between gap-3 text-sm">
                 <span className="text-[#806C52]">Subtotal</span>
                 <span className="font-semibold text-[#463525]">
-                  {formatCurrency(order.subtotal, currency)}
+                  {currencyHandler(order.subtotal)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between gap-3 text-sm">
                 <span className="text-[#806C52]">Discount</span>
                 <span className="font-semibold text-[#47734D]">
-                  -{formatCurrency(order.discount, currency)}
+                  -{currencyHandler(order.discount)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between gap-3 text-sm">
                 <span className="text-[#806C52]">Shipping</span>
                 <span className="font-semibold text-[#463525]">
-                  {formatCurrency(order.shippingAmount, currency)}
+                  {currencyHandler(order.shippingAmount)}
                 </span>
               </div>
 
@@ -585,7 +774,7 @@ export default function OrderDetails() {
                   Total Amount
                 </p>
                 <p className="mt-1 text-2xl font-extrabold tracking-tight text-[#8B6937]">
-                  {formatCurrency(order.totalAmount, currency)}
+                  {currencyHandler(order.totalAmount)}
                 </p>
               </div>
             </div>

@@ -20,6 +20,7 @@ const getOneCustomer = async (req, res) => {
 
 const updateCustomer = async (req, res) => {
   const customerId = req.params.uuid;
+  const body = req.body;
 
   if (!customerId) {
     return res.status(400).json({ message: "Customer id not found!" });
@@ -27,7 +28,7 @@ const updateCustomer = async (req, res) => {
 
   const updatedCustomer = await customerService.updateCustomerService(
     customerId,
-    req.body,
+    body,
   );
 
   return res

@@ -17,4 +17,11 @@ routes.get(
   ordersController.getOneOrderController,
 );
 
+routes.post("/:id/send-email", ordersController.sendOrderStatusEmail);
+
+routes.put(
+  "/update/:customerUuid/:id",
+  ordersController.updateCustomerOrderController,
+);
+
 module.exports = routes;

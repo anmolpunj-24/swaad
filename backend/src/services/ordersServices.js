@@ -1,6 +1,7 @@
 const orderRepo = require("../repositories/ordersRepository");
+const orderItemRepo = require("../repositories/orderItemsRepository");
 
-const addCustomerOrderService = async (customerUuid, orderData) => {
+const addCustomerOrderService = async (customerUuid, orderData, items) => {
   const checkIfCustomerExist =
     await orderRepo.checkIfCustomerExistInDbRepo(customerUuid);
 
@@ -11,11 +12,71 @@ const addCustomerOrderService = async (customerUuid, orderData) => {
     };
   }
 
+  if (!Array.isArray(items) || items.length === 0) {
+    return {
+      success: false,
+      errorMessage: "Order must contain at least one item!",
+    };
+  }
+
   const newOrder = await orderRepo.addCustomerOrderRepo(
     customerUuid,
     orderData,
   );
-  return newOrder;
+
+  const orderItemsData = [];
+
+  for (const item of items) {
+    const product = await orderItemRepo.checkIfProductExistInDbRepo(
+      item.productId,
+    );
+
+    if (!product) {
+      return {
+        success: false,
+        errorMessage: "Product not found!",
+      };
+    }
+
+    const variant = await orderItemRepo.checkIfProductVariantExistInDbRepo(
+      item.productVariantId,
+      item.productId,
+    );
+
+    if (!variant) {
+      return {
+        success: false,
+        errorMessage: "Product variant not found!",
+      };
+    }
+
+    const quantity = Number(item.quantity);
+
+    if (!Number.isInteger(quantity) || quantity < 1) {
+      return {
+        success: false,
+        errorMessage: "Invalid item quantity!",
+      };
+    }
+
+    orderItemsData.push({
+      orderId: newOrder._id,
+      productId: product._id,
+      productVariantId: variant._id,
+      productVariantName: variant.name,
+      price: variant.sellingPrice,
+      quantity,
+      subtotal: variant.sellingPrice * quantity,
+    });
+  }
+
+  const savedItems =
+    await orderItemRepo.addMultipleOrderItemsRepo(orderItemsData);
+
+  return {
+    order: newOrder,
+    items: savedItems,
+  };
 };
 
 const getAllCustomerOrdersService = async (customerUuid) => {
@@ -37,7 +98,10 @@ const getAllCustomerOrdersService = async (customerUuid) => {
 const getAllOrdersService = async () => {
   const allOrders = await orderRepo.getAllOrdersRepo();
 
-  return allOrders;
+  return allOrders.map(({ customer, ...order }) => ({
+    ...order,
+    customerEmail: customer?.userId?.email || null,
+  }));
 };
 
 const getOneCustomerOrderService = async (customerUuid, orderId) => {
@@ -77,7 +141,14 @@ const getOneOrderService = async (orderId) => {
     };
   }
 
-  return oneOrderData;
+  const { customer, ...order } = oneOrderData.toObject
+    ? oneOrderData.toObject()
+    : oneOrderData;
+
+  return {
+    ...order,
+    customerEmail: customer?.userId?.email || null,
+  };
 };
 
 const updateCustomerOrderService = async (customerUuid, orderId, orderData) => {

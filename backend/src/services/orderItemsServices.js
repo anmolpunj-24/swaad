@@ -22,31 +22,32 @@ const addOrderItemService = async (orderId, orderItemData) => {
     };
   }
 
-  let productVariant = null;
-
-  if (orderItemData.productVariantId) {
-    productVariant = await orderItemRepo.checkIfProductVariantExistInDbRepo(
-      orderItemData.productVariantId,
-      orderItemData.productId,
-    );
-
-    if (!productVariant) {
-      return {
-        success: false,
-        errorMessage: "Product variant not found!",
-      };
-    }
+  if (!orderItemData.productVariantId) {
+    return {
+      success: false,
+      errorMessage: "Product variant is required!",
+    };
   }
 
-  const unitPrice = productVariant && productVariant.price;
+  const productVariant = await orderItemRepo.checkIfProductVariantExistInDbRepo(
+    orderItemData.productVariantId,
+    orderItemData.productId,
+  );
 
+  if (!productVariant) {
+    return {
+      success: false,
+      errorMessage: "Product variant not found!",
+    };
+  }
+
+  const unitPrice = productVariant.sellingPrice;
   const subtotal = unitPrice * orderItemData.quantity;
 
   const newOrderItemData = {
     orderId,
     productId: checkIfProductExist._id,
-    productName: checkIfProductExist.name,
-    productVariantId: productVariant ? productVariant._id : null,
+    productVariantId: productVariant._id,
     variantName: productVariant ? productVariant.name : null,
     unitPrice,
     quantity: orderItemData.quantity,

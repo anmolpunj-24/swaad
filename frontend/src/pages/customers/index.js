@@ -1,7 +1,7 @@
 import CustomTable from "@/components/ui/table/customTable";
 import { customerApi } from "../../../api.service";
 import { useEffect, useState } from "react";
-import { dateHandler } from "@/utils/dateHandler";
+import { dateHandler } from "@/utils/helperFunctions/dateHandler";
 import { toast } from "sonner";
 
 export default function Customers() {
@@ -71,6 +71,14 @@ export default function Customers() {
     },
   ];
 
+  const actionsData = (row) => [
+    {
+      type: "view",
+      label: "View",
+      link: `/customers/${row.uuid}`,
+    },
+  ];
+
   return (
     <>
       <div className="mb-6">
@@ -83,6 +91,7 @@ export default function Customers() {
         columns={customerColumns}
         data={customers}
         title="Customers"
+        actions={actionsData}
       />
     </>
   );

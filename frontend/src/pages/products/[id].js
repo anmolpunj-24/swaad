@@ -16,7 +16,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { productApi } from "../../../api.service";
-import { dateHandler } from "@/utils/dateHandler";
+import { dateHandler } from "@/utils/helperFunctions/dateHandler";
 import Image from "next/image";
 
 const formatPrice = (price) => `₹${Number(price || 0).toLocaleString("en-IN")}`;

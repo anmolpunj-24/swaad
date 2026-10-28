@@ -1,5 +1,8 @@
 const customerModel = require("../models/customers");
 const ordersModel = require("../models/orders");
+const orderItemModel = require("../models/order_items");
+const productModel = require("../models/products");
+const productVariantModel = require("../models/product_variants");
 
 const checkIfCustomerExistInDbRepo = async (customerUuid) => {
   return await customerModel
@@ -18,12 +21,15 @@ const addCustomerOrderRepo = async (customerUuid, orderData) => {
   return newOrder;
 };
 
+const addMultipleOrderItemsRepo = async (orderItemsData) => {
+  return await orderItemModel.insertMany(orderItemsData);
+};
+
 const getAllCustomerOrdersRepo = async (customerUuid) => {
   return await ordersModel
     .find({
       customerUuid,
     })
-    .select("-updatedAt")
     .sort("-createdAt")
     .lean();
 };
@@ -33,6 +39,14 @@ const getAllOrdersRepo = async () => {
     .find({})
     .select("-updatedAt")
     .sort("-createdAt")
+    .populate({
+      path: "customer",
+      select: "uuid userId",
+      populate: {
+        path: "userId",
+        select: "email",
+      },
+    })
     .lean();
 };
 
@@ -47,12 +61,51 @@ const checkIfOrderExistInDbRepo = async (orderId, customerUuid) => {
 };
 
 const checkIfAvailableOrderExistInDbRepo = async (orderId) => {
-  return await ordersModel
-    .findOne({
-      _id: orderId,
+  const order = await ordersModel
+    .findOne({ _id: orderId })
+    .populate({
+      path: "customer",
+      select: "uuid userId",
+      populate: {
+        path: "userId",
+        select: "email",
+      },
     })
-    .select("-updatedAt")
     .lean();
+
+  if (!order) return null;
+
+  const orderItems = await orderItemModel
+    .find({ orderId: order._id })
+    .sort("-createdAt")
+    .lean();
+
+  const enrichedOrderItems = await Promise.all(
+    orderItems.map(async (item) => {
+      const [product, variant] = await Promise.all([
+        productModel.findById(item.productId).select("name").lean(),
+        productVariantModel
+          .findById(item.productVariantId)
+          .select("size unit")
+          .lean(),
+      ]);
+
+      const variantLabel = variant
+        ? `${variant.size} ${variant.unit || "g"}`
+        : item.productVariantName || "Variant unavailable";
+
+      return {
+        ...item,
+        productName: product?.name || "Product unavailable",
+        productVariantName: variantLabel,
+      };
+    }),
+  );
+
+  return {
+    ...order,
+    orderItems: enrichedOrderItems,
+  };
 };
 
 const updateCustomerOrderRepo = async (customerUuid, orderId, orderData) => {
@@ -71,4 +124,5 @@ module.exports = {
   updateCustomerOrderRepo,
   getAllOrdersRepo,
   checkIfAvailableOrderExistInDbRepo,
+  addMultipleOrderItemsRepo,
 };

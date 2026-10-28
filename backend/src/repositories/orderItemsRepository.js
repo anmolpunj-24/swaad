@@ -49,7 +49,6 @@ const getAllCustomerOrderItemsRepo = async (orderId) => {
     .find({
       orderId,
     })
-    .select("-updatedAt")
     .sort("-createdAt")
     .lean();
 };
@@ -60,7 +59,6 @@ const checkIfOneOrderItemExistInDbRepo = async (orderItemId, orderId) => {
       _id: orderItemId,
       orderId,
     })
-    .select("-updatedAt")
     .lean();
 };
 

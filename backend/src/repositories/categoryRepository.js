@@ -79,7 +79,7 @@ const updateCategoryRepo = async (id, categoryData) => {
       deletedAt: null,
       isActive: true,
     },
-    categoryData,
+    { $set: categoryData },
     {
       returnDocument: "after",
       runValidators: true,
@@ -94,10 +94,7 @@ const deleteCategoryRepo = async (id) => {
       deletedAt: null,
       isActive: true,
     },
-    {
-      deletedAt: new Date(),
-      isActive: false,
-    },
+    { $set: { deletedAt: new Date(), isActive: false } },
     {
       returnDocument: "after",
     },

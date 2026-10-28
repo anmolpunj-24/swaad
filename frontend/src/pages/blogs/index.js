@@ -2,7 +2,7 @@ import CustomTable from "@/components/ui/table/customTable";
 import { blogApi } from "../../../api.service";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { dateHandler } from "@/utils/dateHandler";
+import { dateHandler } from "@/utils/helperFunctions/dateHandler";
 import Image from "next/image";
 
 export default function Blogs() {

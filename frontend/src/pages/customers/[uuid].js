@@ -17,7 +17,7 @@ import {
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { customerApi } from "../../../api.service";
-import { dateHandler } from "@/utils/dateHandler";
+import { dateHandler } from "@/utils/helperFunctions/dateHandler";
 import { toast } from "sonner";
 import InfoItem from "@/components/ui/customer/infoItem";
 import EmptyState from "@/components/ui/customer/emptyState";
@@ -410,7 +410,10 @@ export default function CustomerInfo() {
                           type="button"
                           className="flex h-8 w-8 items-center justify-center rounded-lg text-[#A0968C] transition hover:bg-[#F3E8D0] hover:text-[#70562D]"
                         >
-                          <ChevronRight size={16} />
+                          <ChevronRight
+                            size={16}
+                            className="hover:cursor-pointer"
+                          />
                         </button>
                       </td>
                     </tr>
@@ -440,7 +443,8 @@ export default function CustomerInfo() {
 
             <button
               type="button"
-              className="flex items-center gap-1.5 text-xs font-bold text-[#8B6B38] transition hover:text-[#60491F]"
+              onClick={() => router.push("/orders")}
+              className="flex items-center gap-1.5 text-xs font-bold text-[#8B6B38] transition hover:text-[#60491F] hover:cursor-pointer"
             >
               View all orders
               <ChevronRight size={14} />

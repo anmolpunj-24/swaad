@@ -8,7 +8,7 @@ import {
   ShieldCheck,
   Trash2,
 } from "lucide-react";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { SlugifyHandler } from "@/utils/helperFunctions/slugifyHandler";
 import GenericInput from "../genericInput";
 import GenericTextarea from "../genericTextArea";
 

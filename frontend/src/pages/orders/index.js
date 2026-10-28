@@ -44,6 +44,11 @@ export default function Orders() {
       render: (row) => row.shippingAddress?.phone || "-",
     },
     {
+      key: "customerEmail",
+      label: "Customer Email",
+      render: (row) => row.customerEmail || "-",
+    },
+    {
       key: "status",
       label: "Order Status",
       render: (row) => (
@@ -167,13 +172,16 @@ export default function Orders() {
     },
   ];
 
-  const actionsData = (row) => [
-    {
-      type: "view",
-      label: "View",
-      link: `/orders/${row._id}`,
-    },
-  ];
+  const actionsData = (row) =>
+    row.paymentStatus === "paid"
+      ? [
+          {
+            type: "view",
+            label: "View",
+            link: `/orders/${row._id}`,
+          },
+        ]
+      : [];
 
   return (
     <>

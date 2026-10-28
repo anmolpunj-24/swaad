@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { Check, Tag, ShieldCheck, Sparkles } from "lucide-react";
 import GenericInput from "../genericInput";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { SlugifyHandler } from "@/utils/helperFunctions/slugifyHandler";
 
 export default function TagForm({
   defaultValues = {

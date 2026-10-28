@@ -1,6 +1,6 @@
 import { useForm, Controller } from "react-hook-form";
 import { Check, FolderTree, ShieldCheck, Tag } from "lucide-react";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { SlugifyHandler } from "@/utils/helperFunctions/slugifyHandler";
 import { useEffect } from "react";
 import GenericInput from "../genericInput";
 import GenericSelect from "../genericSelect";

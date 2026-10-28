@@ -268,6 +268,23 @@ const orderApi = {
     const response = await api.get(`/api/auth/orders/get/${id}`);
     return response;
   },
+
+  update: async (uuid, orderId, updateData) => {
+    const response = await api.put(
+      `/api/auth/orders/update/${uuid}/${orderId}`,
+      updateData,
+    );
+    return response;
+  },
+
+  sendEmail: async (id, status) => {
+    const response = await api.post(
+      `/api/auth/orders/${id}/send-email`,
+      status,
+    );
+
+    return response;
+  },
 };
 
 const tagApi = {

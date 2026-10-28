@@ -57,7 +57,7 @@ const getOneCustomerRepo = async (uuid) => {
 const updateCustomerRepo = async (uuid, customerData) => {
   return await customerModel.findOneAndUpdate(
     { uuid, deletedAt: null, isActive: true },
-    customerData,
+    { $set: customerData },
     {
       returnDocument: "after",
       runValidators: true,
@@ -68,8 +68,8 @@ const updateCustomerRepo = async (uuid, customerData) => {
 const deleteCustomerRepo = async (uuid) => {
   return await customerModel.findOneAndUpdate(
     { uuid, deletedAt: null, isActive: true },
-    { deletedAt: new Date(), isActive: false },
-    { returnDocument: "after", },
+    { $set: { deletedAt: new Date(), isActive: false } },
+    { returnDocument: "after" },
   );
 };
 

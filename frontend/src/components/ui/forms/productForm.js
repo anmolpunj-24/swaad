@@ -14,7 +14,7 @@ import {
   Upload,
 } from "lucide-react";
 import { useForm, Controller } from "react-hook-form";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { SlugifyHandler } from "@/utils/helperFunctions/slugifyHandler";
 import GenericInput from "../genericInput";
 import SectionHeaderProduct from "../sectionHeaderProduct";
 import VariantSectionHeaderProduct from "../variantSectionHeaderProduct";

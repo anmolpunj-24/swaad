@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import GenericInput from "../genericInput";
-import { SlugifyHandler } from "@/utils/slugifyHandler";
+import { SlugifyHandler } from "@/utils/helperFunctions/slugifyHandler";
 import GenericSelect from "../genericSelect";
 import GenericTextarea from "../genericTextArea";
 import ContentEditor from "@/components/ui/contentEditor";
