@@ -23,7 +23,7 @@ import GlobalLoader from "@/components/ui/globalLoader";
 import { currencyHandler } from "@/utils/helperFunctions/currencyHandler";
 import { PDFDownloadLink } from "@react-pdf/renderer";
 import { Download } from "lucide-react";
-import orderReceiptPdf from "@/utils/orderRecipt/orderReciptPdf";
+import OrderReceiptPdf from "@/utils/orderRecipt/orderReciptPdf";
 
 const ORDER_STATUSES = [
   "pending",
@@ -332,7 +332,7 @@ export default function OrderDetails() {
 
         <div className="flex justify-end">
           <PDFDownloadLink
-            document={<orderReceiptPdf order={order} />}
+            document={<OrderReceiptPdf order={order} />}
             fileName={`SWAAD-Order-${order._id}-Receipt.pdf`}
             className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#463421] px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#59432C] sm:w-auto"
           >

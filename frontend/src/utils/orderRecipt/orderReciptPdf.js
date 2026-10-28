@@ -262,7 +262,7 @@ const formatText = (value, fallback = "N/A") => {
 
 const formatStatus = (value) => formatText(value, "Pending").replace(/_/g, " ");
 
-const orderReceiptPdf = ({ order = {} }) => {
+export default function OrderReceiptPdf({ order }) {
   const shippingAddress = order.shippingAddress || {};
   const items = order.items || order.orderItems || [];
 
@@ -311,7 +311,7 @@ const orderReceiptPdf = ({ order = {} }) => {
         <View style={styles.header}>
           <View>
             <Text style={styles.brand}>
-              SW<span style={styles.brandAccent}>AA</span>D
+              SW<Text style={styles.brandAccent}>AA</Text>D
             </Text>
             <Text style={styles.tagline}>TASTE OF PUNJAB</Text>
             <Text style={styles.tagline}>
@@ -466,6 +466,11 @@ const orderReceiptPdf = ({ order = {} }) => {
               </Text>
             </View>
 
+            <View style={styles.summaryRow}>
+              <Text style={styles.summaryLabel}>GST</Text>
+              <Text style={styles.summaryValue}>5%</Text>
+            </View>
+
             <View style={[styles.summaryRow, styles.grandTotal]}>
               <Text style={styles.grandTotalLabel}>Grand Total</Text>
               <Text style={styles.grandTotalValue}>
@@ -512,6 +517,4 @@ const orderReceiptPdf = ({ order = {} }) => {
       </Page>
     </Document>
   );
-};
-
-export default orderReceiptPdf;
+}

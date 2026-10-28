@@ -1,8 +1,8 @@
-export function currencyHandler(amount, currency = "INR") {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency,
+export function currencyHandler(amount) {
+  const formattedAmount = new Intl.NumberFormat("en-IN", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   }).format(Number(amount) || 0);
+
+  return `INR ${formattedAmount}`;
 }

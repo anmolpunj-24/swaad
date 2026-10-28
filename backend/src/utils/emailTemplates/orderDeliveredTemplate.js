@@ -2,7 +2,6 @@ const dateHandler = require("../helperFuntions/dateHandler");
 const htmlHandler = require("../helperFuntions/htmlHandler");
 
 const OrderDeliveredTemplate = (order) => {
-  console.log(order);
   const shippingAddress = order?.shippingAddress || {};
 
   const orderId = order._id || "N/A";
